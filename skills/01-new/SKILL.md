@@ -3,7 +3,7 @@ name: 01-new
 description: Create or update `tasks/todo.md` with a project overview and a prioritized feature list (top-to-bottom). Use when starting a new project, planning an MVP feature set, building a backlog/roadmap, adding new items (feat/fix/chore), or re-prioritizing. Triggers: new project, MVP features, feature list, backlog, roadmap, add feature, add fix, bugfix, chore, reprioritize, update todo.md, planning.
 ---
 
-# 01 New
+# 01 new
 
 Create or update `tasks/todo.md` as the source of truth for what the project is and what features will be built.
 
@@ -12,12 +12,12 @@ Create or update `tasks/todo.md` as the source of truth for what the project is 
 ## Guardrails
 
 - Do not implement code.
-- Do not write individual feature PRDs (use `02-prd` for that).
-- Keep features “PRD-sized”: one feature = one PRD; split anything that feels like an epic.
+- Do not write individual feature prds (use `02-prd` for that).
+- Keep features “prd-sized”: one feature = one prd; split anything that feels like an epic.
 - Prefer a stable `todo.md` structure; edit in place rather than rewriting.
 - Write `tasks/todo.md` so a junior dev (or another AI) can pick it up without extra context.
 - Do not use Markdown tables (use checklists + bullets).
-- Do not check feature boxes unless the PRD actually exists (typically updated by `02-prd`).
+- Do not check feature boxes unless the prd actually exists (typically updated by `02-prd`).
 
 ---
 
@@ -81,24 +81,24 @@ If `tasks/todo.md` does not exist, create it with this structure (fill in detail
 
 ## Features
 
-Checkbox meaning: unchecked = PRD not written yet; checked = PRD exists.
-Leave unchecked until a PRD exists.
+Checkbox meaning: unchecked = prd not written yet; checked = prd exists.
+Leave unchecked until a prd exists.
 
 ### Features (priority order)
 - Higher in the list = higher priority.
-- [ ] F-001: <feature name>
+- [ ] f-01: <feature name>
   - Type: feat | fix | chore
   - Outcome: <user-visible outcome>
   - In scope: <what ships>
   - Out of scope: <what does not ship>
-  - Dependencies: <none> | F-002, F-010
+  - Dependencies: <none> | f-02, f-10
 
-- [ ] F-002: <feature name>
+- [ ] f-02: <feature name>
   - Type: feat | fix | chore
   - Outcome: <user-visible outcome>
   - In scope: <what ships>
   - Out of scope: <what does not ship>
-  - Dependencies: <none> | F-001
+  - Dependencies: <none> | f-01
 
 ## Open Questions
 - Q-1: …
@@ -111,17 +111,17 @@ Leave unchecked until a PRD exists.
 - Preserve existing content and wording unless the user asks to change it.
 - Avoid duplicates: if a new feature overlaps an existing one, merge or propose a rename instead of adding a second item.
 - Keep IDs stable; IDs must be globally unique within `tasks/todo.md`.
-- When adding a new feature, use the next ID as `(max existing F-###) + 1` (never reuse old IDs).
+- When adding a new feature, use the next ID as `(max existing f-##) + 1` (never reuse old IDs).
 - If duplicate IDs already exist, resolve by renumbering the newer/less-referenced item(s) and updating any `Dependencies:` references.
 - Keep the list prioritized top-to-bottom; if placement is unclear, ask where to insert (or add to the bottom).
 - If a feature depends on another feature, ensure the dependency is listed above it (or explicitly confirm the ordering).
-- Keep checkbox meaning consistent: checked means “PRD exists”.
+- Keep checkbox meaning consistent: checked means “prd exists”.
 - Ensure each feature entry includes:
   - a type (feat/fix/chore)
   - a clear user-visible outcome
   - in scope / out of scope boundaries
   - dependencies by ID (if any)
-- Do not add PRD links/paths here; `02-prd` will create the PRD file and sync `tasks/todo.md`.
+- Do not add prd links/paths here; `prd:` lines are owned by `02-prd`.
 
 ---
 
@@ -132,7 +132,7 @@ Leave unchecked until a PRD exists.
 - For chores, keep them crisp and outcome-oriented (e.g., “Chore: remove dead code”) and set `Type: chore`.
 - Ensure each feature has a crisp outcome (what changes for the user).
 - Avoid implementation tasks (“refactor”, “set up DB”) unless they are truly user-facing requirements.
-- If a feature is too large, split by user goal or workflow step until each item could reasonably become a single PRD.
+- If a feature is too large, split by user goal or workflow step until each item could reasonably become a single prd.
 
 ---
 
@@ -140,8 +140,8 @@ Leave unchecked until a PRD exists.
 
 - Create or reuse `tasks/`.
 - Create or update `tasks/todo.md`.
-- After updating, suggest the next feature to spec with `02-prd` (by ID/name): highest priority unchecked feature whose dependencies (if any) are checked.
-- When a PRD is created via `02-prd`, ensure the matching feature checkbox is checked in `tasks/todo.md`.
+- After updating, suggest the next feature to spec with `02-prd` (by ID/name): highest priority unchecked feature (checked = prd exists).
+- When a prd is created via `02-prd`, ensure the matching feature checkbox is checked in `tasks/todo.md`.
 - If you made a durable project decision (scope boundary, constraint, key choice), capture it in `tasks/memory.md` via `04-rem`.
 
 ---
@@ -153,7 +153,7 @@ Before finalizing `tasks/todo.md`:
 - [ ] Project section explains what the project is and who it serves.
 - [ ] Feature list is prioritized and reasonably sized (avoid 30 “must-haves”).
 - [ ] Feature IDs are unique and stable (no duplicates).
-- [ ] No feature is checked unless its PRD exists.
+- [ ] No feature is checked unless its prd exists.
 - [ ] Each feature has a `Type:` (`feat` / `fix` / `chore`).
 - [ ] Each feature has a user-visible outcome and explicit scope boundaries.
 - [ ] Dependencies (if any) reference valid feature IDs.
