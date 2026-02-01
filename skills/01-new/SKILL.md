@@ -84,16 +84,18 @@ If `tasks/todo.md` does not exist, create it with this structure (fill in detail
 Checkbox meaning: unchecked = prd not written yet; checked = prd exists.
 Leave unchecked until a prd exists.
 
+Status legend: — = not started | 🔨 = implemented | ✅ = merged
+
 ### Features (priority order)
 - Higher in the list = higher priority.
-- [ ] f-01: <feature name>
+- [ ] f-01: <feature name>  |  —
   - Type: feat | fix | chore
   - Outcome: <user-visible outcome>
   - In scope: <what ships>
   - Out of scope: <what does not ship>
   - Dependencies: <none> | f-02, f-10
 
-- [ ] f-02: <feature name>
+- [ ] f-02: <feature name>  |  —
   - Type: feat | fix | chore
   - Outcome: <user-visible outcome>
   - In scope: <what ships>
@@ -116,11 +118,14 @@ Leave unchecked until a prd exists.
 - Keep the list prioritized top-to-bottom; if placement is unclear, ask where to insert (or add to the bottom).
 - If a feature depends on another feature, ensure the dependency is listed above it (or explicitly confirm the ordering).
 - Keep checkbox meaning consistent: checked means “prd exists”.
+- Keep status indicator consistent: `—` = not started, `🔨` = implemented, `✅` = merged.
+- Do not update status indicators; they are managed by `03-exe`.
 - Ensure each feature entry includes:
   - a type (feat/fix/chore)
   - a clear user-visible outcome
   - in scope / out of scope boundaries
   - dependencies by ID (if any)
+  - a status indicator (`—` for new features)
 - Do not add prd links/paths here; `prd:` lines are owned by `02-prd`.
 
 ---

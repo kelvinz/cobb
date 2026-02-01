@@ -1,11 +1,15 @@
 ---
 name: 03-exe
-description: Execute a prd by implementing the feature in the codebase (`Type: feat` / `fix` / `chore`). Use when given a prd to build, asked to implement a feature/spec, or moving from planning (02-prd) to execution. Updates the prd execution status checkboxes (Implemented/Merged) as work progresses.
+description: Execute a prd by implementing the feature in the codebase (`Type: feat` / `fix` / `chore`). Also use after merging a PR to mark the prd as merged. Triggers: implement, execute, build this feature, run prd, mark as merged, pr merged, complete merge.
 ---
 
 # 03 exe
 
-Implement a feature from a prd and keep the prd's execution status up to date.
+Implement a feature from a prd, or mark a prd as merged after PR completion.
+
+This skill handles two modes:
+- **Implement mode**: Build the feature from the prd specification.
+- **Merge mode**: After a PR is merged, update status and rename the prd.
 
 ---
 
@@ -24,11 +28,14 @@ Implement a feature from a prd and keep the prd's execution status up to date.
 
 ## Workflow
 
-1. **Identify the prd**
+1. **Identify the prd and mode**
    - Ask for the prd path if not provided (usually `tasks/f-##-<slug>.md`).
    - Confirm which feature ID/name this prd corresponds to.
+   - Determine the mode:
+     - If the user says "mark as merged", "pr merged", or similar → **Merge mode** (skip to step 5).
+     - Otherwise → **Implement mode** (continue to step 2).
 
-2. **Pre-flight**
+2. **Pre-flight** (Implement mode only)
    - Read `AGENTS.md` (if present) and follow it.
    - Check priority (if `tasks/todo.md` exists):
      - Priority is determined by list order.
@@ -49,16 +56,16 @@ Implement a feature from a prd and keep the prd's execution status up to date.
      - If any dependency is not **Implemented**, recommend executing that dependency prd first.
      - If a dependency has no prd yet, stop and use `02-prd` to create that dependency prd first.
 
-3. **Execute**
+3. **Execute** (Implement mode only)
    - Implement the feature as specified.
    - Add/update tests as appropriate.
    - Run the project's normal checks (typecheck/lint/tests/build) per `AGENTS.md` or project conventions.
 
-4. **Verify**
+4. **Verify** (Implement mode only)
    - Verify acceptance criteria and edge cases from the prd.
    - Perform any manual QA steps listed in the prd.
 
-5. **Update prd status (in-place)**
+5. **Update prd status (in-place)** (Both modes)
    - Ensure the prd contains this section (add it if missing):
 
      ```markdown
@@ -68,8 +75,11 @@ Implement a feature from a prd and keep the prd's execution status up to date.
      ```
 
    - Check boxes based on evidence:
-     - **Implemented**: code changes complete, tests added/updated and passing, acceptance criteria met locally.
-     - **Merged**: only check after PR is merged to main (confirmed by user or repo workflow). When checking this box, also rename the prd file with a `done-` prefix (e.g., `f-01-invite-teammates.md` → `done-f-01-invite-teammates.md`) and update the `prd:` link in `tasks/todo.md`.
+     - **Implemented**: code changes complete, tests added/updated and passing, acceptance criteria met locally. Also update the feature's status indicator in `tasks/todo.md` from `—` to `🔨`.
+     - **Merged**: only check after PR is merged to main (confirmed by user or repo workflow). When checking this box:
+       1. Rename the prd file with a `done-` prefix (e.g., `f-01-invite-teammates.md` → `done-f-01-invite-teammates.md`).
+       2. Update the `prd:` link in `tasks/todo.md` to the new path.
+       3. Update the feature's status indicator in `tasks/todo.md` from `🔨` to `✅`.
    - If the prd has user-story checklists (e.g., `- [ ] US-001 …` and acceptance-criteria checkboxes), check them off as you complete them. Do not reset existing checkboxes.
 
 6. **Close out**
@@ -87,4 +97,5 @@ Implement a feature from a prd and keep the prd's execution status up to date.
 - Reply with:
   - prd path
   - Which execution status boxes were checked
+  - Which status indicator was updated in `tasks/todo.md` (if any)
   - Any follow-ups or open issues

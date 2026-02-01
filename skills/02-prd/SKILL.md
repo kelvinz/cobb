@@ -210,6 +210,7 @@ Make each story a checklist item so `03-exe` can execute in pieces and check thi
 - Update the feature checklist item to checked (`- [ ]` → `- [x]`). In `tasks/todo.md`, checked means "prd exists" (not "built").
 - Ensure the feature has a `prd: \`<path>\`` line; add/update it if missing or wrong.
 - Preserve the feature's `Type:` / `Dependencies:` lines as-is unless the user explicitly asked to change them.
+- Preserve the feature's status indicator (`—` / `🔨` / `✅`) as-is; status is managed by `03-exe`.
 - If the feature is not present in `tasks/todo.md`, do not create a prd yet—use `01-new` to add the feature first, then return to `02-prd`.
 
 ---
