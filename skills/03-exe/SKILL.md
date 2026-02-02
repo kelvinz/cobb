@@ -1,6 +1,6 @@
 ---
 name: 03-exe
-description: Execute a prd by implementing the feature in the codebase (`Type: feat` / `fix` / `chore`). Also use after merging a PR to mark the prd as merged. Triggers: implement, execute, build this feature, run prd, mark as merged, pr merged, complete merge.
+description: "Execute a prd by implementing the feature in the codebase (`Type: feat` / `fix` / `chore`). Also use after merging a PR to mark the prd as merged. Triggers: implement, execute, build this feature, run prd, mark as merged, pr merged, complete merge."
 ---
 
 # 03 exe

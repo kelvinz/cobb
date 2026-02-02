@@ -1,6 +1,6 @@
 ---
 name: 02-prd
-description: Create a Product Requirements Document (prd) / feature spec for a new or existing item (`Type: feat` / `fix` / `chore`). Use when planning scope, writing requirements, defining user stories + acceptance criteria, or turning an idea into an implementable spec. Triggers: prd, product requirements, feature spec, bugfix spec, fix spec, requirements doc, spec this feature, write requirements, plan this feature.
+description: "Create a Product Requirements Document (prd) / feature spec for a new or existing item (`Type: feat` / `fix` / `chore`). Use when planning scope, writing requirements, defining user stories + acceptance criteria, or turning an idea into an implementable spec. Triggers: prd, product requirements, feature spec, bugfix spec, fix spec, requirements doc, spec this feature, write requirements, plan this feature."
 ---
 
 # 02 prd
