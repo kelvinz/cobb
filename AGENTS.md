@@ -23,7 +23,7 @@ Leave it better than you found it.
 - Never store secrets, tokens, credentials, or private data.
 
 ### Entries
-<!-- Add new lessons above this line (newest first). -->
+-
 
 ---
 
@@ -75,7 +75,7 @@ Leave it better than you found it.
 - Use conventional project structures (e.g., components/, utils/, hooks/)
 
 ## Comments & Documentation
-Goal: Make code understandable for the next developer (or your future self)
+- Goal: Make code understandable for the next developer (or your future self)
 - Complex logic: Explain the "why" behind non-obvious decisions
 - Business rules: Document requirements that drove implementation choices
 - Flow overview: Add high-level comments describing the sequence of operations
@@ -84,75 +84,6 @@ Goal: Make code understandable for the next developer (or your future self)
 - TODO/FIXME: Mark incomplete or temporary solutions
 - Update comments when updating code (stale comments are worse than no comments)
 - Keep comments concise - aim for clarity, not verbosity
-
-### Examples
-#### Basic
-```js
-// ❌ BAD: States the obvious
-// Set user to null
-const user = null
-
-// ✅ GOOD: Explains why
-// Reset user to trigger re-authentication flow
-const user = null
-
-// ✅ GOOD: Explains flow and context
-/**
-* Processes payment in 3 steps:
-* 1. Validate payment method with payment provider
-* 2. Create transaction record in our DB (for audit trail)
-* 3. Send confirmation email to user
-*
-* Note: Step 2 must complete before step 3 to include transaction ID in email
-*/
-async function processPayment ( paymentData ) {
-	// Step 1: Validate with Stripe (throws if invalid)
-	const validation = await stripe.validatePayment( paymentData )
-
-	// Step 2: Store transaction (includes user_id, amount, timestamp)
-	const transaction = await db.createTransaction( {
-		userId: paymentData.userId,
-		amount: validation.amount,
-		stripeId: validation.id
-	} )
-
-	// Step 3: Send email with transaction details
-	await sendConfirmationEmail( paymentData.userId, transaction )
-
-	return transaction
-}
-```
-#### Function headers: Use JSDoc for complex/public functions
-```js
-/**
-* Calculates discounted price based on user tier and promo codes
-*
-* @param {number} basePrice - Original price in cents
-* @param {string} userTier - One of: 'free', 'premium', 'enterprise'
-* @param {string[]} promoCodes - Array of promo code strings
-* @returns {number} Final price in cents (never negative)
-* @throws {Error} If userTier is invalid
-*/
-function calculatePrice ( basePrice, userTier, promoCodes ) {
-	// Implementation...
-}
-```
-#### File headers: Add brief description for modules
-```js
-/**
-* Authentication utilities
-* Handles JWT token generation, validation, and refresh logic
-* Used by: auth middleware, login/logout endpoints
-*/
-```
-#### Inline comments: For non-obvious code blocks
-```js
-// Using reduce instead of filter + map to avoid iterating twice (performance)
-const activeUserNames = users.reduce( ( acc, user ) => {
-	if ( user.isActive ) acc.push( user.name )
-	return acc
-}, [] )
-```
 
 ## Best Practices
 - Early returns to reduce nesting
