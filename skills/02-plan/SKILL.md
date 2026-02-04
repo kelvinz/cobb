@@ -1,9 +1,9 @@
 ---
-name: 02-prd
-description: "Create a Product Requirements Document (prd) / feature spec for a new or existing item (`Type: feat` / `fix` / `chore`). Use when planning scope, writing requirements, defining user stories + acceptance criteria, or turning an idea into an implementable spec. Triggers: prd, product requirements, feature spec, bugfix spec, fix spec, requirements doc, spec this feature, write requirements, plan this feature."
+name: 02-plan
+description: "Create a Product Requirements Document (prd) / feature plan for a new or existing item (`Type: feat` / `fix` / `chore`). Use when planning scope, writing requirements, defining user stories + acceptance criteria, or turning an idea into an implementable spec. Triggers: plan, prd, product requirements, feature spec, bugfix spec, fix spec, requirements doc, spec this feature, write requirements."
 ---
 
-# 02 prd
+# 02 plan
 
 Create a clear, implementation-ready prd for a single feature (not code).
 
@@ -23,14 +23,14 @@ Create a clear, implementation-ready prd for a single feature (not code).
 1. Identify the feature:
    - Prefer a feature ID like `f-01` if available.
    - If `tasks/todo.md` exists, use the matching feature entry as the baseline for outcome + scope.
-   - If the feature entry includes `Type:`, carry it into the prd Summary so `03-exe` can branch and execute appropriately.
+   - If the feature entry includes `Type:`, carry it into the prd Summary so `03-implement` can branch and implement appropriately.
    - If `Type:` is missing, assume `Type: feat`.
    - If `tasks/todo.md` is missing or the feature is not in it yet, stop and use `01-new` to add the feature to `tasks/todo.md` first.
    - If `tasks/memory.md` exists, skim relevant key decisions / notes before finalizing requirements.
 2. Check priority (if `tasks/todo.md` exists):
    - Priority is determined by list order (higher in the list = higher priority).
    - If there are higher-priority unchecked items above this feature, ask the user to confirm they want to proceed (vs writing a prd for one of the higher-priority items first). Mention the higher-priority IDs/names.
-   - If the user says this item is urgent, recommend switching to `01-new` to move it higher in `tasks/todo.md`, then return to `02-prd`.
+   - If the user says this item is urgent, recommend switching to `01-new` to move it higher in `tasks/todo.md`, then return to `02-plan`.
 3. Determine the prd file path:
    - If the feature entry in `tasks/todo.md` already has a `prd:` line, use that path.
    - Otherwise use `tasks/f-##-<feature-slug>.md` (include the feature ID in the filename).
@@ -38,8 +38,8 @@ Create a clear, implementation-ready prd for a single feature (not code).
 5. Ask essential clarifying questions (lettered options) only when needed.
 6. Confirm scope boundaries (in-scope vs non-goals) and success metrics.
 7. Write or update the prd at the chosen path (create `tasks/` if missing):
-   - Ensure the prd includes `## Execution Status (03-exe)` (add it if missing; do not reset checkboxes if present).
-   - If `tasks/todo.md` lists `Dependencies:` for this feature, include them in "Dependencies & Constraints" (dependency validation happens during `03-exe`).
+   - Ensure the prd includes `## Execution Status` (add it if missing; do not reset checkboxes if present).
+   - If `tasks/todo.md` lists `Dependencies:` for this feature, include them in "Dependencies & Constraints" (dependency validation happens during `03-implement`).
 8. If `tasks/todo.md` exists, update it to reflect the prd:
    - Check the feature checkbox (`- [ ]` → `- [x]`).
    - Add/update a `prd: \`<path>\`` line under that feature.
@@ -85,8 +85,9 @@ Write the prd using this default structure. Drop sections that truly do not appl
 ```markdown
 # prd: <Feature name>
 
-## Execution Status (03-exe)
+## Execution Status
 - [ ] Implemented
+- [ ] Reviewed
 - [ ] Merged
 
 ## 0. Summary
@@ -130,7 +131,7 @@ For fix items, include current behavior, expected behavior, and repro steps (if 
 ## 6. Requirements
 ### 6.1 User stories
 Write small stories that can be implemented in a focused session.
-Make each story a checklist item so `03-exe` can execute in pieces and check things off.
+Make each story a checklist item so `03-implement` can execute in pieces and check things off.
 
 - [ ] US-001: <Title>
   - **Description:** As a <user>, I want <capability> so that <benefit>.
@@ -199,7 +200,7 @@ Make each story a checklist item so `03-exe` can execute in pieces and check thi
 - Save/update the prd at the chosen path (prefer existing `prd:` path in `tasks/todo.md`; otherwise `tasks/f-##-<feature-slug>.md`).
 - If the slug or scope is ambiguous, ask the user to confirm before saving.
 - If `tasks/todo.md` exists, update it (check the feature + link the prd).
-- If the prd introduces durable decisions/constraints, capture them in `tasks/memory.md` via `04-rem`.
+- If the prd introduces durable decisions/constraints, capture them in `tasks/memory.md` via `06-memory`.
 
 ---
 
@@ -210,8 +211,8 @@ Make each story a checklist item so `03-exe` can execute in pieces and check thi
 - Update the feature checklist item to checked (`- [ ]` → `- [x]`). In `tasks/todo.md`, checked means "prd exists" (not "built").
 - Ensure the feature has a `prd: \`<path>\`` line; add/update it if missing or wrong.
 - Preserve the feature's `Type:` / `Dependencies:` lines as-is unless the user explicitly asked to change them.
-- Preserve the feature's status indicator (`—` / `🔨` / `✅`) as-is; status is managed by `03-exe`.
-- If the feature is not present in `tasks/todo.md`, do not create a prd yet—use `01-new` to add the feature first, then return to `02-prd`.
+- Preserve the feature's status indicator (`—` / `🔨` / `✅`) as-is; status is managed by `03-implement` and `05-review`.
+- If the feature is not present in `tasks/todo.md`, do not create a prd yet—use `01-new` to add the feature first, then return to `02-plan`.
 
 ---
 
@@ -221,10 +222,10 @@ Before saving the prd:
 
 - [ ] If a prd already existed, it was updated in place (no duplicates).
 - [ ] If updating an existing prd, keep existing execution status checkboxes (do not reset them).
-- [ ] prd includes `## Execution Status (03-exe)`.
+- [ ] prd includes `## Execution Status`.
 - [ ] prd Summary includes `Type:`.
 - [ ] If the feature has dependencies in `tasks/todo.md`, they are referenced by ID and included in "Dependencies & Constraints".
-- [ ] prd is consistent with `tasks/memory.md` (or the change is captured via `04-rem`).
+- [ ] prd is consistent with `tasks/memory.md` (or the change is captured via `06-memory`).
 - [ ] Goals are measurable and directly tied to success metrics.
 - [ ] Non-goals are explicit (prevent scope creep).
 - [ ] User stories are checklist items with verifiable acceptance criteria.

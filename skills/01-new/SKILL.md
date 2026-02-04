@@ -12,12 +12,12 @@ Create or update `tasks/todo.md` as the source of truth for what the project is 
 ## Guardrails
 
 - Do not implement code.
-- Do not write individual feature prds (use `02-prd` for that).
+- Do not write individual feature prds (use `02-plan` for that).
 - Keep features “prd-sized”: one feature = one prd; split anything that feels like an epic.
 - Prefer a stable `todo.md` structure; edit in place rather than rewriting.
 - Write `tasks/todo.md` so a junior dev (or another AI) can pick it up without extra context.
 - Do not use Markdown tables (use checklists + bullets).
-- Do not check feature boxes unless the prd actually exists (typically updated by `02-prd`).
+- Do not check feature boxes unless the prd actually exists (typically updated by `02-plan`).
 
 ---
 
@@ -119,14 +119,14 @@ Status legend: — = not started | 🔨 = implemented | ✅ = merged
 - If a feature depends on another feature, ensure the dependency is listed above it (or explicitly confirm the ordering).
 - Keep checkbox meaning consistent: checked means “prd exists”.
 - Keep status indicator consistent: `—` = not started, `🔨` = implemented, `✅` = merged.
-- Do not update status indicators; they are managed by `03-exe`.
+- Do not update status indicators; they are managed by `03-implement` (`🔨`) and `05-review` (`✅` after merge).
 - Ensure each feature entry includes:
   - a type (feat/fix/chore)
   - a clear user-visible outcome
   - in scope / out of scope boundaries
   - dependencies by ID (if any)
   - a status indicator (`—` for new features)
-- Do not add prd links/paths here; `prd:` lines are owned by `02-prd`.
+- Do not add prd links/paths here; `prd:` lines are owned by `02-plan`.
 
 ---
 
@@ -145,9 +145,9 @@ Status legend: — = not started | 🔨 = implemented | ✅ = merged
 
 - Create or reuse `tasks/`.
 - Create or update `tasks/todo.md`.
-- After updating, suggest the next feature to spec with `02-prd` (by ID/name): highest priority unchecked feature (checked = prd exists).
-- When a prd is created via `02-prd`, ensure the matching feature checkbox is checked in `tasks/todo.md`.
-- If you made a durable project decision (scope boundary, constraint, key choice), capture it in `tasks/memory.md` via `04-rem`.
+- After updating, suggest the next feature to spec with `02-plan` (by ID/name): highest priority unchecked feature (checked = prd exists).
+- When a prd is created via `02-plan`, ensure the matching feature checkbox is checked in `tasks/todo.md`.
+- If you made a durable project decision (scope boundary, constraint, key choice), capture it in `tasks/memory.md` via `06-memory`.
 
 ---
 
