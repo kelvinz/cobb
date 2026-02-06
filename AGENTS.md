@@ -67,7 +67,7 @@ Leave it better than you found it.
 - async/await over promise chains for async operations
 - Follow established conventions (ESLint recommended rules, Airbnb style guide)
 
-## Code Organization
+## Code Organisation
 - Split functionality into small, single-purpose functions
 - One component/module per file
 - Group related functions into modules
@@ -103,7 +103,7 @@ Leave it better than you found it.
 - Use structured logging (not just console.log)
 - Create isolation scripts for complex issues
 - Add temporary verbose logging when hunting bugs
-- Remove debug code before finalizing
+- Remove debug code before finalising
 
 ## Security & Robustness
 - Follow OWASP guidelines and industry-standard security practices
