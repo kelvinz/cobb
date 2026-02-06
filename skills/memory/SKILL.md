@@ -1,9 +1,9 @@
 ---
-name: 06-memory
+name: memory
 description: "Update `tasks/memory.md` with durable project memory (project gist, key decisions, completed milestones, and important notes/gotchas). Use when capturing decisions, constraints, lessons learned, release notes, or anything that should be remembered across sessions. Triggers: memory, remember, add to memory, project notes, decision log, lessons learned."
 ---
 
-# 06 memory
+# memory
 
 Maintain `tasks/memory.md` as a living, durable “what matters” record for the project.
 Write it for someone taking over the project (or you returning later): it should explain where things are, what was decided, and what to watch out for before proceeding.
@@ -85,12 +85,13 @@ If `tasks/memory.md` does not exist, create it with this structure:
 
 ## When to Use This
 
-- During `01-new`: when the project definition changes or a major planning decision is made.
-- During `02-plan`: when a prd introduces a key decision, constraint, or cross-cutting behavior worth remembering.
-- During `03-implement`:
-  - When you discover an important gotcha or finalize a major implementation decision.
-- During `05-review`:
+- During `new`: when the project definition changes or a major planning decision is made.
+- During `plan`: when a prd introduces a key decision, constraint, or cross-cutting behaviour worth remembering.
+- During `implement`:
+  - When you discover an important gotcha or finalise a major implementation decision.
+- During `review`:
   - When you complete a review and want to capture durable notes, risks, and follow-ups.
+- During `commit` (finalise mode):
   - When a prd is merged—update "Current state" and "Completed" sections.
 
 ---

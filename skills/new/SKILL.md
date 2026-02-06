@@ -1,9 +1,9 @@
 ---
-name: 01-new
-description: "Create or update `tasks/todo.md` with a project overview and a prioritized feature list (top-to-bottom). Use when starting a new project, planning an MVP feature set, building a backlog/roadmap, adding new items (feat/fix/chore), or re-prioritizing. Triggers: new project, MVP features, feature list, backlog, roadmap, add feature, add fix, bugfix, chore, reprioritize, update todo.md, planning."
+name: new
+description: "Create or update `tasks/todo.md` with a project overview and a prioritised feature list (top-to-bottom). Use when starting a new project, planning an MVP feature set, building a backlog/roadmap, adding new items (feat/fix/chore), or re-prioritising. Triggers: new project, MVP features, feature list, backlog, roadmap, add feature, add fix, bugfix, chore, reprioritise, update todo.md, planning."
 ---
 
-# 01 new
+# new
 
 Create or update `tasks/todo.md` as the source of truth for what the project is and what features will be built.
 
@@ -12,24 +12,24 @@ Create or update `tasks/todo.md` as the source of truth for what the project is 
 ## Guardrails
 
 - Do not implement code.
-- Do not write individual feature prds (use `02-plan` for that).
+- Do not write individual feature prds (use `plan` for that).
 - Keep features “prd-sized”: one feature = one prd; split anything that feels like an epic.
 - Prefer a stable `todo.md` structure; edit in place rather than rewriting.
 - Write `tasks/todo.md` so a junior dev (or another AI) can pick it up without extra context.
 - Do not use Markdown tables (use checklists + bullets).
-- Do not check feature boxes unless the prd actually exists (typically updated by `02-plan`).
+- Do not check feature boxes unless the prd actually exists (typically updated by `plan`).
 
 ---
 
 ## Workflow
 
 1. Determine intent:
-   - **New project** → initialize `tasks/todo.md`.
+   - **New project** → initialise `tasks/todo.md`.
    - **Add/update features** → edit the existing `tasks/todo.md`.
 2. If `tasks/memory.md` exists, skim relevant sections (project, key decisions, notes/gotchas) so you don’t conflict with prior decisions.
 3. Ask clarifying questions only when needed (use A/B/C/D options).
 4. Update `tasks/todo.md` using the template below:
-   - **New project**: write a crisp Project section + propose an initial prioritized feature list, ordered by priority (highest first).
+   - **New project**: write a crisp Project section + propose an initial prioritised feature list, ordered by priority (highest first).
    - **Add/update**: add, merge, re-scope, and/or re-order features.
      - If adding a new `Type: fix` item and the user didn’t specify placement, explicitly ask if it should move up the list (priority is determined by list order).
 5. Ensure each feature has clear in-scope vs out-of-scope boundaries and dependencies (if any).
@@ -115,18 +115,18 @@ Status legend: — = not started | 🔨 = implemented | ✅ = merged
 - Keep IDs stable; IDs must be globally unique within `tasks/todo.md`.
 - When adding a new feature, use the next ID as `(max existing f-##) + 1` (never reuse old IDs).
 - If duplicate IDs already exist, resolve by renumbering the newer/less-referenced item(s) and updating any `Dependencies:` references.
-- Keep the list prioritized top-to-bottom; if placement is unclear, ask where to insert (or add to the bottom).
+- Keep the list prioritised top-to-bottom; if placement is unclear, ask where to insert (or add to the bottom).
 - If a feature depends on another feature, ensure the dependency is listed above it (or explicitly confirm the ordering).
 - Keep checkbox meaning consistent: checked means “prd exists”.
 - Keep status indicator consistent: `—` = not started, `🔨` = implemented, `✅` = merged.
-- Do not update status indicators; they are managed by `03-implement` (`🔨`) and `05-review` (`✅` after merge).
+- Do not update status indicators; they are managed by `implement` (`🔨`) and `commit` (`✅` after merge).
 - Ensure each feature entry includes:
   - a type (feat/fix/chore)
   - a clear user-visible outcome
   - in scope / out of scope boundaries
   - dependencies by ID (if any)
   - a status indicator (`—` for new features)
-- Do not add prd links/paths here; `prd:` lines are owned by `02-plan`.
+- Do not add prd links/paths here; `prd:` lines are owned by `plan`.
 
 ---
 
@@ -145,18 +145,18 @@ Status legend: — = not started | 🔨 = implemented | ✅ = merged
 
 - Create or reuse `tasks/`.
 - Create or update `tasks/todo.md`.
-- After updating, suggest the next feature to spec with `02-plan` (by ID/name): highest priority unchecked feature (checked = prd exists).
-- When a prd is created via `02-plan`, ensure the matching feature checkbox is checked in `tasks/todo.md`.
-- If you made a durable project decision (scope boundary, constraint, key choice), capture it in `tasks/memory.md` via `06-memory`.
+- After updating, suggest the next feature to spec with `plan` (by ID/name): highest priority unchecked feature (checked = prd exists).
+- When a prd is created via `plan`, ensure the matching feature checkbox is checked in `tasks/todo.md`.
+- If you made a durable project decision (scope boundary, constraint, key choice), capture it in `tasks/memory.md` via `memory`.
 
 ---
 
 ## Quality Checklist
 
-Before finalizing `tasks/todo.md`:
+Before finalising `tasks/todo.md`:
 
 - [ ] Project section explains what the project is and who it serves.
-- [ ] Feature list is prioritized and reasonably sized (avoid 30 “must-haves”).
+- [ ] Feature list is prioritised and reasonably sized (avoid 30 “must-haves”).
 - [ ] Feature IDs are unique and stable (no duplicates).
 - [ ] No feature is checked unless its prd exists.
 - [ ] Each feature has a `Type:` (`feat` / `fix` / `chore`).

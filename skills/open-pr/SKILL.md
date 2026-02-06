@@ -1,9 +1,9 @@
 ---
-name: 04-propose
-description: "Push the current feature branch and open/update a best-practice Draft pull request via GitHub CLI (gh), including a high-quality PR title/body linked to the PRD with testing + verification steps. Use when pushing a branch, creating/updating a PR, drafting a PR description, or running gh pr create/edit. Triggers: propose, push, PR, pull request, create PR, open PR, draft PR, pr description, gh pr create, gh pr edit, ready for review."
+name: open-pr
+description: "Push the current feature branch and open/update a best-practice Draft pull request via GitHub CLI (gh), including a high-quality PR title/body linked to the PRD with testing + verification steps. Use when pushing a branch, creating/updating a PR, drafting a PR description, or running gh pr create/edit. Triggers: open-pr, open pr, push, PR, pull request, create PR, draft PR, pr description, gh pr create, gh pr edit, ready for review."
 ---
 
-# 04 propose
+# open-pr
 
 Publish your work for review by pushing the branch and creating/updating a Draft PR with a strong title + description.
 
@@ -11,8 +11,8 @@ Publish your work for review by pushing the branch and creating/updating a Draft
 
 ## Guardrails
 
-- Do not implement new code here. If changes are needed, go back to `03-implement`.
-- Do not merge the PR here. Review/merge happens in `05-review`.
+- Do not implement new code here. If changes are needed, go back to `implement`.
+- Do not merge the PR here. Review happens in `review`; merge/branch cleanup happens in `commit` (finalise mode).
 - Prefer Draft PRs by default.
 
 ---
@@ -53,7 +53,7 @@ Publish your work for review by pushing the branch and creating/updating a Draft
      - `gh pr view --json url -q .url`
 
 6. **Next**
-   - Run `05-review` (PR mode).
+   - Run `review` (PR mode), then `commit` (finalise mode) if the PR is ready.
 
 ---
 
