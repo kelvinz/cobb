@@ -14,6 +14,9 @@ Commit changes in atomic steps, then finalise and clean up the feature branch wh
 - Require user confirmation before every commit.
 - Keep commits atomic; if a title needs "and", split the change set.
 - Never mix unrelated files in one commit.
+- Determine commit `type` from the actual diff intent, not from branch name, file paths, or habit.
+- Never use `chore` for behavior changes (user-visible flow, API contract, data semantics, bug correction, or security fix).
+- If a change group contains multiple intents (`feat` + `fix`, `fix` + `chore`, etc.), split it before proposing.
 - Never add AI attribution or `Co-authored-by` trailers unless the user explicitly asks.
 - Ask for the merge target branch during finalise mode; do not assume `main` (it may be `dev` or another branch).
 - Use `review` as a quality gate before commit/finalise when needed.
@@ -51,6 +54,28 @@ Keep the same pattern with the feature ID and a short imperative summary.
 - `chore` → `🧹`
 
 Use a different emoji only if it more precisely matches the change.
+
+### Type selection rubric (required)
+
+Choose `type` in this order (first match wins):
+
+1. `fix`:
+   - Corrects wrong behavior vs expected behavior
+   - Resolves a regression, flaky/error path, broken edge case, or failing test tied to a bug
+   - Fixes security/privacy behavior
+2. `feat`:
+   - Adds new user-visible capability
+   - Expands existing behavior, workflow, API surface, or output contract in a product-facing way
+3. `chore`:
+   - No product behavior change
+   - Maintenance-only work such as tooling/config cleanup, dependency bumps, refactors that preserve behavior, test-only scaffolding, or docs-only edits
+
+Classification rules:
+
+- Use `tasks/todo.md` / PRD `Type:` as a hint, but do not override the real diff intent.
+- If a commit changes behavior and internal maintenance together, split and classify each commit separately.
+- If uncertain between `feat` and `fix`, prefer `fix` when correcting expected behavior; otherwise use `feat`.
+- If still ambiguous after reviewing diff + context, ask the user before committing.
 
 ### Body requirements (required)
 
@@ -114,6 +139,7 @@ Actions:
 2. Partition changes into atomic commit groups.
 3. For the next group, propose:
    - files/hunks included
+   - type rationale (why this is `feat` / `fix` / `chore`, citing concrete diff intent)
    - commit title (emoji + type + imperative summary)
    - commit body (Summary/Why/Context/Alternatives/Trade-offs/Consequences)
 4. Ask for a decision:
@@ -174,6 +200,7 @@ For each proposed commit, provide:
 
 - atomic scope (files/hunks)
 - short "what changed" summary
+- type rationale (1-2 lines; evidence-based)
 - proposed title
 - proposed body
 - explicit confirmation prompt (`Commit this change now?`)
