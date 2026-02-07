@@ -14,29 +14,30 @@ Publish your work for review by pushing the branch and creating/updating a Draft
 - Do not implement new code here. If changes are needed, go back to `implement`.
 - Do not merge the PR here. Review happens in `review`; merge/branch cleanup happens in `commit` (finalise mode).
 - Prefer Draft PRs by default.
+- For hotfixes committed directly to the default branch, a PR is optional; use `review local` + `commit` instead.
 
 ---
 
 ## Workflow
 
 1. **Gather inputs**
-   - prd path (e.g. `tasks/f-##-<slug>.md`)
+   - PRD path (e.g. `tasks/f-##-<slug>.md`)
    - base branch (default: `main`)
-   - PR title seed (default: from prd title / feature ID)
+   - PR title seed (default: from PRD title / feature ID)
 
 2. **Preflight**
    - Confirm you are on a feature branch (not the base branch).
    - Ensure the working tree is clean (`git status --porcelain` is empty).
    - Ensure there are commits to push (compare `base...HEAD`).
-   - Ensure the prd contains checklist-based progress (user stories/tasks/acceptance criteria) and completed items are checked.
-   - Capture test/check commands + results for the PR body (don’t guess).
+   - Ensure the PRD contains checklist-based progress (user stories/tasks/acceptance criteria) and completed items are checked.
+   - Capture test/check commands + results for the PR body (don't guess).
 
 3. **Push the branch**
    - `git push -u origin HEAD`
 
 4. **Draft PR title + body**
    - Use the template below and include:
-     - prd path
+     - PRD path
      - what changed + why
      - tests run (exact commands + results)
      - how to verify
@@ -51,6 +52,7 @@ Publish your work for review by pushing the branch and creating/updating a Draft
      - `gh pr create --draft --base "<base>" --title "<title>" --body "<body>"`
    - Capture the PR URL:
      - `gh pr view --json url -q .url`
+   - If `gh` is unavailable, output the prepared title and body with manual instructions (repo URL, base branch, draft flag) so the user can create the PR themselves.
 
 6. **Next**
    - Run `review` (PR mode) when needed, then run `commit` (finalise mode) when ready.
@@ -86,6 +88,9 @@ Publish your work for review by pushing the branch and creating/updating a Draft
 ## Risks / rollout / rollback (if applicable)
 - …
 
+
+## Migration / backwards compatibility (if applicable)
+- …
 ## Screenshots (if UI)
 - …
 
@@ -101,3 +106,7 @@ Publish your work for review by pushing the branch and creating/updating a Draft
 
 - PR URL (or instructions if creation failed).
 - Final PR title + body used.
+- End with a short status block:
+  - **Files changed**: list of created/updated files
+  - **Key decisions**: any assumptions or choices made (if any)
+  - **Next step**: recommended next skill or action

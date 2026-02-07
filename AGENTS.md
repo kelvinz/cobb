@@ -16,9 +16,7 @@ Leave it better than you found it.
 - Apply lessons immediately.
 - Merge duplicates and replace stale/conflicting lessons.
 - Never store secrets, tokens, credentials, or private data.
-
-### Entries
--
+- Store lessons in `LESSONS.md` at the repo root. Create it if missing; append if it exists.
 
 ---
 
@@ -33,6 +31,8 @@ Leave it better than you found it.
 - Think through edge cases and failure modes upfront
 - For non-trivial changes, check for a simpler design
 - Skip this for obvious fixes (don't over-engineer)
+- For trivial changes (typo, docs-only, single-line fix), skip the full new → plan pipeline if the user confirms; commit directly.
+- If `tasks/` is missing and the work is feature-scoped, create it; if `tasks/todo.md` is also missing, run `new` first unless the user explicitly opts out.
 
 ## Research & Verification
 - Check official documentation for the latest syntax and methods
@@ -45,12 +45,15 @@ Leave it better than you found it.
 
 # CODING GUIDELINES
 
-## Core Principles
+## Core Principles (priority order)
+1. Correctness and security — always first
+2. Minimal impact — touch only what's necessary; avoid drive-by refactors
+3. Clarity — code should be readable and obvious
+4. DRY / functional patterns — only when it reduces complexity
+
 - Always default to industry-standard best practices unless there's a compelling reason not to
 - Simplicity first: smallest change that fully solves the problem
-- Minimal impact: touch only what's necessary; avoid drive-by refactors
 - Prefer functional programming patterns over imperative/OOP
-- Maintain DRY (Don't Repeat Yourself) - abstract common logic into reusable functions
 - Write pure functions when possible (no side effects, deterministic outputs)
 - Favor immutability - avoid mutating data directly
 
@@ -85,6 +88,7 @@ Leave it better than you found it.
 - Guard clauses at function start
 - Explicit error handling
 - Add JSDoc comments for complex functions
+- Never claim tests passed or checks succeeded without actually running them; if you didn't run it, say so
 
 ## Debugging Methodology
 

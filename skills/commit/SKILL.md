@@ -15,17 +15,18 @@ Commit changes in atomic steps, then finalise and clean up the feature branch wh
 - Keep commits atomic; if a title needs "and", split the change set.
 - Never mix unrelated files in one commit.
 - Determine commit `type` from the actual diff intent, not from branch name, file paths, or habit.
-- Never use `chore` for behavior changes (user-visible flow, API contract, data semantics, bug correction, or security fix).
+- Never use `chore` for behaviour changes (user-visible flow, API contract, data semantics, bug correction, or security fix).
 - If a change group contains multiple intents (`feat` + `fix`, `fix` + `chore`, etc.), split it before proposing.
 - Never add AI attribution or `Co-authored-by` trailers unless the user explicitly asks.
 - Ask for the merge target branch during finalise mode; do not assume `main` (it may be `dev` or another branch).
 - Use `review` as a quality gate before commit/finalise when needed.
 - Treat memory capture as built-in: update `tasks/memory.md` during commit/finalise when durable information emerges; do not rely on a separate memory-only step.
-- During finalise, move the completed feature prd from `tasks/` to `tasks/archive/` (same filename, no rename) in a dedicated pre-merge commit.
+- During finalise, move the completed feature PRD from `tasks/` to `tasks/archive/` (same filename, no rename) in a dedicated pre-merge commit.
 - During finalise, update `tasks/memory.md` when durable state changed (completed milestone, next-up priority, blockers, or key decisions) in a dedicated pre-merge commit.
 - Never delete the base/default branch.
 - Never delete the currently checked-out branch.
 - Require explicit user confirmation before deleting local or remote branches.
+- Do not claim tests passed or checks succeeded without actually running them; if you didn't run it, say so.
 
 ---
 
@@ -60,21 +61,22 @@ Use a different emoji only if it more precisely matches the change.
 Choose `type` in this order (first match wins):
 
 1. `fix`:
-   - Corrects wrong behavior vs expected behavior
+   - Corrects wrong behaviour vs expected behaviour
    - Resolves a regression, flaky/error path, broken edge case, or failing test tied to a bug
-   - Fixes security/privacy behavior
+   - Fixes security/privacy behaviour
 2. `feat`:
    - Adds new user-visible capability
-   - Expands existing behavior, workflow, API surface, or output contract in a product-facing way
+   - Expands existing behaviour, workflow, API surface, or output contract in a product-facing way
 3. `chore`:
-   - No product behavior change
-   - Maintenance-only work such as tooling/config cleanup, dependency bumps, refactors that preserve behavior, test-only scaffolding, or docs-only edits
+   - No product behaviour change
+   - Maintenance-only work such as tooling/config cleanup, dependency bumps, refactors that preserve behaviour, test-only scaffolding, or docs-only edits
+   - Docs-only changes (README, comments, changelogs) are always `chore`
 
 Classification rules:
 
 - Use `tasks/todo.md` / PRD `Type:` as a hint, but do not override the real diff intent.
-- If a commit changes behavior and internal maintenance together, split and classify each commit separately.
-- If uncertain between `feat` and `fix`, prefer `fix` when correcting expected behavior; otherwise use `feat`.
+- If a commit changes behaviour and internal maintenance together, split and classify each commit separately.
+- If uncertain between `feat` and `fix`, prefer `fix` when correcting expected behaviour; otherwise use `feat`.
 - If still ambiguous after reviewing diff + context, ask the user before committing.
 
 ### Body requirements (required)
@@ -130,6 +132,7 @@ Actions:
 
 - `commit` mode: propose and execute one atomic commit at a time.
 - `finalise` mode: merge/close the completed branch and delete feature branches.
+- `hotfix` mode: for urgent fixes committed directly to the default branch. Requires `review local` approval; PR is optional. Still update `tasks/memory.md` with the hotfix rationale.
 
 ---
 
@@ -165,14 +168,15 @@ Use after all intended commits are done.
 1. Confirm preconditions:
    - working tree clean
    - on feature branch (not base)
-2. Determine the feature prd path to finalise:
-   - prefer active feature prd files in `tasks/` matching the feature ID (`tasks/f-##-*.md`)
+2. Determine the feature PRD path to finalise:
+   - prefer active feature PRD files in `tasks/` matching the feature ID (`tasks/f-##-*.md`)
    - if multiple matches exist or feature ID is unclear, ask the user for the exact path
-3. Before merge, if the prd path matches `tasks/f-##-<slug>.md`:
+3. Before merge, if the PRD path matches `tasks/f-##-<slug>.md`:
    - ensure `tasks/archive/` exists
    - move it to `tasks/archive/f-##-<slug>.md` (same filename)
    - propose a dedicated atomic commit with a `🧹 chore:` title (use short finalise body) and require user confirmation
-   - if the prd is already under `tasks/archive/`, skip move
+   - if the PRD is already under `tasks/archive/`, skip move
+   - Apply strikethrough to the matching feature entry in `tasks/todo.md` (`- [x] f-##: name` → `- [x] ~~f-##: name~~`).
 4. Before merge, evaluate memory updates:
    - if `tasks/memory.md` exists (or should exist), update it when durable state changed:
      - add completed milestone entry for the finalised feature
@@ -181,9 +185,9 @@ Use after all intended commits are done.
    - propose a dedicated atomic memory commit with a `🧹 chore:` title (use short finalise body) and require user confirmation
    - if no durable memory change is needed, explicitly state why memory was not updated
 5. Ask the user to confirm the target branch for merge (for example: `main`, `dev`, `release/*`).
-6. Choose finalise path:
-   - PR path (preferred): merge PR into the confirmed target branch, close it, then clean up branches
-   - local path: merge feature branch into the confirmed target branch, then clean up branches
+6. Choose finalise path (require explicit user input):
+   - PR path (preferred): requires PR URL/number and `review pr: Ready to accept PR: Yes` before merging; merge PR into the confirmed target branch, close it, then clean up branches
+   - Local path: requires `review local: Good to commit: Yes` before merging; merge feature branch into the confirmed target branch, then clean up branches
 7. Apply branch safety checks before deletion:
    - confirm `<feature-branch>` is not the target branch
    - confirm `<feature-branch>` is not the default branch
@@ -212,3 +216,7 @@ After execution, provide:
 - remaining uncommitted groups
 - finalise recommendation when all groups are complete
 - memory sync status (`updated` or `skipped` with reason)
+- End with a short status block:
+  - **Files changed**: list of created/updated files
+  - **Key decisions**: any assumptions or choices made (if any)
+  - **Next step**: recommended next skill or action
