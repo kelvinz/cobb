@@ -34,11 +34,11 @@ Create a clear, implementation-ready prd for a single feature (not code).
 3. Determine the prd file path:
    - If the feature entry in `tasks/todo.md` already has a `prd:` line, use that path.
    - Otherwise use `tasks/f-##-<feature-slug>.md` (include the feature ID in the filename).
-4. If a prd already exists at that path, update it in place (do not create a duplicate prd unless the user asks). Do not reset any status checklists inside the prd.
+4. If a prd already exists at that path, update it in place (do not create a duplicate prd unless the user asks). Do not reset any existing checklist items inside the prd.
 5. Ask essential clarifying questions (lettered options) only when needed.
 6. Confirm scope boundaries (in-scope vs non-goals) and success metrics.
 7. Write or update the prd at the chosen path (create `tasks/` if missing):
-   - Ensure the prd includes `## Execution Status` (add it if missing; do not reset checkboxes if present).
+   - Ensure implementation progress is trackable via checklist items (for example, user stories and acceptance criteria checkboxes).
    - If `tasks/todo.md` lists `Dependencies:` for this feature, include them in "Dependencies & Constraints" (dependency validation happens during `implement`).
 8. If `tasks/todo.md` exists, update it to reflect the prd:
    - Check the feature checkbox (`- [ ]` → `- [x]`).
@@ -84,11 +84,6 @@ Write the prd using this default structure. Drop sections that truly do not appl
 
 ```markdown
 # prd: <Feature name>
-
-## Execution Status
-- [ ] Implemented
-- [ ] Reviewed
-- [ ] Merged
 
 ## 0. Summary
 - **Feature ID**: f-##
@@ -211,7 +206,6 @@ Make each story a checklist item so `implement` can execute in pieces and check 
 - Update the feature checklist item to checked (`- [ ]` → `- [x]`). In `tasks/todo.md`, checked means "prd exists" (not "built").
 - Ensure the feature has a `prd: \`<path>\`` line; add/update it if missing or wrong.
 - Preserve the feature's `Type:` / `Dependencies:` lines as-is unless the user explicitly asked to change them.
-- Preserve the feature's status indicator (`—` / `🔨` / `✅`) as-is; status is managed by `implement` and `commit`.
 - If the feature is not present in `tasks/todo.md`, do not create a prd yet—use `new` to add the feature first, then return to `plan`.
 
 ---
@@ -221,8 +215,7 @@ Make each story a checklist item so `implement` can execute in pieces and check 
 Before saving the prd:
 
 - [ ] If a prd already existed, it was updated in place (no duplicates).
-- [ ] If updating an existing prd, keep existing execution status checkboxes (do not reset them).
-- [ ] prd includes `## Execution Status`.
+- [ ] If updating an existing prd, keep existing story/task checkboxes (do not reset them).
 - [ ] prd Summary includes `Type:`.
 - [ ] If the feature has dependencies in `tasks/todo.md`, they are referenced by ID and included in "Dependencies & Constraints".
 - [ ] prd is consistent with `tasks/memory.md` (or the change is captured via `memory`).

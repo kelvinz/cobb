@@ -1,6 +1,6 @@
 ---
 name: implement
-description: "Implement a prd by building the feature in the codebase (`Type: feat` / `fix` / `chore`), updating tests, running checks, and marking the prd as Implemented. Triggers: implement, build, execute, code this feature, run plan, finish implementation."
+description: "Implement a prd by building the feature in the codebase (`Type: feat` / `fix` / `chore`), updating tests, running checks, and checking off completed prd stories/tasks. Triggers: implement, build, execute, code this feature, run plan, finish implementation."
 ---
 
 # implement
@@ -17,8 +17,8 @@ Implement a feature from a prd.
   - If the prd is missing details or ambiguous, stop and use `plan` to refine the prd first.
   - If the feature is missing from `tasks/todo.md`, stop and use `new` first.
   - If you discover out-of-scope requirements or bugs during execution, do not expand scope—create a new backlog item via `new` instead.
-- Do not edit `tasks/todo.md` except updating this feature's status indicator from `—` to `🔨` when implementation is complete.
-- Do not reset any prd status checkboxes when updating an existing prd.
+- Do not edit `tasks/todo.md` in this skill.
+- Do not reset any existing prd checklist items when updating an existing prd.
 
 ---
 
@@ -45,8 +45,8 @@ Implement a feature from a prd.
    - Verify dependencies:
      - Read this prd's "Dependencies & Constraints" section for feature dependency IDs.
      - For each dependency ID, locate the dependency's prd path from `tasks/todo.md` (or search `tasks/` by ID if missing).
-     - Check the dependency prd's `## Execution Status` section.
-     - If any dependency is not **Implemented**, recommend executing that dependency prd first.
+     - Treat dependencies as complete only when their prd path is already in `done-f-##-<slug>.md` form.
+     - If any dependency is not yet `done-`, recommend finalising that dependency first.
      - If a dependency has no prd yet, stop and use `plan` to create that dependency prd first.
 
 3. **Execute**
@@ -58,35 +58,25 @@ Implement a feature from a prd.
    - Verify acceptance criteria and edge cases from the prd.
    - Perform any manual QA steps listed in the prd.
 
-5. **Update status (in-place)**
-   - Ensure the prd contains this section (add it if missing):
-
-     ```markdown
-     ## Execution Status
-     - [ ] Implemented
-     - [ ] Reviewed
-     - [ ] Merged
-     ```
-
-   - Check boxes based on evidence:
-     - **Implemented**: code changes complete, tests added/updated and passing, acceptance criteria met locally. Also update the feature's status indicator in `tasks/todo.md` from `—` to `🔨`.
-   - If the prd has user-story checklists (e.g., `- [ ] US-001 …` and acceptance-criteria checkboxes), check them off as you complete them. Do not reset existing checkboxes.
+5. **Update checklist progress (in-place)**
+   - Check off completed user stories/tasks and acceptance criteria in the prd as implementation progresses.
+   - If the prd lacks checklist items for implementation progress, add a small checklist section and use it.
+   - Do not reset existing checked items.
 
 6. **Close out**
    - Summarise what was changed and what remains.
    - Next steps:
-     - PR flow: run `review` (local), then `commit`, then `open-pr`, then `review` (PR mode), then `commit` (finalise mode), then `memory`.
-     - Local flow: run `review` (local), then `commit`, then `memory`.
+     - PR flow: run `review` (local) when needed, then `commit`, then `open-pr`, then run `review` (PR mode) when needed, then `commit` (finalise mode), then `memory`.
+     - Local flow: run `review` (local) when needed, then `commit`, then `memory`.
 
 ---
 
 ## Output
 
 - Update code and tests as needed.
-- Update the prd execution status checkboxes in the prd file.
+- Update prd story/task checklist progress in the prd file.
 - If you discover a durable decision/gotcha or complete a significant milestone, capture it in `tasks/memory.md` via `memory`.
 - Reply with:
   - prd path
-  - Which execution status boxes were checked
-  - Which status indicator was updated in `tasks/todo.md` (if any)
+  - Which checklist items were completed
   - Any follow-ups or open issues

@@ -70,8 +70,8 @@ If `tasks/memory.md` does not exist, create it with this structure:
   - Tradeoffs: …
 
 ## Completed
-- YYYY-MM-DD: f-## <feature name> — Implemented/Merged
-  - prd: `tasks/f-##-<slug>.md`
+- YYYY-MM-DD: f-## <feature name> — Completed and finalised
+  - prd: `tasks/done-f-##-<slug>.md`
   - Notes: …
 
 ## Notes / gotchas

@@ -5,7 +5,7 @@ description: "Create atomic commits with explicit user approval, using emoji-pre
 
 # commit
 
-Commit changes in atomic steps, then optionally finalise and clean up the feature branch.
+Commit changes in atomic steps, then finalise and clean up the feature branch when requested.
 
 ---
 
@@ -16,9 +16,8 @@ Commit changes in atomic steps, then optionally finalise and clean up the featur
 - Never mix unrelated files in one commit.
 - Never add AI attribution or `Co-authored-by` trailers unless the user explicitly asks.
 - Ask for the merge target branch during finalise mode; do not assume `main` (it may be `dev` or another branch).
-- Do not run merge/branch deletion until review outcome is positive:
-  - local flow: `Good to commit: Yes`
-  - PR flow: `Ready to accept PR: Yes`
+- Use `review` as a quality gate before commit/finalise when needed.
+- During finalise, rename active feature prd to `done-f-##-<slug>.md` and sync `tasks/todo.md` `prd:` path in a dedicated pre-merge commit.
 - Never delete the base/default branch.
 - Never delete the currently checked-out branch.
 - Require explicit user confirmation before deleting local or remote branches.
@@ -107,24 +106,25 @@ Use after all intended commits are done.
 1. Confirm preconditions:
    - working tree clean
    - on feature branch (not base)
-   - review result is positive for this branch/PR
-2. Ask the user to confirm the target branch for merge (for example: `main`, `dev`, `release/*`).
-3. Choose finalise path:
+2. Determine the feature prd path to finalise:
+   - prefer the feature's `prd:` path from `tasks/todo.md` when available
+   - otherwise ask the user for the prd path
+3. Before merge, if the prd path matches `tasks/f-##-<slug>.md`:
+   - rename it to `tasks/done-f-##-<slug>.md`
+   - update the matching feature's `prd:` path in `tasks/todo.md`
+   - propose a dedicated atomic tracking commit and require user confirmation
+   - if the prd is already `done-f-##-...`, skip rename/path edits
+4. Ask the user to confirm the target branch for merge (for example: `main`, `dev`, `release/*`).
+5. Choose finalise path:
    - PR path (preferred): merge PR into the confirmed target branch, close it, then clean up branches
    - local path: merge feature branch into the confirmed target branch, then clean up branches
-4. Apply branch safety checks before deletion:
+6. Apply branch safety checks before deletion:
    - confirm `<feature-branch>` is not the target branch
    - confirm `<feature-branch>` is not the default branch
    - confirm current HEAD is not `<feature-branch>` when deleting it
-5. Delete completed feature branch only after explicit user confirmation:
+7. Delete completed feature branch only after explicit user confirmation:
    - local: `git branch -d <feature-branch>`
    - remote: `git push origin --delete <feature-branch>`
-6. Sync tracking files when present:
-   - if review was positive and the prd has `## Execution Status`, check `Reviewed`
-   - after merge, check `Merged`
-   - rename prd to `done-f-##-<slug>.md` when applicable
-   - update `tasks/todo.md` `prd:` path and status indicator to `✅`
-7. If step 6 changed files, propose a dedicated atomic tracking commit (with user confirmation) before finishing finalise mode.
 
 ---
 

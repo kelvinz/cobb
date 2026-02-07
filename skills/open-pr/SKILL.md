@@ -28,7 +28,7 @@ Publish your work for review by pushing the branch and creating/updating a Draft
    - Confirm you are on a feature branch (not the base branch).
    - Ensure the working tree is clean (`git status --porcelain` is empty).
    - Ensure there are commits to push (compare `base...HEAD`).
-   - Ensure the prd has `## Execution Status` and **Implemented** is checked.
+   - Ensure the prd contains checklist-based progress (user stories/tasks/acceptance criteria) and completed items are checked.
    - Capture test/check commands + results for the PR body (don’t guess).
 
 3. **Push the branch**
@@ -53,7 +53,7 @@ Publish your work for review by pushing the branch and creating/updating a Draft
      - `gh pr view --json url -q .url`
 
 6. **Next**
-   - Run `review` (PR mode), then `commit` (finalise mode) if the PR is ready.
+   - Run `review` (PR mode) when needed, then run `commit` (finalise mode) when ready.
 
 ---
 
