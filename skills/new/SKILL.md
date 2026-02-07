@@ -18,6 +18,7 @@ Create or update `tasks/todo.md` as the source of truth for what the project is 
 - Write `tasks/todo.md` so a junior dev (or another AI) can pick it up without extra context.
 - Do not use Markdown tables (use checklists + bullets).
 - Do not check feature boxes unless the prd actually exists (typically updated by `plan`).
+- Treat memory capture as built-in: if durable decisions are made, update `tasks/memory.md` in this step instead of deferring to a separate memory pass.
 
 ---
 
@@ -33,7 +34,11 @@ Create or update `tasks/todo.md` as the source of truth for what the project is 
    - **Add/update**: add, merge, re-scope, and/or re-order features.
      - If adding a new `Type: fix` item and the user didn’t specify placement, explicitly ask if it should move up the list (priority is determined by list order).
 5. Ensure each feature has clear in-scope vs out-of-scope boundaries and dependencies (if any).
-6. Reply with the updated file path and a short change summary (what you added/changed).
+6. Evaluate memory-worthy outcomes and update `tasks/memory.md` inline when needed:
+   - project definition changes
+   - scope boundaries or constraints that affect future features
+   - priority decisions with durable rationale
+7. Reply with updated file paths and a short change summary (what you added/changed).
 
 ---
 
@@ -121,7 +126,6 @@ Leave unchecked until a prd exists.
   - a clear user-visible outcome
   - in scope / out of scope boundaries
   - dependencies by ID (if any)
-- Do not add prd links/paths here; `prd:` lines are owned by `plan`.
 
 ---
 
@@ -142,7 +146,7 @@ Leave unchecked until a prd exists.
 - Create or update `tasks/todo.md`.
 - After updating, suggest the next feature to spec with `plan` (by ID/name): highest priority unchecked feature (checked = prd exists).
 - When a prd is created via `plan`, ensure the matching feature checkbox is checked in `tasks/todo.md`.
-- If you made a durable project decision (scope boundary, constraint, key choice), capture it in `tasks/memory.md` via `memory`.
+- If you made a durable project decision (scope boundary, constraint, key choice), update `tasks/memory.md` in the same run.
 
 ---
 

@@ -15,6 +15,7 @@ Create a clear, implementation-ready prd for a single feature (not code).
 - If the user asks to implement, propose writing a prd first (or ask if they want to skip the prd).
 - Prefer asking a small number of high-value questions; otherwise write a draft prd with explicit assumptions.
 - Write the prd so a junior dev (or another AI) can implement it without extra context (plain language, explicit edge cases, verifiable acceptance criteria).
+- Treat memory capture as built-in: if planning introduces durable decisions/constraints, update `tasks/memory.md` in this step.
 
 ---
 
@@ -32,7 +33,8 @@ Create a clear, implementation-ready prd for a single feature (not code).
    - If there are higher-priority unchecked items above this feature, ask the user to confirm they want to proceed (vs writing a prd for one of the higher-priority items first). Mention the higher-priority IDs/names.
    - If the user says this item is urgent, recommend switching to `new` to move it higher in `tasks/todo.md`, then return to `plan`.
 3. Determine the prd file path:
-   - If the feature entry in `tasks/todo.md` already has a `prd:` line, use that path.
+   - First look for an active prd matching the feature ID in `tasks/` (`tasks/f-##-*.md`).
+   - If one exists, use it.
    - Otherwise use `tasks/f-##-<feature-slug>.md` (include the feature ID in the filename).
 4. If a prd already exists at that path, update it in place (do not create a duplicate prd unless the user asks). Do not reset any existing checklist items inside the prd.
 5. Ask essential clarifying questions (lettered options) only when needed.
@@ -42,8 +44,11 @@ Create a clear, implementation-ready prd for a single feature (not code).
    - If `tasks/todo.md` lists `Dependencies:` for this feature, include them in "Dependencies & Constraints" (dependency validation happens during `implement`).
 8. If `tasks/todo.md` exists, update it to reflect the prd:
    - Check the feature checkbox (`- [ ]` → `- [x]`).
-   - Add/update a `prd: \`<path>\`` line under that feature.
-9. Reply with the file path and a short summary + open questions.
+9. Evaluate memory-worthy outcomes and update `tasks/memory.md` inline when needed:
+   - architecture or requirement decisions with durable impact
+   - new constraints, non-goals, or rollout assumptions
+   - risk decisions likely to affect later implementation/review
+10. Reply with updated file paths and a short summary + open questions.
 
 ---
 
@@ -192,10 +197,10 @@ Make each story a checklist item so `implement` can execute in pieces and check 
 ## Output
 
 - Create or reuse `tasks/`.
-- Save/update the prd at the chosen path (prefer existing `prd:` path in `tasks/todo.md`; otherwise `tasks/f-##-<feature-slug>.md`).
+- Save/update the prd at the chosen path (prefer existing active `tasks/f-##-*.md`; otherwise `tasks/f-##-<feature-slug>.md`).
 - If the slug or scope is ambiguous, ask the user to confirm before saving.
-- If `tasks/todo.md` exists, update it (check the feature + link the prd).
-- If the prd introduces durable decisions/constraints, capture them in `tasks/memory.md` via `memory`.
+- If `tasks/todo.md` exists, update it (check the feature only; no PRD path field).
+- If the prd introduces durable decisions/constraints, update `tasks/memory.md` in the same run.
 
 ---
 
@@ -204,7 +209,6 @@ Make each story a checklist item so `implement` can execute in pieces and check 
 - Update `tasks/todo.md` in place; do not reformat the whole file.
 - Find the matching feature by ID (preferred) or by feature name.
 - Update the feature checklist item to checked (`- [ ]` → `- [x]`). In `tasks/todo.md`, checked means "prd exists" (not "built").
-- Ensure the feature has a `prd: \`<path>\`` line; add/update it if missing or wrong.
 - Preserve the feature's `Type:` / `Dependencies:` lines as-is unless the user explicitly asked to change them.
 - If the feature is not present in `tasks/todo.md`, do not create a prd yet—use `new` to add the feature first, then return to `plan`.
 
@@ -218,7 +222,7 @@ Before saving the prd:
 - [ ] If updating an existing prd, keep existing story/task checkboxes (do not reset them).
 - [ ] prd Summary includes `Type:`.
 - [ ] If the feature has dependencies in `tasks/todo.md`, they are referenced by ID and included in "Dependencies & Constraints".
-- [ ] prd is consistent with `tasks/memory.md` (or the change is captured via `memory`).
+- [ ] prd is consistent with `tasks/memory.md` (or `tasks/memory.md` was updated in this run).
 - [ ] Goals are measurable and directly tied to success metrics.
 - [ ] Non-goals are explicit (prevent scope creep).
 - [ ] User stories are checklist items with verifiable acceptance criteria.
@@ -226,4 +230,4 @@ Before saving the prd:
 - [ ] Edge cases, error states, and permissions are specified.
 - [ ] Rollout plan and rollback plan exist (if risk warrants it).
 - [ ] Saved/updated at the chosen prd path.
-- [ ] If `tasks/todo.md` exists, the feature is checked and links to this prd.
+- [ ] If `tasks/todo.md` exists, the feature is checked.

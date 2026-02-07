@@ -1,6 +1,6 @@
 ---
 name: review
-description: "Run a strict review in exactly one mode: GitHub PR (`pr`) or local diff (`local`). Use when validating correctness, security, tests, and scope before merge or commit. Output a mode-specific decision report: `Ready to accept PR` (pr mode) or `Good to commit` (local mode), and require fixes when the decision is `No`."
+description: "Run a strict review in exactly one mode: GitHub PR (`pr`) or local diff (`local`). Use when validating correctness, security, tests, and scope before merge or commit. Output a mode-specific decision report: `Ready to accept PR` (pr mode) or `Good to commit` (local mode), require fixes when the decision is `No`, and capture durable review findings in `tasks/memory.md` when warranted."
 ---
 
 # review
@@ -14,7 +14,8 @@ Review one change set in one mode and return a decision-only report.
 - Require an explicit mode: `pr` or `local`.
 - Do not implement or modify code.
 - Do not commit, merge, push, or delete branches.
-- Do not update PRD/todo/memory tracking files here.
+- Do not update PRD/todo tracking files here.
+- Update `tasks/memory.md` only for durable review outcomes (recurring risks, release-critical gotchas, or confirmed follow-up decisions).
 - Do not invent test results; run checks or call out missing evidence.
 
 ---
@@ -53,6 +54,11 @@ Review one change set in one mode and return a decision-only report.
    - `pr` mode: `Ready to accept PR: Yes` or `Ready to accept PR: No`
    - `local` mode: `Good to commit: Yes` or `Good to commit: No`
    - if decision is `No`, include explicit fix items and ask the user to address them before rerunning `review` in the same mode
+6. Evaluate memory-worthy review outcomes and update `tasks/memory.md` inline when needed:
+   - systemic risks likely to recur
+   - key security or data-handling decisions
+   - durable follow-up decisions that affect future work
+   - if no durable outcome exists, mark memory as skipped with reason in the report
 
 ---
 
@@ -100,6 +106,9 @@ Security notes:
 Regression risks / watch-outs:
 - …
 
+Memory updates:
+- Updated: <summary> | Skipped: <reason>
+
 Recommended next step:
 - If Ready to accept PR=No: ask user to fix blockers, then rerun `review` in `pr` mode.
 - If Ready to accept PR=Yes: run `commit` in `finalise` mode.
@@ -126,6 +135,9 @@ Security notes:
 Regression risks / watch-outs:
 - …
 
+Memory updates:
+- Updated: <summary> | Skipped: <reason>
+
 Recommended next step:
 - If Good to commit=No: ask user to fix blockers, then rerun `review` in `local` mode.
 - If Good to commit=Yes: run `commit` in `commit` mode.
@@ -135,5 +147,5 @@ Recommended next step:
 
 ## Output
 
-- Return only the review report.
+- Return the review report with explicit memory update status.
 - Keep the decision explicit and unambiguous.

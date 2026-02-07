@@ -1,0 +1,106 @@
+---
+name: compact
+description: "Compact long-lived project tracking files by summarising old completed items in `tasks/todo.md` and older log-style entries in `tasks/memory.md`, while preserving active context. Use when these files become noisy/too long to scan quickly. Triggers: compact, cleanup tasks, trim memory, prune todo, housekeeping, summarise backlog history."
+---
+
+# compact
+
+Keep `tasks/todo.md` and `tasks/memory.md` short and scannable by consolidating older entries into readable summaries.
+
+---
+
+## Guardrails
+
+- Do not change product scope or implementation code.
+- Do not move or rename PRDs here; completed PRDs are archived during `commit` finalise.
+- Do not create separate memory archive files.
+- Keep feature IDs stable; never renumber.
+- Ask for explicit confirmation before applying consolidation edits.
+- Always propose retention/consolidation counts first; let the user choose the final numbers.
+
+---
+
+## Workflow
+
+1. Preflight:
+   - Ensure `tasks/` exists.
+   - Inspect `tasks/todo.md` and `tasks/memory.md`.
+   - Count items to compact:
+     - `todo`: checked vs unchecked features
+     - `memory`: dated/log-style entries in `Key decisions`, `Completed`, `Notes / gotchas`
+2. Propose consolidation options and ask for a decision:
+   - Suggest how many entries to keep in full detail vs consolidate into summary.
+   - Provide recommended defaults, then allow user override (more or fewer).
+3. Compact `tasks/todo.md` in place:
+   - Preserve all unchecked features unchanged.
+   - Keep the user-selected number of most recent checked features in full detail.
+   - Consolidate older checked features into a short `Completed (summarised)` section.
+4. Compact `tasks/memory.md` in place:
+   - Preserve `Project` and `Current state` sections.
+   - Keep the user-selected number of most recent detailed entries.
+   - Replace older entries with a concise historical summary block (themes, major outcomes, recurring risks).
+5. Report results:
+   - Show retained vs consolidated counts for both files.
+   - Call out any sections intentionally left untouched.
+
+---
+
+## Suggested Defaults
+
+Use these as initial recommendations, then ask the user to confirm or adjust:
+
+- `tasks/todo.md`:
+  - Keep all unchecked features.
+  - Keep the latest 8 checked features in detail.
+  - Consolidate older checked features into summary.
+- `tasks/memory.md`:
+  - Keep the latest 15 dated entries in detail across historical sections.
+  - Consolidate older entries into summary.
+
+---
+
+## Prompt Format for Threshold Choice
+
+Use a short choice prompt before edits:
+
+```text
+Proposed compact plan:
+1) TODO detailed checked items to keep: 8 (consolidate: 24)
+2) Memory detailed entries to keep: 15 (consolidate: 41)
+
+Reply with:
+- "use defaults", or
+- custom numbers (for example: "todo 12, memory 20"), or
+- "less" / "more" and the target file.
+```
+
+---
+
+## Summary Patterns
+
+### `tasks/todo.md` completed-summary example
+
+```markdown
+### Completed (summarised)
+- f-01 to f-14: Foundation and onboarding capabilities completed.
+- f-15 to f-19: Reliability and bugfix pass completed.
+```
+
+### `tasks/memory.md` historical-summary example
+
+```markdown
+## Historical summary
+- Earlier phase focused on onboarding, auth hardening, and export reliability.
+- Main recurring risk was cross-feature dependency ordering; mitigated by stricter finalise discipline.
+- Key tradeoff pattern: shipped simpler defaults first, then expanded configurability.
+```
+
+---
+
+## Output
+
+- Update only `tasks/todo.md` and/or `tasks/memory.md` as needed.
+- Return:
+  - proposed numbers and user-selected numbers
+  - retained vs consolidated counts
+  - concise summary of what changed
