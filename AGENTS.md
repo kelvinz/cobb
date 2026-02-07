@@ -8,18 +8,13 @@ Leave it better than you found it.
 
 # SELF IMPROVEMENT LOOP
 
-## When Corrected
-- Substantive only: recurring or costly corrections.
-- Treat corrections as ground truth for this AGENTS.md (and future copies).
-- Add/update lessons (prefer 1–2; merge when possible).
+## Learn From Every Session
+- Track mistakes and my preferences so future turns improve.
+- Capture only substantive, reusable lessons.
+- Keep entries short, specific, and actionable.
+- Treat my correction as ground truth.
 - Apply lessons immediately.
-- Promote durable lessons into the relevant section below.
-- Remove lessons once promoted.
-
-## Lessons Learned
-### Rules
-- Max **10** entries (newest first). Merge duplicates; delete stale items.
-- Format: `Mistake → Rule → Prevention`.
+- Merge duplicates and replace stale/conflicting lessons.
 - Never store secrets, tokens, credentials, or private data.
 
 ### Entries
