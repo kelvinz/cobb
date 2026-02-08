@@ -38,7 +38,7 @@ Implement a feature from a PRD.
      - If there are higher-priority items above this feature, ask the user to confirm they want to work on it now (vs a higher-priority item).
        - If the higher-priority item is unchecked (no PRD yet), recommend writing its PRD via `plan` first.
    - Create a new feature branch before making changes (unless you are already on an appropriate feature branch):
-     - Base it off the default branch (usually `main`) unless the repo has a different branching model.
+     - Base it off the repository default branch (resolve via `origin/HEAD` or repo policy); if unclear, ask the user before branching.
      - Name it based on the PRD Summary `Type` (or match repo conventions):
        - `Type: fix` → `fix/f-##-<short-slug>`
        - `Type: chore` → `chore/f-##-<short-slug>`
@@ -51,7 +51,7 @@ Implement a feature from a PRD.
      - Treat dependencies as complete only when the dependency PRD is archived in `tasks/archive/`.
      - If any dependency is still in `tasks/`, recommend finalising that dependency first.
      - If a dependency has no PRD yet, stop and use `plan` to create that dependency PRD first.
-      - Override: if the user confirms dependencies are satisfied (e.g., dependency PR merged but not yet archived), proceed and record the override in `tasks/memory.md`.
+     - Override: if the user confirms dependencies are satisfied (e.g., dependency PR merged but not yet archived), proceed and record the override in `tasks/memory.md`.
 
 3. **Execute**
    - Implement the feature as specified.

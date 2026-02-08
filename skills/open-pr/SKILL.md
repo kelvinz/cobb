@@ -22,7 +22,7 @@ Publish your work for review by pushing the branch and creating/updating a Draft
 
 1. **Gather inputs**
    - PRD path (e.g. `tasks/f-##-<slug>.md`)
-   - base branch (default: `main`)
+   - base branch (default: repository default branch resolved from `origin/HEAD`; ask if unclear)
    - PR title seed (default: from PRD title / feature ID)
 
 2. **Preflight**

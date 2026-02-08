@@ -5,7 +5,7 @@ description: "Run a strict review in exactly one mode: GitHub PR (`pr`) or local
 
 # review
 
-Review one change set in one mode and return a decision-only report.
+Review one change set in one mode and return a decision-led report.
 
 ---
 
@@ -24,7 +24,7 @@ Review one change set in one mode and return a decision-only report.
 
 - review mode:
   - `pr`: PR URL/number (preferred)
-  - `local`: base branch (default: `main`)
+  - `local`: base branch (default: repository default branch resolved from `origin/HEAD`; ask if unclear)
 - optional PRD path (if scope validation is needed)
 
 ---
@@ -46,12 +46,12 @@ Review one change set in one mode and return a decision-only report.
    - security risks and data handling
    - test depth and regression risk
    - scope control (especially if PRD path is provided)
-      - Compare diff vs PRD 'In scope' and completed user stories; flag any diff not attributable to a PRD requirement.
+     - Compare diff vs PRD 'In scope' and completed user stories; flag any diff not attributable to a PRD requirement.
 4. Classify findings:
    - blockers (must fix)
    - suggestions (optional improvements)
    - missing evidence (tests/checks not run, unclear behaviour)
-      - If unable to run checks (CI-only, permissions), mark as 'Missing evidence' and request the specific artifact (CI link, log, or command for user to run).
+     - If unable to run checks (CI-only, permissions), mark as 'Missing evidence' and request the specific artifact (CI link, log, or command for user to run).
 5. Produce the report with a clear recommendation:
    - `pr` mode: `Ready to accept PR: Yes` or `Ready to accept PR: No`
    - `local` mode: `Good to commit: Yes` or `Good to commit: No`

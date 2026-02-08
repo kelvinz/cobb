@@ -56,8 +56,8 @@ These skills are written to be handoff-friendly: assume a junior dev (or another
 6. `open-pr`: push branch and open/update Draft PR.
 7. `review` (`pr` mode, when needed): run a quality check before finalise.
    Memory: capture durable risks/follow-ups inline when needed.
-8. `commit` (`finalise` mode): move completed prd to `tasks/archive/`, sync `tasks/memory.md` when needed in tracking commit(s), then merge/close branch and delete completed feature branch safely.
-9. `compact` (periodic): summarise older checked todo items and older memory entries to keep tracking files easy to scan.
+8. `commit` (`finalise` mode): prepare tracking updates (archive completed prd, apply `tasks/todo.md` completion strikethrough, and update `tasks/memory.md` when needed), create one pre-merge finalise commit only when tracking changes exist, then merge using the repository-approved strategy (merge/squash/rebase), close branch, and delete the completed feature branch safely.
+9. `compact` (periodic): summarise older completed+archived todo items and older memory entries to keep tracking files easy to scan.
 
 ### Local flow: idea → committed (no PR)
 

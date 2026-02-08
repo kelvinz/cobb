@@ -12,6 +12,7 @@ Commit changes in atomic steps, then finalise and clean up the feature branch wh
 ## Guardrails
 
 - Require user confirmation before every commit.
+- For every atomic commit proposal, always provide both a proposed title and a proposed body before asking for approval.
 - Keep commits atomic; if a title needs "and", split the change set.
 - Never mix unrelated files in one commit.
 - Determine commit `type` from the actual diff intent, not from branch name, file paths, or habit.
@@ -21,8 +22,8 @@ Commit changes in atomic steps, then finalise and clean up the feature branch wh
 - Ask for the merge target branch during finalise mode; do not assume `main` (it may be `dev` or another branch).
 - Use `review` as a quality gate before commit/finalise when needed.
 - Treat memory capture as built-in: update `tasks/memory.md` during commit/finalise when durable information emerges; do not rely on a separate memory-only step.
-- During finalise, move the completed feature PRD from `tasks/` to `tasks/archive/` (same filename, no rename) in a dedicated pre-merge commit.
-- During finalise, update `tasks/memory.md` when durable state changed (completed milestone, next-up priority, blockers, or key decisions) in a dedicated pre-merge commit.
+- During finalise, bundle tracking updates (PRD archive, `tasks/todo.md` strikethrough, and memory updates when needed) into one pre-merge finalise commit; if no tracking changes are needed, skip the finalise commit and state why.
+- During finalise, follow the repository's approved merge strategy and platform constraints; if policy is unclear, ask before merging.
 - Never delete the base/default branch.
 - Never delete the currently checked-out branch.
 - Require explicit user confirmation before deleting local or remote branches.
@@ -42,11 +43,11 @@ Commit changes in atomic steps, then finalise and clean up the feature branch wh
 
 ### Finalise title (required)
 
-For finalise commit(s) that archive PRDs and/or sync memory, require:
+For a finalise commit, require:
 
-`🧹 chore: finalise f-##`
+`🧹 chore: finalise f-## <short-summary>`
 
-Keep the same pattern with the feature ID and a short imperative summary.
+Keep the summary short and imperative.
 
 ### Emoji mapping (default)
 
@@ -113,7 +114,7 @@ Consequences:
 
 ### Finalise commit body (exception)
 
-For finalise commit(s) that only archive the PRD and/or sync memory, use a short body instead of the full Why/Context/Alternatives/Trade-offs/Consequences template.
+For a finalise commit, use a short body instead of the full Why/Context/Alternatives/Trade-offs/Consequences template.
 
 Use this structure:
 
@@ -122,7 +123,8 @@ Finalise:
 - f-## <feature name>
 
 Actions:
-- archived PRD to `tasks/archive/`
+- archived PRD to `tasks/archive/` (if applicable)
+- updated `tasks/todo.md` feature line to struck-through completed form (if applicable)
 - updated `tasks/memory.md` (if applicable)
 ```
 
@@ -171,28 +173,28 @@ Use after all intended commits are done.
 2. Determine the feature PRD path to finalise:
    - prefer active feature PRD files in `tasks/` matching the feature ID (`tasks/f-##-*.md`)
    - if multiple matches exist or feature ID is unclear, ask the user for the exact path
-3. Before merge, if the PRD path matches `tasks/f-##-<slug>.md`:
-   - ensure `tasks/archive/` exists
-   - move it to `tasks/archive/f-##-<slug>.md` (same filename)
-   - propose a dedicated atomic commit with a `🧹 chore:` title (use short finalise body) and require user confirmation
-   - if the PRD is already under `tasks/archive/`, skip move
-   - Apply strikethrough to the matching feature entry in `tasks/todo.md` (`- [x] f-##: name` → `- [x] ~~f-##: name~~`).
-4. Before merge, evaluate memory updates:
+3. Before merge, prepare tracking updates:
+   - if the PRD path matches `tasks/f-##-<slug>.md`, ensure `tasks/archive/` exists and move the PRD to `tasks/archive/f-##-<slug>.md` (same filename); if already archived, skip move
+   - apply strikethrough to the matching feature entry in `tasks/todo.md` (`- [x] f-##: name` → `- [x] ~~f-##: name~~`)
    - if `tasks/memory.md` exists (or should exist), update it when durable state changed:
      - add completed milestone entry for the finalised feature
      - update "Current state" (next up / blockers) if it changed
      - capture any key decisions or gotchas discovered during completion
-   - propose a dedicated atomic memory commit with a `🧹 chore:` title (use short finalise body) and require user confirmation
-   - if no durable memory change is needed, explicitly state why memory was not updated
-5. Ask the user to confirm the target branch for merge (for example: `main`, `dev`, `release/*`).
-6. Choose finalise path (require explicit user input):
-   - PR path (preferred): requires PR URL/number and `review pr: Ready to accept PR: Yes` before merging; merge PR into the confirmed target branch, close it, then clean up branches
-   - Local path: requires `review local: Good to commit: Yes` before merging; merge feature branch into the confirmed target branch, then clean up branches
-7. Apply branch safety checks before deletion:
+   - stage all resulting tracking changes together and propose exactly one `🧹 chore: finalise f-## ...` commit (use short finalise body); if no tracking changes are needed, explicitly state why and skip the finalise commit
+4. Ask the user to confirm the target branch for merge (for example: `main`, `dev`, `release/*`).
+5. Choose finalise path (require explicit user input):
+   - PR path (preferred): requires PR URL/number and `review pr: Ready to accept PR: Yes` before merging; merge into the confirmed target branch using the repository-approved strategy (merge/squash/rebase), close it, then clean up branches
+   - Local path: requires `review local: Good to commit: Yes` before merging, and is allowed only when repo policy allows local merges. Apply the policy-specific command:
+     - merge-commit policy: `git merge --no-ff <feature-branch>`
+     - linear-history policy: `git merge --ff-only <feature-branch>` (after rebasing if needed)
+     - local squash policy: `git merge --squash <feature-branch>` then create one approved commit on the target branch
+     - local rebase policy: rebase feature commits onto the target branch, then fast-forward merge
+     - PR-only policy: if repository rules require squash/rebase via PR UI, do not merge locally; use the PR path instead
+6. Apply branch safety checks before deletion:
    - confirm `<feature-branch>` is not the target branch
    - confirm `<feature-branch>` is not the default branch
    - confirm current HEAD is not `<feature-branch>` when deleting it
-8. Delete completed feature branch only after explicit user confirmation:
+7. Delete completed feature branch only after explicit user confirmation:
    - local: `git branch -d <feature-branch>`
    - remote: `git push origin --delete <feature-branch>`
 
