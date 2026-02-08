@@ -13,6 +13,8 @@ Keep `tasks/todo.md` and `tasks/memory.md` short and scannable by consolidating 
 
 - Do not change product scope or implementation code.
 - Do not move or rename PRDs here; completed PRDs are archived during `commit` finalise.
+- Only compact `tasks/todo.md` feature entries when the corresponding PRD is already archived in `tasks/archive/`.
+- Never compact checked entries whose PRD is still under `tasks/` (planned/in-progress, not completed).
 - Do not create separate memory archive files.
 - Keep feature IDs stable; never renumber.
 - Ask for explicit confirmation before applying consolidation edits.
@@ -26,15 +28,17 @@ Keep `tasks/todo.md` and `tasks/memory.md` short and scannable by consolidating 
    - Ensure `tasks/` exists.
    - Inspect `tasks/todo.md` and `tasks/memory.md`.
    - Count items to compact:
-     - `todo`: checked vs unchecked features
+     - `todo`: unchecked features, checked+archived features (eligible), checked+active features (ineligible)
      - `memory`: dated/log-style entries in `Key decisions`, `Completed`, `Notes / gotchas`
 2. Propose consolidation options and ask for a decision:
    - Suggest how many entries to keep in full detail vs consolidate into summary.
    - Provide recommended defaults, then allow user override (more or fewer).
 3. Compact `tasks/todo.md` in place:
    - Preserve all unchecked features unchanged.
-   - Keep the user-selected number of most recent checked features in full detail.
-   - Consolidate older checked features into a short `Completed (summarised)` section.
+   - Preserve all checked features whose PRD is not archived yet.
+   - Keep the user-selected number of most recent checked+archived features in full detail.
+   - Consolidate only older checked+archived features into a short `Completed (summarised)` section.
+   - If there are no checked+archived features, skip todo compaction and state why.
 4. Compact `tasks/memory.md` in place:
    - Preserve `Project` and `Current state` sections.
    - Keep the user-selected number of most recent detailed entries.
@@ -52,8 +56,8 @@ Use these as initial recommendations, then ask the user to confirm or adjust:
 
 - `tasks/todo.md`:
   - Keep all unchecked features.
-  - Keep the latest 8 checked features in detail.
-  - Consolidate older checked features into summary.
+  - Keep the latest 8 checked+archived features in detail.
+  - Consolidate older checked+archived features into summary.
 - `tasks/memory.md`:
   - Keep the latest 15 dated entries in detail across historical sections.
   - Consolidate older entries into summary.
@@ -66,7 +70,7 @@ Use a short choice prompt before edits:
 
 ```text
 Proposed compact plan:
-1) TODO detailed checked items to keep: 8 (consolidate: 24)
+1) TODO detailed checked+archived items to keep: 8 (consolidate: 24)
 2) Memory detailed entries to keep: 15 (consolidate: 41)
 
 Reply with:
