@@ -9,16 +9,16 @@ Leave it better than you found it.
 # SELF IMPROVEMENT LOOP
 
 ## Learn From Every Session
-- At the start of every task, check for `LESSONS.md` in the repo root.
-- If it exists, read it before planning or writing code.
-- Track mistakes and my preferences so future turns improve.
-- Capture only substantive, reusable lessons.
-- Keep entries short, specific, and actionable.
-- Treat my correction as ground truth.
-- Apply lessons immediately unless they conflict with higher-priority instructions.
-- Merge duplicates and replace stale/conflicting lessons.
-- Never store secrets, tokens, credentials, or private data.
-- Store lessons in `LESSONS.md` at the repo root. Create it if missing; append if it exists.
+- At the start of every task, check for `LESSONS.md` in the repo root
+- If it exists, read it before planning or writing code
+- Track mistakes and my preferences so future turns improve
+- Capture only substantive, reusable lessons
+- Keep entries short, specific, and actionable
+- Treat my correction as ground truth
+- Apply lessons unless higher-priority instructions override them
+- Merge duplicates and replace stale/conflicting lessons
+- Never store secrets, tokens, credentials, or private data
+- Store lessons in `LESSONS.md` at the repo root; create if missing, append otherwise
 
 ---
 
@@ -33,6 +33,7 @@ Leave it better than you found it.
 - Think through edge cases and failure modes upfront
 - For non-trivial changes, check for a simpler design
 - Skip this for obvious fixes (don't over-engineer)
+- For obvious fixes, run 1-3 root-cause checks, then ship the smallest safe fix
 
 ## Research & Verification
 - Check official documentation for the latest syntax and methods
@@ -57,30 +58,36 @@ Leave it better than you found it.
 - Write pure functions when possible (no side effects, deterministic outputs)
 - Favor immutability - avoid mutating data directly
 
-## JavaScript Standards
-- Use modern ES6+ syntax exclusively
+## Language Strategy
+- Be language-agnostic: follow the idioms and tooling of the touched language
+
+## JavaScript / TypeScript Standards
+- Apply this section when working in JavaScript/TypeScript files
+- Use modern syntax supported by the project's runtime/build target
 - Arrow functions for anonymous functions and callbacks
 - Destructuring for cleaner variable assignments
 - Template literals for string interpolation
 - async/await over promise chains for async operations
-- Follow established conventions (ESLint recommended rules, Airbnb style guide)
+- Follow project lint and established conventions (ESLint recommended rules, Airbnb style guide)
 
 ## Code Organisation
 - Split functionality into small, single-purpose functions
-- One component/module per file
+- Prefer one primary module per file; colocate only when tightly coupled
 - Group related functions into modules
 - Clear, descriptive naming (variables: what they are, functions: what they do)
 - Use conventional project structures (e.g., components/, utils/, hooks/)
 
 ## Comments & Documentation
-- Goal: Make code understandable for the next developer (or your future self)
+- Goal: keep code understandable for the next maintainer
+- Prefer self-explanatory code first
+- Comment non-obvious intent, tradeoffs, and constraints
 - Complex logic: Explain the "why" behind non-obvious decisions
-- Business rules: Document requirements that drove implementation choices
-- Flow overview: Add high-level comments describing the sequence of operations
+- Business rules: document requirements that drive decisions
+- Flow overview: comment sequence only when non-obvious
 - Gotchas and edge cases: Call out tricky scenarios or limitations
 - External dependencies: Note why specific libraries/APIs are used
 - TODO/FIXME: Mark incomplete or temporary solutions
-- Update comments when updating code (stale comments are worse than no comments)
+- Update comments with code changes; stale comments are worse than no comments
 - Keep comments concise - aim for clarity, not verbosity
 
 ## Best Practices
@@ -108,16 +115,16 @@ Leave it better than you found it.
 - Follow OWASP guidelines and industry-standard security practices
 - Sanitise and validate all inputs (never trust user data)
 - Consider edge cases at every implementation step:
-- Empty states (null, undefined, empty arrays/objects)
-- Boundary conditions (max/min values, string lengths)
-- Concurrent operations and race conditions
-- Network failures and timeout scenarios
+  - Empty states (null, undefined, empty arrays/objects)
+  - Boundary conditions (max/min values, string lengths)
+  - Concurrent operations and race conditions
+  - Network failures and timeout scenarios
 - Implement proper authentication/authorisation checks
 - Use parameterised queries to prevent injection attacks
 - Keep dependencies updated and audit for vulnerabilities
-- Add defensive programming checks even for "impossible" scenarios
+- Add defensive checks for edge and "impossible" scenarios
 - Test security measures in isolation before deployment
-- Create attack scenarios and verify defenses work
+- Test likely attack scenarios and verify defenses
 
 ---
 
@@ -131,7 +138,7 @@ Leave it better than you found it.
 - Follow established UX patterns - don't reinvent the wheel
 
 ## Implementation
-- Accessibility first (WCAG guidelines, ARIA labels, keyboard navigation, semantic HTML)
+- Accessibility first (WCAG, semantic HTML, keyboard nav, ARIA)
 - Performance matters - lazy load when appropriate
 - Clear visual hierarchy
 - Meaningful feedback for user actions
@@ -139,7 +146,7 @@ Leave it better than you found it.
 - Test UI functionality independently, not just design
 - Verify all interactive elements work as expected
 - Test error states and recovery paths
-- Ensure accessibility features are functional, not just present
+- Ensure accessibility features work, not just exist
 
 ---
 
@@ -148,8 +155,8 @@ Leave it better than you found it.
 ## Closed-Loop Testing
 - Build self-contained test environments
 - Test features end-to-end without user involvement
-- For backend: Run locally, send own requests, verify logs independently
-- For frontend: Test full functionality, not just visual design
+- For backend: run locally, send requests, verify logs
+- For frontend: test behavior, not just visuals
 - Iterate internally until feature is production-ready
 
 ## Independence Principle

@@ -1,6 +1,6 @@
 ---
 name: review
-description: "Run a strict review in exactly one mode: GitHub PR (`pr`) or local diff (`local`). Use when validating correctness, security, tests, and scope before merge or commit. Output a mode-specific decision report: `Ready to accept PR` (pr mode) or `Good to commit` (local mode), require fixes when the decision is `No`, and capture durable review findings in `tasks/memory.md` when warranted."
+description: "Review one change set in one mode (`pr` or `local`) for correctness, security, tests, and scope, and return a clear go/no-go decision. Triggers: review pr, review local, readiness check, pre-merge review."
 ---
 
 # review
@@ -34,9 +34,16 @@ Review one change set in one mode and return a decision-led report.
 1. Confirm mode and target.
 2. Collect context:
    - `pr` mode:
-     - `gh pr view --json url,number,title,body,state,isDraft,baseRefName,headRefName,files,additions,deletions`
-     - `gh pr diff`
-     - `gh pr checks`
+     - Preferred (`gh` available):
+       - `gh pr view --json url,number,title,body,state,isDraft,baseRefName,headRefName,files,additions,deletions`
+       - `gh pr diff`
+       - `gh pr checks`
+     - Fallback (`gh` unavailable/auth fails):
+       - ask for base/head branch names if not already provided
+       - `git fetch origin "<base>" "<head>"`
+       - `git diff "origin/<base>...origin/<head>"`
+       - `git log "origin/<base>..origin/<head>" --oneline`
+       - mark CI/check status as `Missing evidence` unless the user provides CI artifacts
    - `local` mode:
      - `git diff "<base>...HEAD"`
      - `git log "<base>..HEAD" --oneline`

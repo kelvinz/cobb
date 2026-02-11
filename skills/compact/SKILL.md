@@ -1,6 +1,6 @@
 ---
 name: compact
-description: "Compact long-lived project tracking files by summarising old completed items in `tasks/todo.md` and older log-style entries in `tasks/memory.md`, while preserving active context. Use when these files become noisy/too long to scan quickly. Triggers: compact, cleanup tasks, trim memory, prune todo, housekeeping, summarise backlog history."
+description: "Compact `tasks/todo.md` and `tasks/memory.md` by summarising older completed history while preserving active context. Triggers: compact tracking files, prune todo history, trim memory log."
 ---
 
 # compact

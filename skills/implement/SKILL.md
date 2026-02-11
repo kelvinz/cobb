@@ -1,6 +1,6 @@
 ---
 name: implement
-description: "Implement a PRD by building the feature in the codebase (`Type: feat` / `fix` / `chore`), updating tests, running checks, and checking off completed PRD stories/tasks. Triggers: implement, build, execute, code this feature, run plan, finish implementation."
+description: "Implement an existing PRD (`Type: feat`/`fix`/`chore`), update tests/checks, and mark completed PRD checklist items. Triggers: implement prd, build feature from prd, execute prd checklist."
 ---
 
 # implement

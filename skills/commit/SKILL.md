@@ -1,6 +1,6 @@
 ---
 name: commit
-description: "Create atomic commits with explicit user approval, using emoji-prefixed titles and `feat`/`fix`/`chore` commit types. Use when staging changes, proposing commit batches, writing high-signal commit messages in imperative mood, committing iteratively, finalising a feature branch by merging/closing/deleting it, and capturing durable memory updates during commit/finalise decisions."
+description: "Create atomic user-approved commits with `feat`/`fix`/`chore` titles and finalise branch merge/cleanup with tracking sync. Triggers: commit changes, split commits, finalise branch, commit message."
 ---
 
 # commit
@@ -57,76 +57,16 @@ Keep the summary short and imperative.
 
 Use a different emoji only if it more precisely matches the change.
 
-### Type selection rubric (required)
+### Type and body guidance (required)
 
-Choose `type` in this order (first match wins):
+Use the detailed rubric and templates in `references/commit-rules.md` for:
 
-1. `fix`:
-   - Corrects wrong behaviour vs expected behaviour
-   - Resolves a regression, flaky/error path, broken edge case, or failing test tied to a bug
-   - Fixes security/privacy behaviour
-2. `feat`:
-   - Adds new user-visible capability
-   - Expands existing behaviour, workflow, API surface, or output contract in a product-facing way
-3. `chore`:
-   - No product behaviour change
-   - Maintenance-only work such as tooling/config cleanup, dependency bumps, refactors that preserve behaviour, test-only scaffolding, or docs-only edits
-   - Docs-only changes (README, comments, changelogs) are always `chore`
+- selecting `feat` vs `fix` vs `chore`
+- classifying mixed-intent diffs
+- writing standard commit bodies
+- writing finalise commit bodies
 
-Classification rules:
-
-- Use `tasks/todo.md` / PRD `Type:` as a hint, but do not override the real diff intent.
-- If a commit changes behaviour and internal maintenance together, split and classify each commit separately.
-- If uncertain between `feat` and `fix`, prefer `fix` when correcting expected behaviour; otherwise use `feat`.
-- If still ambiguous after reviewing diff + context, ask the user before committing.
-
-### Body requirements (required)
-
-Include both a concise change summary and the decision rationale. Include:
-
-- short summary of what changed (2-5 bullets)
-- problem context a future reader would not have
-- alternatives considered
-- trade-offs made
-- consequences or side effects worth noting
-
-Use this structure:
-
-```text
-Summary:
-- ...
-
-Why:
-- ...
-
-Context:
-- ...
-
-Alternatives considered:
-- ...
-
-Trade-offs:
-- ...
-
-Consequences:
-- ...
-```
-
-### Finalise commit body (exception)
-
-For a finalise commit, use a short body instead of the full Why/Context/Alternatives/Trade-offs/Consequences template.
-
-Use this structure:
-
-```text
-Finalise:
-- f-## <feature name>
-
-Actions:
-- archived PRD to `tasks/archive/` (if applicable)
-- updated `tasks/todo.md` feature line to struck-through completed form (if applicable)
-- updated `tasks/memory.md` (if applicable)
-```
+Read this reference before proposing the first commit in a session, and revisit it whenever classification is ambiguous.
 
 ---
 
@@ -184,12 +124,7 @@ Use after all intended commits are done.
 4. Ask the user to confirm the target branch for merge (for example: `main`, `dev`, `release/*`).
 5. Choose finalise path (require explicit user input):
    - PR path (preferred): requires PR URL/number and `review pr: Ready to accept PR: Yes` before merging; merge into the confirmed target branch using the repository-approved strategy (merge/squash/rebase), close it, then clean up branches
-   - Local path: requires `review local: Good to commit: Yes` before merging, and is allowed only when repo policy allows local merges. Apply the policy-specific command:
-     - merge-commit policy: `git merge --no-ff <feature-branch>`
-     - linear-history policy: `git merge --ff-only <feature-branch>` (after rebasing if needed)
-     - local squash policy: `git merge --squash <feature-branch>` then create one approved commit on the target branch
-     - local rebase policy: rebase feature commits onto the target branch, then fast-forward merge
-     - PR-only policy: if repository rules require squash/rebase via PR UI, do not merge locally; use the PR path instead
+   - Local path: requires `review local: Good to commit: Yes` before merging, and is allowed only when repo policy allows local merges. Apply the policy-specific flow from `references/finalise-policy.md` (merge-commit / linear-history / local squash / local rebase / PR-only).
 6. Apply branch safety checks before deletion:
    - confirm `<feature-branch>` is not the target branch
    - confirm `<feature-branch>` is not the default branch

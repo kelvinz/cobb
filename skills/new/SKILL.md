@@ -1,6 +1,6 @@
 ---
 name: new
-description: "Create or update `tasks/todo.md` with a project overview and a prioritised feature list (top-to-bottom). Use when starting a new project, planning an MVP feature set, building a backlog/roadmap, adding new items (feat/fix/chore), or re-prioritising. Triggers: new project, MVP features, feature list, backlog, roadmap, add feature, add fix, bugfix, chore, reprioritise, update todo.md, planning."
+description: "Create or update `tasks/todo.md` as the prioritised project backlog with clear `feat`/`fix`/`chore` items and ordering. Triggers: new backlog, update todo.md, add backlog item, reprioritise roadmap."
 ---
 
 # new

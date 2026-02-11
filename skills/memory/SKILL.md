@@ -1,6 +1,6 @@
 ---
 name: memory
-description: "Shared protocol for updating `tasks/memory.md` with durable project memory (project gist, key decisions, completed milestones, and important notes/gotchas). Use this guidance inside `new`/`plan`/`implement`/`review`/`commit` whenever durable information appears; use standalone only for explicit backfill/repair/cleanup requests. Triggers: memory, remember, add to memory, project notes, decision log."
+description: "Maintain durable project memory in `tasks/memory.md` (state, decisions, milestones, gotchas), inline during other workflows or standalone for cleanup/backfill. Triggers: update memory.md, decision log, record project context."
 ---
 
 # memory
@@ -90,14 +90,6 @@ If `tasks/memory.md` does not exist, create it with this structure:
 ## Links (optional)
 - `tasks/todo.md`
 ```
-
----
-
-## When to Use This
-
-- Inline during `new`, `plan`, `implement`, `review`, and `commit` whenever durable information is produced.
-- Standalone only when the user explicitly asks to backfill, repair, or reorganise `tasks/memory.md`.
-- During `commit` finalise, ensure merged features update "Current state" and "Completed" sections when applicable.
 
 ---
 

@@ -1,6 +1,6 @@
 ---
 name: open-pr
-description: "Push the current feature branch and open/update a best-practice Draft pull request via GitHub CLI (gh), including a high-quality PR title/body linked to the PRD with testing + verification steps. Use when pushing a branch, creating/updating a PR, drafting a PR description, or running gh pr create/edit. Triggers: open-pr, open pr, push, PR, pull request, create PR, draft PR, pr description, gh pr create, gh pr edit, ready for review."
+description: "Push the current feature branch and create/update a Draft PR via `gh` with PRD link, testing, and verification details. Triggers: open-pr, create draft pr, update pr description, publish branch."
 ---
 
 # open-pr
