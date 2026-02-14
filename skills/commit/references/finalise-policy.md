@@ -1,31 +1,26 @@
 # Finalise Policy Reference
 
-Use this when `commit` runs in `finalise` mode and local merge is allowed.
+Use this when `commit` runs in `finalise` mode.
 
 ## Preconditions
 
-- `review` gate is approved for the selected path:
-  - PR path: `review pr` returns `Ready to accept PR: Yes`
-  - Local path: `review local` returns `Good to commit: Yes`
+- `review` returns `Good to commit: Yes`
 - target branch is user-confirmed
 - feature branch is not default/base
 
-## Policy-specific local flows
+## Policy-specific merge flows
 
 - merge-commit policy:
   - `git merge --no-ff <feature-branch>`
 - linear-history policy:
   - rebase feature branch onto target branch if needed
   - `git merge --ff-only <feature-branch>`
-- local squash policy:
+- squash policy:
   - `git merge --squash <feature-branch>`
   - create one approved commit on the target branch
-- local rebase policy:
+- rebase policy:
   - rebase feature commits onto the target branch
   - fast-forward merge
-- PR-only policy:
-  - do not merge locally
-  - use PR path and repository UI strategy
 
 ## Branch deletion safety checks
 

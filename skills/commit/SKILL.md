@@ -23,7 +23,7 @@ Commit changes in atomic steps, then finalise and clean up the feature branch wh
 - Use `review` as a quality gate before commit/finalise when needed.
 - Treat memory capture as built-in: update `tasks/memory.md` during commit/finalise when durable information emerges; do not rely on a separate memory-only step.
 - During finalise, bundle tracking updates (PRD archive, `tasks/todo.md` strikethrough, and memory updates when needed) into one pre-merge finalise commit; if no tracking changes are needed, skip the finalise commit and state why.
-- During finalise, follow the repository's approved merge strategy and platform constraints; if policy is unclear, ask before merging.
+- During finalise, follow the repository's approved merge strategy and constraints; if policy is unclear, ask before merging.
 - Never delete the base/default branch.
 - Never delete the currently checked-out branch.
 - Require explicit user confirmation before deleting local or remote branches.
@@ -74,7 +74,7 @@ Read this reference before proposing the first commit in a session, and revisit 
 
 - `commit` mode: propose and execute one atomic commit at a time.
 - `finalise` mode: merge/close the completed branch and delete feature branches.
-- `hotfix` mode: for urgent fixes committed directly to the default branch. Requires `review local` approval; PR is optional. Still update `tasks/memory.md` with the hotfix rationale.
+- `hotfix` mode: for urgent fixes committed directly to the default branch. Requires `review` approval and a `tasks/memory.md` hotfix rationale update.
 
 ---
 
@@ -122,14 +122,14 @@ Use after all intended commits are done.
      - capture any key decisions or gotchas discovered during completion
    - stage all resulting tracking changes together and propose exactly one `🧹 chore: finalise f-## ...` commit (use short finalise body); if no tracking changes are needed, explicitly state why and skip the finalise commit
 4. Ask the user to confirm the target branch for merge (for example: `main`, `dev`, `release/*`).
-5. Choose finalise path (require explicit user input):
-   - PR path (preferred): requires PR URL/number and `review pr: Ready to accept PR: Yes` before merging; merge into the confirmed target branch using the repository-approved strategy (merge/squash/rebase), close it, then clean up branches
-   - Local path: requires `review local: Good to commit: Yes` before merging, and is allowed only when repo policy allows local merges. Apply the policy-specific flow from `references/finalise-policy.md` (merge-commit / linear-history / local squash / local rebase / PR-only).
-6. Apply branch safety checks before deletion:
+5. Confirm finalise gate before merging:
+   - require `review: Good to commit: Yes`; if missing, run `review` before merging
+6. Merge using the repository-approved strategy from `references/finalise-policy.md` (merge-commit / linear-history / squash / rebase).
+7. Apply branch safety checks before deletion:
    - confirm `<feature-branch>` is not the target branch
    - confirm `<feature-branch>` is not the default branch
    - confirm current HEAD is not `<feature-branch>` when deleting it
-7. Delete completed feature branch only after explicit user confirmation:
+8. Delete completed feature branch only after explicit user confirmation:
    - local: `git branch -d <feature-branch>`
    - remote: `git push origin --delete <feature-branch>`
 

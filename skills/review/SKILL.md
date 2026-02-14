@@ -1,17 +1,17 @@
 ---
 name: review
-description: "Review one change set in one mode (`pr` or `local`) for correctness, security, tests, and scope, and return a clear go/no-go decision. Triggers: review pr, review local, readiness check, pre-merge review."
+description: "Review branch changes against a base branch for correctness, security, tests, and scope, and return a clear go/no-go decision. Triggers: review, readiness check, pre-commit review, pre-finalise review."
 ---
 
 # review
 
-Review one change set in one mode and return a decision-led report.
+Review one change set and return a decision-led report.
 
 ---
 
 ## Guardrails
 
-- Require an explicit mode: `pr` or `local`.
+- Review branch changes against the selected base branch.
 - Do not implement or modify code.
 - Do not commit, merge, push, or delete branches.
 - Do not update PRD/todo tracking files here.
@@ -22,32 +22,18 @@ Review one change set in one mode and return a decision-led report.
 
 ## Inputs
 
-- review mode:
-  - `pr`: PR URL/number (preferred)
-  - `local`: base branch (default: repository default branch resolved from `origin/HEAD`; ask if unclear)
+- base branch (default: repository default branch resolved from `origin/HEAD`; ask if unclear)
 - optional PRD path (if scope validation is needed)
 
 ---
 
 ## Workflow
 
-1. Confirm mode and target.
+1. Confirm base branch and scope target.
 2. Collect context:
-   - `pr` mode:
-     - Preferred (`gh` available):
-       - `gh pr view --json url,number,title,body,state,isDraft,baseRefName,headRefName,files,additions,deletions`
-       - `gh pr diff`
-       - `gh pr checks`
-     - Fallback (`gh` unavailable/auth fails):
-       - ask for base/head branch names if not already provided
-       - `git fetch origin "<base>" "<head>"`
-       - `git diff "origin/<base>...origin/<head>"`
-       - `git log "origin/<base>..origin/<head>" --oneline`
-       - mark CI/check status as `Missing evidence` unless the user provides CI artifacts
-   - `local` mode:
-     - `git diff "<base>...HEAD"`
-     - `git log "<base>..HEAD" --oneline`
-     - `git status --short`
+   - `git diff "<base>...HEAD"`
+   - `git log "<base>..HEAD" --oneline`
+   - `git status --short`
 3. Compare the change set against required behaviour:
    - correctness and edge cases
    - security risks and data handling
@@ -60,9 +46,8 @@ Review one change set in one mode and return a decision-led report.
    - missing evidence (tests/checks not run, unclear behaviour)
      - If unable to run checks (CI-only, permissions), mark as 'Missing evidence' and request the specific artifact (CI link, log, or command for user to run).
 5. Produce the report with a clear recommendation:
-   - `pr` mode: `Ready to accept PR: Yes` or `Ready to accept PR: No`
-   - `local` mode: `Good to commit: Yes` or `Good to commit: No`
-   - if decision is `No`, include explicit fix items and ask the user to address them before rerunning `review` in the same mode
+   - `Good to commit: Yes` or `Good to commit: No`
+   - if decision is `No`, include explicit fix items and ask the user to address them before rerunning `review`
 6. Evaluate memory-worthy review outcomes and update `tasks/memory.md` inline when needed:
    - systemic risks likely to recur
    - key security or data-handling decisions
@@ -95,37 +80,7 @@ Review one change set in one mode and return a decision-led report.
 ## Report Template
 
 ```text
-PR Mode Report
-Mode: pr
-Decision:
-- Ready to accept PR: Yes | No
-
-Blockers (must fix):
-- …
-
-Suggestions (nice to have):
-- …
-
-Missing evidence:
-- …
-
-Security notes:
-- …
-
-Regression risks / watch-outs:
-- …
-
-Memory updates:
-- Updated: <summary> | Skipped: <reason>
-
-Recommended next step:
-- If Ready to accept PR=No: ask user to fix blockers, then rerun `review` in `pr` mode.
-- If Ready to accept PR=Yes: run `commit` in `finalise` mode.
-```
-
-```text
-Local Mode Report
-Mode: local
+Review Report
 Decision:
 - Good to commit: Yes | No
 
@@ -148,8 +103,8 @@ Memory updates:
 - Updated: <summary> | Skipped: <reason>
 
 Recommended next step:
-- If Good to commit=No: ask user to fix blockers, then rerun `review` in `local` mode.
-- If Good to commit=Yes: run `commit` in `commit` mode.
+- If Good to commit=No: ask user to fix blockers, then rerun `review`.
+- If Good to commit=Yes: run `commit` (`commit` mode for new commits, `finalise` mode when ready to merge).
 ```
 
 ---

@@ -51,7 +51,7 @@ Implement a feature from a PRD.
      - Treat dependencies as complete only when the dependency PRD is archived in `tasks/archive/`.
      - If any dependency is still in `tasks/`, recommend finalising that dependency first.
      - If a dependency has no PRD yet, stop and use `plan` to create that dependency PRD first.
-     - Override: if the user confirms dependencies are satisfied (e.g., dependency PR merged but not yet archived), proceed and record the override in `tasks/memory.md`.
+     - Override: if the user confirms dependencies are satisfied (e.g., dependency work merged but not yet archived), proceed and record the override in `tasks/memory.md`.
 
 3. **Execute**
    - Implement the feature as specified.
@@ -77,8 +77,8 @@ Implement a feature from a PRD.
 7. **Close out**
    - Summarise what was changed and what remains.
    - Next steps:
-     - PR flow: run `review` (local) when needed, then `commit`, then `open-pr`, then run `review` (PR mode) when needed, then `commit` (finalise mode).
-     - Local flow: run `review` (local) when needed, then `commit`.
+     - Run `review` when needed, then `commit` in `commit` mode.
+     - When the feature is ready to merge, run `review` when needed, then `commit` in `finalise` mode.
 
 ---
 
