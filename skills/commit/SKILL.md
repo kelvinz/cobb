@@ -1,6 +1,6 @@
 ---
 name: commit
-description: "Create atomic user-approved commits with `feat`/`fix`/`chore` titles and finalise branch merge/cleanup with tracking sync. Triggers: commit changes, split commits, finalise branch, commit message."
+description: "Create atomic user-approved commits with `feat`/`fix`/`chore` titles. Include inline PRD checklist and memory updates per atomic commit. Finalise branch merge/cleanup when requested. Triggers: commit changes, split commits, finalise branch, commit message."
 ---
 
 # commit
@@ -12,18 +12,29 @@ Commit changes in atomic steps, then finalise and clean up the feature branch wh
 ## Guardrails
 
 - Require user confirmation before every commit.
-- For every atomic commit proposal, always provide both a proposed title and a proposed body before asking for approval.
+- For every atomic commit proposal, provide a proposed title.
+- Provide a proposed body before asking for approval.
 - Keep commits atomic; if a title needs "and", split the change set.
 - Never mix unrelated files in one commit.
 - Determine commit `type` from the actual diff intent, not from branch name, file paths, or habit.
-- Never use `chore` for behaviour changes (user-visible flow, API contract, data semantics, bug correction, or security fix).
-- If a change group contains multiple intents (`feat` + `fix`, `fix` + `chore`, etc.), split it before proposing.
+- Never use `chore` for behaviour changes (flow, API/data semantics, bug fixes, or security fixes).
+- If a change group contains multiple intents, split it before proposing.
+- Examples: `feat` + `fix`, `fix` + `chore`.
 - Never add AI attribution or `Co-authored-by` trailers unless the user explicitly asks.
-- Ask for the merge target branch during finalise mode; do not assume `main` (it may be `dev` or another branch).
+- Ask for the merge target branch during finalise mode.
+- Do not assume `main`; it may be `dev` or another branch.
 - Use `review` as a quality gate before commit/finalise when needed.
-- Treat memory capture as built-in: update `tasks/memory.md` during commit/finalise when durable information emerges; do not rely on a separate memory-only step.
-- During finalise, bundle tracking updates (PRD archive, `tasks/todo.md` strikethrough, and memory updates when needed) into one pre-merge finalise commit; if no tracking changes are needed, skip the finalise commit and state why.
-- During finalise, follow the repository's approved merge strategy and constraints; if policy is unclear, ask before merging.
+- Capture memory inline: update `tasks/memory.md` during commit/finalise when durable info appears.
+- Do not add a separate memory-only step.
+- Keep PRD checklist updates inside the atomic commit that completes that work.
+- Never make a trailing commit only to catch up PRD checklist or memory updates.
+- In finalise, bundle tracking updates into one pre-merge commit.
+- Include PRD archive, `tasks/todo.md` strikethrough, and memory updates as needed.
+- If no tracking changes are needed, skip the finalise commit and state why.
+- Use finalise tracking for closeout only.
+- Do not retroactively log completed atomic work unless the user explicitly asks.
+- Follow the repository-approved merge strategy and constraints.
+- If policy is unclear, ask before merging.
 - Never delete the base/default branch.
 - Never delete the currently checked-out branch.
 - Require explicit user confirmation before deleting local or remote branches.
@@ -74,17 +85,23 @@ Read this reference before proposing the first commit in a session, and revisit 
 
 - `commit` mode: propose and execute one atomic commit at a time.
 - `finalise` mode: merge/close the completed branch and delete feature branches.
-- `hotfix` mode: for urgent fixes committed directly to the default branch. Requires `review` approval and a `tasks/memory.md` hotfix rationale update.
+- `hotfix` mode: for urgent fixes committed directly to the default branch.
+- Requires `review` approval and a `tasks/memory.md` hotfix rationale update.
 
 ---
 
 ## Workflow
 
 1. Inspect current changes (`git status --short`, `git diff`, `git diff --staged`).
-2. Partition changes into atomic commit groups.
+   Identify the active feature PRD when applicable.
+2. Partition changes into atomic commit groups and map each group to:
+   - PRD checklist/user-story items completed by that group (if any)
+   - memory-worthy outcomes produced by that group (if any)
 3. For the next group, propose:
    - files/hunks included
    - type rationale (why this is `feat` / `fix` / `chore`, citing concrete diff intent)
+   - PRD checklist lines to update in this same commit (or explicit `none` with reason)
+   - memory updates to include in this same commit (or explicit `none` with reason)
    - commit title (emoji + type + imperative summary)
    - commit body (Summary/Why/Context/Alternatives/Trade-offs/Consequences)
 4. Ask for a decision:
@@ -96,10 +113,10 @@ Read this reference before proposing the first commit in a session, and revisit 
    - commit immediately
    - report commit hash + title + short "what changed" summary
    - propose the next atomic group until done
-6. During commit mode, evaluate memory-worthy outcomes and update `tasks/memory.md` inline when needed:
-   - durable rationale not obvious from code diff alone
-   - implementation gotchas that should survive branch lifecycle
-   - if no durable memory change is needed, explicitly skip with reason
+6. During commit mode, ensure tracking is coupled to the atomic change:
+   - include PRD checklist updates for completed stories in that same commit
+   - include memory updates only when durable rationale/gotchas emerge from that same commit
+   - if no PRD/memory updates are needed for a group, explicitly mark them as `none` with reason
 
 ---
 
@@ -114,17 +131,22 @@ Use after all intended commits are done.
    - prefer active feature PRD files in `tasks/` matching the feature ID (`tasks/f-##-*.md`)
    - if multiple matches exist or feature ID is unclear, ask the user for the exact path
 3. Before merge, prepare tracking updates:
-   - if the PRD path matches `tasks/f-##-<slug>.md`, ensure `tasks/archive/` exists and move the PRD to `tasks/archive/f-##-<slug>.md` (same filename); if already archived, skip move
-   - apply strikethrough to the matching feature entry in `tasks/todo.md` (`- [x] f-##: name` → `- [x] ~~f-##: name~~`)
+   - if the PRD path matches `tasks/f-##-<slug>.md`, ensure `tasks/archive/` exists
+   - move the PRD to `tasks/archive/f-##-<slug>.md` (same filename); if already archived, skip
+   - apply strikethrough to the matching completed feature entry in `tasks/todo.md`
    - if `tasks/memory.md` exists (or should exist), update it when durable state changed:
      - add completed milestone entry for the finalised feature
      - update "Current state" (next up / blockers) if it changed
      - capture any key decisions or gotchas discovered during completion
-   - stage all resulting tracking changes together and propose exactly one `🧹 chore: finalise f-## ...` commit (use short finalise body); if no tracking changes are needed, explicitly state why and skip the finalise commit
+   - stage all resulting tracking changes together
+   - propose exactly one `🧹 chore: finalise f-## ...` commit (use short finalise body)
+   - if no tracking changes are needed, explicitly state why and skip the finalise commit
+   - do not use this finalise commit to catch up missed atomic PRD/memory updates
+   - only do that if the user explicitly approves
 4. Ask the user to confirm the target branch for merge (for example: `main`, `dev`, `release/*`).
 5. Confirm finalise gate before merging:
    - require `review: Good to commit: Yes`; if missing, run `review` before merging
-6. Merge using the repository-approved strategy from `references/finalise-policy.md` (merge-commit / linear-history / squash / rebase).
+6. Merge using the repository-approved strategy from `references/finalise-policy.md`.
 7. Apply branch safety checks before deletion:
    - confirm `<feature-branch>` is not the target branch
    - confirm `<feature-branch>` is not the default branch
@@ -152,6 +174,7 @@ After execution, provide:
 - short "what changed" summary
 - remaining uncommitted groups
 - finalise recommendation when all groups are complete
+- PRD checklist sync status (`updated` or `none` with reason)
 - memory sync status (`updated` or `skipped` with reason)
 - End with a short status block:
   - **Files changed**: list of created/updated files

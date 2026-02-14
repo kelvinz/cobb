@@ -1,6 +1,6 @@
 ---
 name: review
-description: "Review branch changes against a base branch for correctness, security, tests, and scope, and return a clear go/no-go decision. Triggers: review, readiness check, pre-commit review, pre-finalise review."
+description: "Review branch changes against a base branch for correctness, security, tests, and scope, then return a clear go/no-go decision. Triggers: review, readiness check, pre-commit review, pre-finalise review."
 ---
 
 # review
@@ -15,7 +15,8 @@ Review one change set and return a decision-led report.
 - Do not implement or modify code.
 - Do not commit, merge, push, or delete branches.
 - Do not update PRD/todo tracking files here.
-- Update `tasks/memory.md` only for durable review outcomes (recurring risks, release-critical gotchas, or confirmed follow-up decisions).
+- Update `tasks/memory.md` only for durable review outcomes.
+- Examples: recurring risks, release-critical gotchas, or confirmed follow-up decisions.
 - Do not invent test results; run checks or call out missing evidence.
 
 ---
@@ -44,7 +45,8 @@ Review one change set and return a decision-led report.
    - blockers (must fix)
    - suggestions (optional improvements)
    - missing evidence (tests/checks not run, unclear behaviour)
-     - If unable to run checks (CI-only, permissions), mark as 'Missing evidence' and request the specific artifact (CI link, log, or command for user to run).
+     - If unable to run checks (CI-only, permissions), mark as "Missing evidence".
+     - Request a specific artifact: CI link, log, or command the user can run.
 5. Produce the report with a clear recommendation:
    - `Good to commit: Yes` or `Good to commit: No`
    - if decision is `No`, include explicit fix items and ask the user to address them before rerunning `review`

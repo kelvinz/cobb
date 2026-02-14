@@ -42,7 +42,9 @@ Keep `tasks/todo.md` and `tasks/memory.md` short and scannable by consolidating 
 4. Compact `tasks/memory.md` in place:
    - Preserve `Project` and `Current state` sections.
    - Keep the user-selected number of most recent detailed entries.
-   - Before consolidating, extract any still-relevant risks, open questions, or gotchas from older entries into `Notes / gotchas` or `Current state: Blockers` so they are not lost.
+   - Before consolidating, extract still-relevant risks, open questions, or gotchas
+     from older entries.
+   - Move them into `Notes / gotchas` or `Current state: Blockers` so they are not lost.
    - Replace older entries with a concise historical summary block (themes, major outcomes, recurring risks).
 5. Report results:
    - Show retained vs consolidated counts for both files.

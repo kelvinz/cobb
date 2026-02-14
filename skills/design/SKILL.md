@@ -7,7 +7,8 @@ description: Comprehensive workflow for creating and reviewing high-craft digita
 
 ## Overview
 
-Create distinctive, production-grade design outcomes without defaulting to generic templates. Select the right mode, anchor every decision in user intent and product context, and ship with system consistency, interaction polish, and quality checks.
+Create distinctive, production-grade design outcomes without defaulting to generic templates.
+Select the right mode, anchor decisions in user intent and product context, and ship with system consistency, interaction polish, and quality checks.
 
 ## Workflow Integration
 
@@ -16,7 +17,8 @@ In this repo's delivery flow, `design` is an optional step between `plan` and `i
 - Use the feature PRD (`tasks/f-##-*.md`) as the scope source when available.
 - Do not change feature scope in `design`; route scope changes back through `plan`.
 - If `tasks/memory.md` exists, record durable design decisions that implementation or review will depend on.
-- Produce implementation-ready outputs (states, tokens, interaction notes) so `implement` can execute with minimal reinterpretation.
+- Produce implementation-ready outputs (states, tokens, interaction notes).
+- Let `implement` execute with minimal reinterpretation.
 
 ## Core Workflow
 
@@ -32,7 +34,9 @@ In this repo's delivery flow, `design` is an optional step between `plan` and `i
 
 ## Pattern Memory
 
-When a project keeps design memory (for example, a local `system.md` with established spacing, depth, or component rules), treat it as source-of-truth.
+When a project keeps design memory (for example, a local `system.md`),
+treat it as source-of-truth.
+Examples: established spacing, depth, or component rules.
 
 Add patterns to memory when all conditions are true:
 
@@ -50,7 +54,8 @@ Do not store one-off experiments.
 - `static-canvas`: Posters, editorial pages, visual artifacts in `.png` or `.pdf`.
 - `design-audit`: Review existing UI code or screens for craft, accessibility, and guideline compliance.
 
-When a request spans multiple modes, pick one primary mode and one secondary mode. Use the stricter constraint when rules conflict.
+When a request spans multiple modes, pick one primary mode and one secondary mode.
+Use the stricter constraint when rules conflict.
 
 ## Mandatory Design Brief
 
@@ -66,7 +71,8 @@ Signature element:
 Three defaults to reject:
 ```
 
-If critical context is missing, ask concise follow-up questions first. If answers are unavailable, make explicit assumptions and proceed.
+If critical context is missing, ask concise follow-up questions first.
+If answers are unavailable, make explicit assumptions and proceed.
 
 ## Mandatory Domain Exploration
 
@@ -98,19 +104,25 @@ If any line has no clear reason, revise before coding.
 2. Keep color, typography, spacing, and depth inside one coherent system.
 3. Prefer expressive originality without sacrificing usability.
 4. Keep hierarchy legible when squinting or stepping back.
-5. Include complete interaction states: default, hover, active, focus, disabled, loading, empty, and error when relevant.
+5. Include complete interaction states when relevant.
+   States: default, hover, active, focus, disabled, loading, empty, error.
 6. Preserve accessibility and performance as non-negotiable constraints.
 7. Present decisions and outcomes directly; avoid unnecessary process narration.
 
 ## Conflict Resolution Rules
 
-1. Professional utility interfaces prioritize clarity over theatrics: subtle layering, restrained motion, low-noise color.
-2. Marketing and brand-forward pages can use stronger expression: bolder type, richer backgrounds, and dramatic composition.
+1. Professional utility interfaces prioritize clarity over theatrics.
+   Use subtle layering, restrained motion, and low-noise color.
+2. Marketing and brand-forward pages can use stronger expression.
+   Use bolder type, richer backgrounds, and dramatic composition.
 3. Use non-bouncy easing for serious product flows.
 4. Use spring-like motion for playful or direct-manipulation moments only.
-5. Scale motion intensity with context: utility workflows need restraint, hero moments can carry more expression.
+5. Scale motion intensity with context:
+   utility workflows need restraint, hero moments can carry more expression.
 6. Decoration is valid only when it supports hierarchy, emphasis, comprehension, or brand story.
-7. Use native controls by default for semantics and accessibility; use custom controls when native rendering blocks required styling or behavior, then preserve accessibility semantics.
+7. Use native controls by default for semantics and accessibility.
+   Use custom controls only when native rendering blocks required styling/behavior.
+   Preserve accessibility semantics when custom controls are used.
 
 ## Quality Gates
 

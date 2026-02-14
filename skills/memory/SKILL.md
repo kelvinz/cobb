@@ -6,7 +6,8 @@ description: "Maintain durable project memory in `tasks/memory.md` (state, decis
 # memory
 
 Maintain `tasks/memory.md` as a living, durable "what matters" record for the project.
-Write it for someone taking over the project (or you returning later): it should explain where things are, what was decided, and what to watch out for before proceeding.
+Write it for someone taking over the project (or you returning later).
+Explain where things are, what was decided, and what to watch before proceeding.
 Treat this as shared behaviour embedded in other skills, not a mandatory standalone step in normal workflows.
 
 ---
@@ -17,7 +18,8 @@ Treat this as shared behaviour embedded in other skills, not a mandatory standal
 - Keep entries short and durable; avoid duplicating long PRDs or code.
 - Update `tasks/memory.md` in place; do not rewrite the whole file.
 - Write in plain language so a junior dev (or another AI) can take over without extra context.
-- Prefer inline updates during active skills (`new`, `plan`, `design`, `implement`, `review`, `commit`) whenever worthwhile information emerges.
+- Prefer inline updates during active skills (`new`, `plan`, `design`, `implement`, `review`, `commit`).
+- Update when worthwhile information emerges.
 
 ### What goes where
 - `tasks/todo.md` = what we intend to do
