@@ -42,6 +42,7 @@ Create a clear, implementation-ready PRD for a single feature (not code).
 7. Write or update the PRD at the chosen path (create `tasks/` if missing):
    - Ensure implementation progress is trackable via checklist items (for example, user stories and acceptance criteria checkboxes).
    - If `tasks/todo.md` lists `Dependencies:` for this feature, include them in "Dependencies & Constraints" (dependency validation happens during `implement`).
+   - For UI/UX-heavy features, include expected design inputs (mockups, tokens, interaction notes) and whether `design` should run before `implement`.
 8. If `tasks/todo.md` exists, update it to reflect the PRD:
    - Check the feature checkbox (`- [ ]` → `- [x]`).
 9. Evaluate memory-worthy outcomes and update `tasks/memory.md` inline when needed:
@@ -100,6 +101,7 @@ Use `references/prd-template.md` as the default PRD template and checklist.
 - If the slug or scope is ambiguous, ask the user to confirm before saving.
 - If `tasks/todo.md` exists, update it (check the feature only; no PRD path field).
 - If the PRD introduces durable decisions/constraints, update `tasks/memory.md` in the same run.
+- For UI/UX-heavy PRDs, recommend `design` (optional) before `implement`.
 - End with a short status block:
   - **Files changed**: list of created/updated files
   - **Key decisions**: any assumptions or choices made (if any)

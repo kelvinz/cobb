@@ -17,7 +17,7 @@ Treat this as shared behaviour embedded in other skills, not a mandatory standal
 - Keep entries short and durable; avoid duplicating long PRDs or code.
 - Update `tasks/memory.md` in place; do not rewrite the whole file.
 - Write in plain language so a junior dev (or another AI) can take over without extra context.
-- Prefer inline updates during active skills (`new`, `plan`, `implement`, `review`, `commit`) whenever worthwhile information emerges.
+- Prefer inline updates during active skills (`new`, `plan`, `design`, `implement`, `review`, `commit`) whenever worthwhile information emerges.
 
 ### What goes where
 - `tasks/todo.md` = what we intend to do
@@ -31,6 +31,7 @@ Treat this as shared behaviour embedded in other skills, not a mandatory standal
 - Project gist (what it is, who it's for, success measures)
 - Current state (what's done, what's next, what's blocked)
 - Key decisions (what we chose + why + tradeoffs)
+- Durable design decisions (tokens, interaction patterns, UX constraints) that future implementation/review depends on
 - Completed work (feature IDs and notable outcomes)
 - Notes/gotchas (constraints, pitfalls, conventions, sharp edges)
 

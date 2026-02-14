@@ -21,6 +21,9 @@ Implement a feature from a PRD.
 - Do not edit `tasks/todo.md` in this skill.
 - Do not reset any existing PRD checklist items when updating an existing PRD.
 - Treat memory capture as built-in: when implementation yields durable decisions/gotchas, update `tasks/memory.md` in this step.
+- Use `design` as an optional companion for UI/UX-heavy work:
+  - If visual direction, interaction states, or design-token choices are unclear, run `design` before coding that area.
+  - If approved design artifacts already exist, proceed directly with implementation.
 - Do not claim tests passed or checks succeeded without actually running them; if you didn't run it, say so.
 
 ---
@@ -45,6 +48,9 @@ Implement a feature from a PRD.
        - default (`Type: feat`) → `feat/f-##-<short-slug>`
    - If `tasks/memory.md` exists, skim key decisions / notes / gotchas relevant to this area before coding.
    - Parse the PRD into an execution plan: user stories, functional requirements, non-goals, risks, rollout, and testing notes.
+   - Decide whether `design` is needed:
+     - Trigger it when the PRD adds/changes UI surfaces, interaction/motion behaviour, or design-system patterns and no approved design direction is available.
+     - If `design` runs, treat its output as implementation constraints and keep PRD scope unchanged.
    - Verify dependencies:
      - Read this PRD's "Dependencies & Constraints" section for feature dependency IDs.
      - For each dependency ID, locate PRD files by feature ID in `tasks/` and `tasks/archive/`.
@@ -56,6 +62,7 @@ Implement a feature from a PRD.
 3. **Execute**
    - Implement the feature as specified.
    - Implement in small checkpoints aligned to PRD user stories to enable atomic commits.
+   - For UI/UX work, implement against approved design output (states, tokens, layout rules) and avoid ad-hoc style drift.
    - Add/update tests as appropriate.
    - Run the project's normal checks (typecheck/lint/tests/build) per `AGENTS.md` or project conventions.
 
@@ -77,6 +84,7 @@ Implement a feature from a PRD.
 7. **Close out**
    - Summarise what was changed and what remains.
    - Next steps:
+     - If unresolved UI/UX direction remains, run `design` and continue `implement`.
      - Run `review` when needed, then `commit` in `commit` mode.
      - When the feature is ready to merge, run `review` when needed, then `commit` in `finalise` mode.
 

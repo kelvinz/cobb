@@ -3,7 +3,7 @@
 A small set of skills for ongoing product development.
 
 Supported workflows:
-- Workflow: `new` → `plan` → `implement` → `review` (when needed) → `commit` (`commit` mode) → `review` (when needed) → `commit` (`finalise` mode) → `compact` (periodic)
+- Workflow: `new` → `plan` → `design` (optional, for UI/UX-heavy features) → `implement` → `review` (when needed) → `commit` (`commit` mode) → `review` (when needed) → `commit` (`finalise` mode) → `compact` (periodic)
 
 These skills are written to be handoff-friendly: assume a junior dev (or another AI) may pick up the project later.
 
@@ -11,6 +11,7 @@ These skills are written to be handoff-friendly: assume a junior dev (or another
 
 - `skills/new/`: create or update `tasks/todo.md` (project overview + prioritised feature list).
 - `skills/plan/`: turn a planned feature into a PRD in `tasks/` and sync `tasks/todo.md` status.
+- `skills/design/`: optional design workflow for UI/UX direction, interaction/motion, and reusable visual patterns before or during implementation.
 - `skills/implement/`: implement a PRD in the codebase and check off completed PRD stories/tasks.
 - `skills/review/`: strict decision review for correctness, security, tests, and scope, with optional durable memory capture.
 - `skills/commit/`: propose atomic commits, require user approval, commit with emoji + type + imperative summary, and finalise merge/branch cleanup.
@@ -42,7 +43,7 @@ These skills are written to be handoff-friendly: assume a junior dev (or another
 
 ### Workflow: idea → merged
 
-1. `new` → `plan` → `implement`
+1. `new` → `plan` → `design` (optional for UI/UX-heavy features) → `implement`
    Memory: capture durable decisions inline as each step executes.
 2. `review` (when needed): run a quality check before commit.
    Memory: capture durable risks/follow-ups inline when needed.
