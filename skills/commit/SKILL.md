@@ -33,8 +33,7 @@ Commit changes in atomic steps, then finalise and clean up the feature branch wh
 - If no tracking changes are needed, skip the finalise commit and state why.
 - Use finalise tracking for closeout only.
 - Do not retroactively log completed atomic work unless the user explicitly asks.
-- Follow the repository-approved merge strategy and constraints.
-- If policy is unclear, ask before merging.
+- Follow the merge strategy resolution order in `references/finalise-policy.md`.
 - Never delete the base/default branch.
 - Never delete the currently checked-out branch.
 - Require explicit user confirmation before deleting local or remote branches.
@@ -146,7 +145,8 @@ Use after all intended commits are done.
 4. Ask the user to confirm the target branch for merge (for example: `main`, `dev`, `release/*`).
 5. Confirm finalise gate before merging:
    - require `review: Good to commit: Yes`; if missing, run `review` before merging
-6. Merge using the repository-approved strategy from `references/finalise-policy.md`.
+6. Resolve the merge strategy per `references/finalise-policy.md`.
+   Present the resolved strategy as a suggestion and let the user confirm or override before merging.
 7. Apply branch safety checks before deletion:
    - confirm `<feature-branch>` is not the target branch
    - confirm `<feature-branch>` is not the default branch

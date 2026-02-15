@@ -8,6 +8,14 @@ Use this when `commit` runs in `finalise` mode.
 - target branch is user-confirmed
 - feature branch is not default/base
 
+## Default strategy
+
+Resolve the merge strategy using this priority (highest wins):
+
+1. User explicitly requests a strategy in the current session.
+2. Repo-level merge preference declared in project `CLAUDE.md`, `AGENTS.md`, or `LESSONS.md`.
+3. Default: **merge-commit** (`git merge --no-ff`).
+
 ## Policy-specific merge flows
 
 - merge-commit policy:
