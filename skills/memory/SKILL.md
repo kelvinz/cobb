@@ -1,6 +1,6 @@
 ---
 name: memory
-description: "Maintain durable project memory in `tasks/memory.md` (state, decisions, milestones, gotchas), inline during other workflows or standalone for cleanup/backfill. Triggers: update memory.md, decision log, record project context."
+description: "Maintain durable project memory in `tasks/memory.md` (state, decisions, milestones, gotchas, optional context links), inline during other workflows or standalone for cleanup/backfill. Triggers: update memory.md, decision log, record project context, capture high-value reference links that improve memory handoff."
 ---
 
 # memory
@@ -9,6 +9,8 @@ Maintain `tasks/memory.md` as a living, durable "what matters" record for the pr
 Write it for someone taking over the project (or a future session resuming later).
 Explain where things are, what was decided, and what to watch before proceeding.
 Treat this as shared behaviour embedded in other skills, not a mandatory standalone step in normal workflows.
+When invoked inline (from another skill), apply this workflow as part of that skill's execution.
+When invoked directly, use for explicit backfill/repair/cleanup requests.
 
 ---
 
@@ -20,6 +22,7 @@ Treat this as shared behaviour embedded in other skills, not a mandatory standal
 - Write in plain language so a junior dev (or another AI) can take over without extra context.
 - Prefer inline updates during active skills (`prd`, `design`, `implement`, `review`, `commit`).
 - Update when worthwhile information emerges.
+- Links are optional and high-signal only; see Links Format below.
 
 ### What goes where
 - PRD files (`tasks/f-##-*.md`) = what we intend to do (the spec + progress checklist for one feature)
@@ -29,12 +32,12 @@ Treat this as shared behaviour embedded in other skills, not a mandatory standal
 
 ## What to Record
 
-- Project gist (what it is, who it's for, success measures)
-- Current state (what's done, what's next, what's blocked)
-- Key decisions (what we chose + why + tradeoffs)
-- Durable design decisions (tokens, interaction patterns, UX constraints) that future implementation/review depends on
-- Completed work (feature IDs and notable outcomes)
-- Notes/gotchas (constraints, pitfalls, conventions, sharp edges)
+- Project gist (what it is, who it's for, success measures) → `## Project`
+- Current state (what's done, what's next, what's blocked) → `## Current state`
+- Key decisions and durable design decisions (what we chose + why + tradeoffs) → `## Key decisions`
+- Completed work (feature IDs and notable outcomes) → `## Completed`
+- Notes/gotchas (constraints, pitfalls, conventions, sharp edges) → `## Notes / gotchas`
+- Optional context links (canonical docs, API specs, repos) → `## Links (optional)`
 
 Avoid:
 
@@ -44,17 +47,23 @@ Avoid:
 
 ---
 
+## Links Format
+
+- Only add `## Links (optional)` when links materially improve handoff context.
+- Format: `[Label](path-or-url) — why this helps future context`
+- Prefer durable references (design docs, API specs, runbooks, repos); avoid ephemeral links (temp chats, preview URLs).
+- De-duplicate by updating existing entries instead of adding near-identical links.
+
+---
+
 ## Workflow
 
 1. Ensure `tasks/` exists; create `tasks/memory.md` if missing.
-2. Determine invocation style:
-   - Inline call (from another skill): apply this workflow as part of that skill's execution.
-   - Direct call: use for explicit backfill/repair/cleanup requests.
-3. Update `tasks/memory.md` in place; do not rewrite the whole file.
-4. Add short entries (1–3 lines) in the most relevant section.
-5. Prepend new entries at the top of each section (newest-first order).
-6. Prefer referencing stable feature IDs (`f-##`) and avoid file paths (paths can change after archiving/compaction).
-7. If it's unclear what to record, ask one clarifying question.
+2. Add short entries (1–3 lines) in the most relevant section.
+3. Prepend new entries at the top of each section (newest-first order).
+4. Prefer referencing stable feature IDs (`f-##`) and avoid file paths (paths can change after archiving/compaction).
+5. If a link materially improves context, add or update entries in `## Links (optional)` using the links format.
+6. If it's unclear what to record, ask one clarifying question.
 
 ---
 
@@ -89,6 +98,9 @@ If `tasks/memory.md` does not exist, create it with this structure:
 
 ## Notes / gotchas
 - …
+
+## Links (optional)
+- [Technical reference](docs/<topic>.md) — Supporting implementation context for future sessions
 ```
 
 ---
@@ -96,8 +108,8 @@ If `tasks/memory.md` does not exist, create it with this structure:
 ## Output
 
 - Create or update `tasks/memory.md`.
-- Reply with the file path and a short summary of what was added/updated (or why memory update was skipped).
-- End with a short status block:
+- **Inline** (from another skill): reply with a short summary of what was added/updated. Let the calling skill's output format take precedence.
+- **Standalone** (direct invocation): reply with the file path, summary, and a status block:
   - **Files changed**: list of created/updated files
   - **Key decisions**: any assumptions or choices made (if any)
   - **Next step**: recommended next skill or action
