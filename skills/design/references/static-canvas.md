@@ -40,7 +40,7 @@ Default to one page unless the user requests more.
 7. choose typography intentionally; avoid generic defaults
 8. keep sophistication high even for pop-culture subjects
 
-When local fonts are available, prefer curated sets under `/Users/kelvinzhao/Documents/Git/temp/canvas-design/canvas-fonts`.
+When local fonts are available, prefer curated sets under a project-local `fonts/` directory.
 
 ## Step 4: Mandatory Refinement Pass
 

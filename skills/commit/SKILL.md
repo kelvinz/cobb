@@ -157,6 +157,20 @@ Use after all intended commits are done.
 
 ---
 
+## Hotfix Mode
+
+Use for urgent fixes committed directly to the default branch without a feature branch.
+
+1. Confirm on the default branch (not a feature branch).
+2. Require `review` approval before committing.
+3. Follow the standard atomic commit workflow (steps 1-6 above).
+   - PRD checklist: mark as `none` — hotfixes typically have no PRD.
+   - Type: use `fix` unless the change is purely non-behavioural (`chore`).
+4. Record hotfix rationale in `tasks/memory.md` (what broke, why the hotfix was necessary, follow-up actions).
+5. No finalise step needed — already on the default branch.
+
+---
+
 ## Output
 
 For each proposed commit, provide:

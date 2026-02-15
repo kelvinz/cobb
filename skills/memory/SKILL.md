@@ -6,7 +6,7 @@ description: "Maintain durable project memory in `tasks/memory.md` (state, decis
 # memory
 
 Maintain `tasks/memory.md` as a living, durable "what matters" record for the project.
-Write it for someone taking over the project (or you returning later).
+Write it for someone taking over the project (or a future session resuming later).
 Explain where things are, what was decided, and what to watch before proceeding.
 Treat this as shared behaviour embedded in other skills, not a mandatory standalone step in normal workflows.
 

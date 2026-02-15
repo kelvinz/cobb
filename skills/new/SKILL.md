@@ -36,7 +36,7 @@ Create or update `tasks/todo.md` as the source of truth for what the project is 
    - notes / gotchas
    - avoid conflicts with prior decisions
 3. Ask clarifying questions only when needed (use A/B/C/D options).
-4. Update `tasks/todo.md` using the template below:
+4. Update `tasks/todo.md` using `references/todo-template.md`:
    - **New project**: write a crisp Project section.
    - Propose an initial prioritised feature list (highest priority first).
    - **Add/update**: add, merge, re-scope, and/or re-order features.
@@ -74,54 +74,6 @@ Focus on ambiguity around:
    B. Add new features to an existing plan
    C. Refine/re-scope existing planned features
    D. Other: [describe]
-```
-
----
-
-## `tasks/todo.md` Template (Markdown)
-
-If `tasks/todo.md` does not exist, create it with this structure (fill in details; keep it concise).
-
-```markdown
-# TODO: <Project name>
-
-## Project
-- **One-liner**: …
-- **Target users**: …
-- **Problem**: …
-- **Success metrics**: …
-- **Constraints** (optional): …
-- **Non-goals**: …
-
-## Features
-
-Checkbox meaning:
-- unchecked = PRD not written yet
-- checked = PRD exists
-- checked + ~~strikethrough~~ = completed (PRD archived)
-Leave unchecked until a PRD exists.
-Feature completion is determined by PRDs archived to `tasks/archive/`
-and recorded in `tasks/memory.md`.
-Strikethrough here is a derived marker applied during `commit` finalise.
-
-### Features (priority order)
-- Higher in the list = higher priority.
-- [ ] f-01: <feature name>
-  - Type: feat | fix | chore
-  - Outcome: <user-visible outcome>
-  - In scope: <what ships>
-  - Out of scope: <what does not ship>
-  - Dependencies: <none> | f-02, f-10
-
-- [ ] f-02: <feature name>
-  - Type: feat | fix | chore
-  - Outcome: <user-visible outcome>
-  - In scope: <what ships>
-  - Out of scope: <what does not ship>
-  - Dependencies: <none> | f-01
-
-## Open Questions (project-wide only; per-feature questions go under each feature entry)
-- Q-1: …
 ```
 
 ---

@@ -54,9 +54,11 @@ Leave it better than you found it.
 
 - Always default to industry-standard best practices unless there's a compelling reason not to
 - Simplicity first: smallest change that fully solves the problem
+- Clarity over brevity — prefer explicit, readable code over dense one-liners or nested ternaries
 - Prefer functional programming patterns over imperative/OOP
 - Write pure functions when possible (no side effects, deterministic outputs)
 - Favor immutability - avoid mutating data directly
+- Avoid over-abstraction — don't sacrifice clarity for cleverness or compactness
 
 ## Language Strategy
 - Be language-agnostic: follow the idioms and tooling of the touched language
@@ -80,6 +82,7 @@ Leave it better than you found it.
 ## Comments & Documentation
 - Goal: keep code understandable for the next maintainer
 - Prefer self-explanatory code first
+- Remove comments that state the obvious — they add noise and obscure meaningful comments
 - Comment non-obvious intent, tradeoffs, and constraints
 - Complex logic: Explain the "why" behind non-obvious decisions
 - Business rules: document requirements that drive decisions
