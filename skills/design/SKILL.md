@@ -12,10 +12,10 @@ Select the right mode, anchor decisions in user intent and product context, and 
 
 ## Workflow Integration
 
-In this repo's delivery flow, `design` is an optional step between `plan` and `implement` for UI/UX-heavy features.
+In this repo's delivery flow, `design` is an optional step between `prd` and `implement` for UI/UX-heavy features.
 
 - Use the feature PRD (`tasks/f-##-*.md`) as the scope source when available.
-- Do not change feature scope in `design`; route scope changes back through `plan`.
+- Do not change feature scope in `design`; route scope changes back through `prd`.
 - If `tasks/memory.md` exists, record durable design decisions that implementation or review will depend on.
 - Produce implementation-ready outputs (states, tokens, interaction notes).
 - Let `implement` execute with minimal reinterpretation.

@@ -18,7 +18,7 @@ Choose `type` in this order (first match wins):
 
 ## Classification rules
 
-- Use `tasks/todo.md` / PRD `Type:` as a hint, but do not override the real diff intent.
+- Use PRD `Type:` as a hint, but do not override the real diff intent.
 - If a commit changes behaviour and internal maintenance together, split and classify each commit separately.
 - If uncertain between `feat` and `fix`, prefer `fix` when correcting expected behaviour; otherwise use `feat`.
 - If still ambiguous after reviewing diff + context, ask the user before committing.
@@ -63,6 +63,5 @@ Finalise:
 
 Actions:
 - archived PRD to `tasks/archive/` (if applicable)
-- updated `tasks/todo.md` feature line to struck-through completed form (if applicable)
-- updated `tasks/memory.md` (if applicable)
+- updated `tasks/memory.md` completed section (if applicable)
 ```

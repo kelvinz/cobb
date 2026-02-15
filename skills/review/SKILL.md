@@ -14,7 +14,7 @@ Review one change set and return a decision-led report.
 - Review branch changes against the selected base branch.
 - Do not implement or modify code.
 - Do not commit, merge, push, or delete branches.
-- Do not update PRD/todo tracking files here.
+- Do not update PRD tracking files here.
 - Update `tasks/memory.md` only for durable review outcomes.
 - Examples: recurring risks, release-critical gotchas, or confirmed follow-up decisions.
 - Do not invent test results; run checks or call out missing evidence.

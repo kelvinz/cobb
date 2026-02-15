@@ -15,6 +15,8 @@ Use this as the default structure for new PRDs. Drop sections only when they tru
 ## 0. Summary
 - **Feature ID**: f-##
 - **Type**: feat | fix | chore
+- **Status**: draft | ready
+- **Priority**: P0 | P1 | P2 | P3
 - **Dependencies** (feature IDs): <none> | f-02, f-10
 - **What**: …
 - **Why**: …
@@ -83,7 +85,7 @@ Make each story a checklist item so `implement` can execute in pieces and check 
 - NFR-3 (reliability/observability): …
 
 ## 7. Dependencies & Constraints (if applicable)
-- Feature dependencies (from `tasks/todo.md`): <none> | f-02, f-10
+- Feature dependencies (by feature ID): <none> | f-02, f-10
 - External dependencies (if any): …
 - Constraints: …
 
@@ -130,8 +132,8 @@ Before saving the PRD:
 
 - [ ] If a PRD already existed, it was updated in place (no duplicates).
 - [ ] If updating an existing PRD, keep existing story/task checkboxes (do not reset them).
-- [ ] PRD Summary includes `Type:`.
-- [ ] If the feature has dependencies in `tasks/todo.md`, they are referenced by ID and included in "Dependencies & Constraints".
+- [ ] PRD Summary includes `Type:`, `Status:`, and `Priority:`.
+- [ ] If the feature has dependencies, they are referenced by ID and included in "Dependencies & Constraints".
 - [ ] PRD is consistent with `tasks/memory.md` (or `tasks/memory.md` was updated in this run).
 - [ ] Goals are measurable and directly tied to success metrics.
 - [ ] Non-goals are explicit (prevent scope creep).
@@ -140,4 +142,3 @@ Before saving the PRD:
 - [ ] Edge cases, error states, and permissions are specified.
 - [ ] Rollout plan and rollback plan exist (if risk warrants it).
 - [ ] Saved/updated at the chosen PRD path.
-- [ ] If `tasks/todo.md` exists, the feature is checked.

@@ -21,6 +21,7 @@ Commit changes in atomic steps, then finalise and clean up the feature branch wh
 - If a change group contains multiple intents, split it before proposing.
 - Examples: `feat` + `fix`, `fix` + `chore`.
 - Never add AI attribution or `Co-authored-by` trailers unless the user explicitly asks.
+- Do not push to remote without explicit user confirmation.
 - Ask for the merge target branch during finalise mode.
 - Do not assume `main`; it may be `dev` or another branch.
 - Use `review` as a quality gate before commit/finalise when needed.
@@ -29,7 +30,7 @@ Commit changes in atomic steps, then finalise and clean up the feature branch wh
 - Keep PRD checklist updates inside the atomic commit that completes that work.
 - Never make a trailing commit only to catch up PRD checklist or memory updates.
 - In finalise, bundle tracking updates into one pre-merge commit.
-- Include PRD archive, `tasks/todo.md` strikethrough, and memory updates as needed.
+- Include PRD archive and memory updates as needed.
 - If no tracking changes are needed, skip the finalise commit and state why.
 - Use finalise tracking for closeout only.
 - Do not retroactively log completed atomic work unless the user explicitly asks.
@@ -132,13 +133,13 @@ Use after all intended commits are done.
 3. Before merge, prepare tracking updates:
    - if the PRD path matches `tasks/f-##-<slug>.md`, ensure `tasks/archive/` exists
    - move the PRD to `tasks/archive/f-##-<slug>.md` (same filename); if already archived, skip
-   - apply strikethrough to the matching completed feature entry in `tasks/todo.md`
    - if `tasks/memory.md` exists (or should exist), update it when durable state changed:
      - add completed milestone entry for the finalised feature
      - update "Current state" (next up / blockers) if it changed
      - capture any key decisions or gotchas discovered during completion
    - stage all resulting tracking changes together
    - propose exactly one `🧹 chore: finalise f-## ...` commit (use short finalise body)
+   - ask for user confirmation before committing (same yes/edit/skip options as commit mode)
    - if no tracking changes are needed, explicitly state why and skip the finalise commit
    - do not use this finalise commit to catch up missed atomic PRD/memory updates
    - only do that if the user explicitly approves

@@ -18,13 +18,12 @@ Treat this as shared behaviour embedded in other skills, not a mandatory standal
 - Keep entries short and durable; avoid duplicating long PRDs or code.
 - Update `tasks/memory.md` in place; do not rewrite the whole file.
 - Write in plain language so a junior dev (or another AI) can take over without extra context.
-- Prefer inline updates during active skills (`new`, `plan`, `design`, `implement`, `review`, `commit`).
+- Prefer inline updates during active skills (`prd`, `design`, `implement`, `review`, `commit`).
 - Update when worthwhile information emerges.
 
 ### What goes where
-- `tasks/todo.md` = what we intend to do
-- PRD (`tasks/f-##-*.md`) = the spec + progress checklist for one feature
-- `tasks/memory.md` = project-specific: durable decisions, milestones, gotchas, and "where we are now"
+- PRD files (`tasks/f-##-*.md`) = what we intend to do (the spec + progress checklist for one feature)
+- `tasks/memory.md` = project definition, durable decisions, milestones, gotchas, and "where we are now"
 
 ---
 
@@ -53,7 +52,7 @@ Avoid:
    - Direct call: use for explicit backfill/repair/cleanup requests.
 3. Update `tasks/memory.md` in place; do not rewrite the whole file.
 4. Add short entries (1–3 lines) in the most relevant section.
-5. All dated sections are oldest-first (append new entries at the bottom).
+5. Prepend new entries at the top of each section (newest-first order).
 6. Prefer referencing stable feature IDs (`f-##`) and avoid file paths (paths can change after archiving/compaction).
 7. If it's unclear what to record, ask one clarifying question.
 
@@ -69,6 +68,7 @@ If `tasks/memory.md` does not exist, create it with this structure:
 ## Project
 - One-liner: …
 - Target users: …
+- Problem: …
 - Success metrics: …
 - Constraints (optional): …
 - Non-goals (optional): …
@@ -79,19 +79,16 @@ If `tasks/memory.md` does not exist, create it with this structure:
 - Blockers / risks: …
 
 ## Key decisions
-- YYYY-MM-DD: <decision>
+- <decision>
   - Why: …
   - Tradeoffs: …
 
 ## Completed
-- YYYY-MM-DD: f-## <feature name> — Completed and archived
+- f-## <feature name> — Completed and archived
   - Notes: …
 
 ## Notes / gotchas
-- YYYY-MM-DD: …
-
-## Links (optional)
-- `tasks/todo.md`
+- …
 ```
 
 ---

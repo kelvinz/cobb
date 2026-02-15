@@ -14,19 +14,20 @@ Implement a feature from a PRD.
 - Follow the repo's `AGENTS.md` instructions (if present) for any files you touch.
 - Keep changes simple and handoff-friendly: assume a junior dev (or another AI) will maintain this later.
 - Do not change product scope while executing:
-  - If the PRD is missing details or ambiguous, stop and use `plan` to refine the PRD first.
-  - If implementation reveals the PRD is incorrect, pause and propose PRD edits via `plan`.
+  - If the PRD is missing details or ambiguous, stop and use `prd` to refine the PRD first.
+  - If implementation reveals the PRD is incorrect, pause and propose PRD edits via `prd`.
   - Do not silently deviate.
-  - If the feature is missing from `tasks/todo.md`, stop and use `new` first.
+  - If the feature has no PRD in `tasks/`, stop and use `prd` first.
   - If you discover out-of-scope requirements or bugs during execution, do not expand scope.
-  - Create a new backlog item via `new` instead.
-- Do not edit `tasks/todo.md` in this skill.
+  - Create a new PRD via `prd` instead.
 - Do not reset any existing PRD checklist items when updating an existing PRD.
 - Treat memory capture as built-in.
 - When implementation yields durable decisions/gotchas, update `tasks/memory.md` in this step.
 - Use `design` as an optional companion for UI/UX-heavy work:
   - If visual direction, interaction states, or design-token choices are unclear, run `design` before coding that area.
   - If approved design artifacts already exist, proceed directly with implementation.
+- Require user confirmation before creating or switching git branches.
+- Do not commit, merge, push, or delete branches; delegate these to `commit`.
 - Do not claim tests passed or checks succeeded without actually running them; if you didn't run it, say so.
 
 ---
@@ -39,13 +40,13 @@ Implement a feature from a PRD.
 
 2. **Preflight**
    - Read `AGENTS.md` (if present) and follow it.
-   - Check priority (if `tasks/todo.md` exists):
-     - Priority is determined by list order.
-    - If higher-priority items exist above this feature, ask the user to confirm working on this item now.
-       - If the higher-priority item is unchecked (no PRD yet), recommend writing its PRD via `plan` first.
+   - Check priority:
+     - Scan active PRD files in `tasks/` for their `Status:` and `Priority:` fields.
+     - If higher-priority PRDs with `Status: ready` exist above this feature (P0 > P1 > P2 > P3), ask the user to confirm working on this item now.
+     - If a higher-priority PRD is still `Status: draft`, mention it but proceed (it's not ready yet).
    - Create a new feature branch before making changes (unless you are already on an appropriate feature branch):
     - Base it off the repository default branch (resolve via `origin/HEAD` or repo policy).
-    - If unclear, ask the user before branching.
+    - Propose the branch name and base branch, then ask the user to confirm before creating it.
      - Name it based on the PRD Summary `Type` (or match repo conventions):
        - `Type: fix` → `fix/f-##-<short-slug>`
        - `Type: chore` → `chore/f-##-<short-slug>`
@@ -62,7 +63,7 @@ Implement a feature from a PRD.
      - For each dependency ID, locate PRD files by feature ID in `tasks/` and `tasks/archive/`.
      - Treat dependencies as complete only when the dependency PRD is archived in `tasks/archive/`.
      - If any dependency is still in `tasks/`, recommend finalising that dependency first.
-     - If a dependency has no PRD yet, stop and use `plan` to create that dependency PRD first.
+     - If a dependency has no PRD yet, stop and use `prd` to create that dependency PRD first.
     - Override: if the user confirms dependencies are satisfied, proceed.
     - Example: dependency work merged but not yet archived.
     - Record the override in `tasks/memory.md`.
