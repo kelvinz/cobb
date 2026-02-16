@@ -14,6 +14,7 @@ Review one change set and return a decision-led report.
 - Review branch changes against the selected base branch.
 - Do not implement or modify code.
 - Do not commit, merge, push, or delete branches.
+- Block approval if the branch is behind the base branch; require sync + re-review.
 - Do not update PRD tracking files here.
 - Update `tasks/context.md` only for durable review outcomes.
 - Examples: recurring risks, release-critical gotchas, or confirmed follow-up decisions.
@@ -33,10 +34,12 @@ Review one change set and return a decision-led report.
 
 1. Confirm base branch and scope target.
 2. Collect context:
+   - `git fetch --all --prune` to refresh remote state
    - `git diff "<base>...HEAD"`
    - `git log "<base>..HEAD" --oneline`
    - `git status --short`
 3. Compare the change set against required behaviour:
+   - If behind `<base>`, return `Good to commit: No` and require sync before re-review.
    - correctness and edge cases
    - security risks and data handling
    - test depth and regression risk

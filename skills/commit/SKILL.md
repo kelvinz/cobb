@@ -25,6 +25,7 @@ Commit changes in atomic steps, then finalise and clean up the feature branch wh
 - Do not push to remote without explicit user confirmation.
 - Ask for the merge target branch during finalise mode.
 - Do not assume `main`; it may be `dev` or another branch.
+- Before final merge, sync with the target branch and resolve any conflicts.
 - Use `review` as a quality gate before commit/finalise when needed.
 - Capture context inline: update `tasks/context.md` during commit/finalise when durable info appears.
 - Do not add a separate context-only step.
@@ -147,6 +148,7 @@ Use after all intended commits are done.
 4. Ask the user to confirm the target branch for merge (for example: `main`, `dev`, `release/*`).
 5. Confirm finalise gate before merging:
    - require `review: Good to commit: Yes`; if missing, run `review` before merging
+   - ensure the branch is synced with the target; if not, sync and rerun `review`
 6. Resolve the merge strategy per `references/finalise-policy.md`.
    Present the resolved strategy as a suggestion and let the user confirm or override before merging.
 7. Apply branch safety checks before deletion:
