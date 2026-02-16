@@ -27,6 +27,7 @@ Implement a feature from a PRD.
   - If visual direction, interaction states, or design-token choices are unclear, run `design` before coding that area.
   - If approved design artifacts already exist, proceed directly with implementation.
 - Require user confirmation before creating or switching git branches.
+- When requesting user decisions or confirmations, use numbered short-reply options (for example: `1`, `2`, `3`).
 - Do not commit, merge, push, or delete branches; delegate these to `commit`.
 - Do not claim tests passed or checks succeeded without actually running them; if you didn't run it, say so.
 

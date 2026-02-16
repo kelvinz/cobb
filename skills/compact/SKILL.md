@@ -16,6 +16,7 @@ Keep `tasks/memory.md` short and scannable by consolidating older entries into r
 - Do not create separate memory archive files.
 - Ask for explicit confirmation before applying consolidation edits.
 - Always propose retention/consolidation counts first; let the user choose the final numbers.
+- When asking for user decisions, provide numbered short-reply options.
 
 ---
 
@@ -61,9 +62,9 @@ Proposed compact plan:
 - Memory detailed entries to keep: 15 (consolidate: 41)
 
 Reply with:
-- "use defaults", or
-- custom number (for example: "keep 20"), or
-- "less" / "more".
+- `1` for "use defaults", or
+- `2 <n>` for custom number (for example: `2 20`), or
+- `3` for "less", `4` for "more".
 ```
 
 ---

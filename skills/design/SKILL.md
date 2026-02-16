@@ -72,6 +72,7 @@ Three defaults to reject:
 ```
 
 If critical context is missing, ask concise follow-up questions first.
+When asking for user choices (mode, constraints, direction), provide numbered options and accept short replies like `1`, `2`, or `1A`.
 If answers are unavailable, make explicit assumptions and proceed.
 
 ## Mandatory Domain Exploration

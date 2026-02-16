@@ -112,6 +112,7 @@ Make each story a checklist item so `implement` can execute in pieces and check 
 ## 13. Open Questions
 - Q-1: …
 - Q-2: …
+For unresolved decisions that need user input, prefer numbered/lettered options so replies can be short (for example: `Q-1` options `A/B/C` and reply `Q1A`).
 
 ## 14. Appendix (optional)
 - Alternatives considered: …
@@ -137,5 +138,6 @@ Before saving the PRD:
 - [ ] User stories are checklist items with verifiable acceptance criteria.
 - [ ] Requirements are numbered (FR/NFR) and unambiguous.
 - [ ] Edge cases, error states, and permissions are specified.
+- [ ] Open questions that require user decisions use short-reply option formats (for example: `Q1A`).
 - [ ] Rollout plan and rollback plan exist (if risk warrants it).
 - [ ] Saved/updated at the chosen PRD path.

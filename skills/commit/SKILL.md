@@ -14,6 +14,7 @@ Commit changes in atomic steps, then finalise and clean up the feature branch wh
 - Require user confirmation before every commit.
 - For every atomic commit proposal, provide a proposed title.
 - Provide a proposed body before asking for approval.
+- When asking for a user decision, provide numbered short-reply options (for example: `1`, `2`, `3`, `4`).
 - Keep commits atomic; if a title needs "and", split the change set.
 - Never mix unrelated files in one commit.
 - Determine commit `type` from the actual diff intent, not from branch name, file paths, or habit.
@@ -104,11 +105,11 @@ Read this reference before proposing the first commit in a session, and revisit 
    - memory updates to include in this same commit (or explicit `none` with reason)
    - commit title (emoji + type + imperative summary)
    - commit body (Summary/Why/Context/Alternatives/Trade-offs/Consequences)
-4. Ask for a decision:
-   - `yes`: stage only that group and commit
-   - `edit`: revise message/scope and ask again
-   - `skip`: leave group uncommitted and move on
-   - `split`: break the group into smaller commits and repropose
+4. Ask for a decision (accept number or keyword):
+   - `1` (`yes`): stage only that group and commit
+   - `2` (`edit`): revise message/scope and ask again
+   - `3` (`skip`): leave group uncommitted and move on
+   - `4` (`split`): break the group into smaller commits and repropose
 5. After each accepted commit:
    - commit immediately
    - report commit hash + title + short "what changed" summary
@@ -139,7 +140,7 @@ Use after all intended commits are done.
      - capture any key decisions or gotchas discovered during completion
    - stage all resulting tracking changes together
    - propose exactly one `🧹 chore: finalise f-## ...` commit (use short finalise body)
-   - ask for user confirmation before committing (same yes/edit/skip options as commit mode)
+   - ask for user confirmation before committing (same `1`/`2`/`3` or yes/edit/skip options as commit mode)
    - if no tracking changes are needed, explicitly state why and skip the finalise commit
    - do not use this finalise commit to catch up missed atomic PRD/memory updates
    - only do that if the user explicitly approves

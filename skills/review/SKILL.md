@@ -18,6 +18,7 @@ Review one change set and return a decision-led report.
 - Update `tasks/memory.md` only for durable review outcomes.
 - Examples: recurring risks, release-critical gotchas, or confirmed follow-up decisions.
 - Do not invent test results; run checks or call out missing evidence.
+- When asking for user decisions (for example base branch/scope clarification), provide numbered short-reply options.
 
 ---
 

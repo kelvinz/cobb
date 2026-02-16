@@ -23,6 +23,7 @@ When invoked directly, use for explicit backfill/repair/cleanup requests.
 - Prefer inline updates during active skills (`prd`, `design`, `implement`, `review`, `commit`).
 - Update when worthwhile information emerges.
 - Links are optional and high-signal only; see Links Format below.
+- When asking users for decisions/clarifications, provide numbered short-reply options.
 
 ### What goes where
 - PRD files (`tasks/f-##-*.md`) = what we intend to do (the spec + progress checklist for one feature)
@@ -63,7 +64,7 @@ Avoid:
 3. Prepend new entries at the top of each section (newest-first order).
 4. Prefer referencing stable feature IDs (`f-##`) and avoid file paths (paths can change after archiving/compaction).
 5. If a link materially improves context, add or update entries in `## Links (optional)` using the links format.
-6. If it's unclear what to record, ask one clarifying question.
+6. If it's unclear what to record, ask one clarifying question with numbered options that allow a short reply.
 
 ---
 

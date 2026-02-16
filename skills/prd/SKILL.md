@@ -18,6 +18,7 @@ Create, update, or list PRDs. Each PRD is a self-contained feature spec with sta
 - Write the PRD so a junior dev (or another AI) can implement it without extra context.
 - Use plain language, explicit edge cases, and verifiable acceptance criteria.
 - Do not use Markdown tables (use checklists + bullets).
+- When asking users for decisions, always provide numbered options with low-keystroke reply formats.
 - Treat memory capture as built-in.
 - If durable decisions are made, update `tasks/memory.md` in this step.
 - Do not defer to a separate memory pass.
@@ -44,7 +45,7 @@ Create, update, or list PRDs. Each PRD is a self-contained feature spec with sta
    - Scan existing PRD files in `tasks/` and `tasks/archive/` for the highest `f-##` number.
    - New PRD gets `(max existing f-##) + 1`.
    - For updates, preserve the existing ID.
-4. **Ask clarifying questions** only when needed (A/B/C/D options, up to ~7).
+4. **Ask clarifying questions** only when needed (numbered A/B/C/D options, up to ~7, answerable like `1A, 2C`).
 5. **Determine PRD file path:**
    - Look for an existing active PRD matching the feature ID in `tasks/` (`tasks/f-##-*.md`).
    - If found, use it (update in place).
