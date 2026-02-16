@@ -1,11 +1,11 @@
 ---
-name: memory
-description: "Maintain durable project memory in `tasks/memory.md` (state, decisions, milestones, gotchas, optional context links), inline during other workflows or standalone for cleanup/backfill. Triggers: update memory.md, decision log, record project context, capture high-value reference links that improve memory handoff."
+name: context
+description: "Maintain durable project context in `tasks/context.md` (state, decisions, milestones, gotchas, optional context links), inline during other workflows or standalone for cleanup/backfill. Triggers: update context.md, decision log, record project context, capture high-value reference links that improve context handoff."
 ---
 
-# memory
+# context
 
-Maintain `tasks/memory.md` as a living, durable "what matters" record for the project.
+Maintain `tasks/context.md` as a living, durable "what matters" record for the project.
 Write it for someone taking over the project (or a future session resuming later).
 Explain where things are, what was decided, and what to watch before proceeding.
 Treat this as shared behaviour embedded in other skills, not a mandatory standalone step in normal workflows.
@@ -18,16 +18,16 @@ When invoked directly, use for explicit backfill/repair/cleanup requests.
 
 - Do not store secrets (API keys, tokens, credentials).
 - Keep entries short and durable; avoid duplicating long PRDs or code.
-- Update `tasks/memory.md` in place; do not rewrite the whole file.
+- Update `tasks/context.md` in place; do not rewrite the whole file.
 - Write in plain language so a junior dev (or another AI) can take over without extra context.
 - Prefer inline updates during active skills (`prd`, `design`, `implement`, `review`, `commit`).
 - Update when worthwhile information emerges.
 - Links are optional and high-signal only; see Links Format below.
-- When asking users for decisions/clarifications, provide numbered short-reply options.
+- When asking users for decisions/clarifications, provide numbered short-reply options (e.g. `1`, `2`, `3`).
 
 ### What goes where
 - PRD files (`tasks/f-##-*.md`) = what we intend to do (the spec + progress checklist for one feature)
-- `tasks/memory.md` = project definition, durable decisions, milestones, gotchas, and "where we are now"
+- `tasks/context.md` = project definition, durable decisions, milestones, gotchas, and "where we are now"
 
 ---
 
@@ -59,56 +59,25 @@ Avoid:
 
 ## Workflow
 
-1. Ensure `tasks/` exists; create `tasks/memory.md` if missing.
+1. Ensure `tasks/` exists; create `tasks/context.md` if missing.
+   - Use `references/context-template.md` as the default file template when creating it.
 2. Add short entries (1–3 lines) in the most relevant section.
 3. Prepend new entries at the top of each section (newest-first order).
 4. Prefer referencing stable feature IDs (`f-##`) and avoid file paths (paths can change after archiving/compaction).
 5. If a link materially improves context, add or update entries in `## Links (optional)` using the links format.
-6. If it's unclear what to record, ask one clarifying question with numbered options that allow a short reply.
+6. If it's unclear what to record, ask one clarifying question with numbered short-reply options (e.g. `1`, `2`, `3`).
 
 ---
 
-## `tasks/memory.md` Template (Markdown)
+## References
 
-If `tasks/memory.md` does not exist, create it with this structure:
-
-```markdown
-# Project Memory: <project name>
-
-## Project
-- One-liner: …
-- Target users: …
-- Problem: …
-- Success metrics: …
-- Constraints (optional): …
-- Non-goals (optional): …
-
-## Current state
-- Where we are: …
-- Next up: f-##
-- Blockers / risks: …
-
-## Key decisions
-- <decision>
-  - Why: …
-  - Tradeoffs: …
-
-## Completed
-- f-## <feature name> — Completed and archived
-  - Notes: …
-
-## Notes / gotchas
-- …
-
-## Links (optional)
-- [Technical reference](docs/<topic>.md) — Supporting implementation context for future sessions
-```
+- `references/context-template.md`: default structure for creating `tasks/context.md`.
 
 ---
 
 ## Output
 
-- Create or update `tasks/memory.md`.
+- Create or update `tasks/context.md`.
 - **Inline** (from another skill): reply with a short summary of what was added/updated. Let the calling skill's output format take precedence.
 - **Standalone** (direct invocation): reply with the file path, summary, and a status block:
   - **Files changed**: list of created/updated files

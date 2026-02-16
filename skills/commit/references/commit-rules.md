@@ -63,5 +63,5 @@ Finalise:
 
 Actions:
 - archived PRD to `tasks/archive/` (if applicable)
-- updated `tasks/memory.md` completed section (if applicable)
+- updated `tasks/context.md` completed section (if applicable)
 ```

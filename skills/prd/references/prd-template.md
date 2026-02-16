@@ -132,7 +132,7 @@ Before saving the PRD:
 - [ ] If updating an existing PRD, keep existing story/task checkboxes (do not reset them).
 - [ ] PRD Summary includes `Type:`, `Status:`, and `Priority:`.
 - [ ] If the feature has dependencies, they are referenced by ID and included in "Dependencies & Constraints".
-- [ ] PRD is consistent with `tasks/memory.md` (or `tasks/memory.md` was updated in this run).
+- [ ] PRD is consistent with `tasks/context.md` (or `tasks/context.md` was updated in this run).
 - [ ] Goals are measurable and directly tied to success metrics.
 - [ ] Non-goals are explicit (prevent scope creep).
 - [ ] User stories are checklist items with verifiable acceptance criteria.

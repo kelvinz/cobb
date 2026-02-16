@@ -16,14 +16,14 @@ In this repo's delivery flow, `design` is an optional step between `prd` and `im
 
 - Use the feature PRD (`tasks/f-##-*.md`) as the scope source when available.
 - Do not change feature scope in `design`; route scope changes back through `prd`.
-- If `tasks/memory.md` exists, record durable design decisions that implementation or review will depend on.
+- If `tasks/context.md` exists, record durable design decisions that implementation or review will depend on.
 - Produce implementation-ready outputs (states, tokens, interaction notes).
 - Let `implement` execute with minimal reinterpretation.
 
 ## Core Workflow
 
 1. Select the mode from `references/modes.md`.
-2. Check for project-specific design memory files and follow them.
+2. Check for project-specific design-system patterns in `tasks/context.md` and follow them.
 3. Write a mandatory design brief.
 4. Run domain exploration before proposing direction.
 5. Build with `references/craft-system.md`.
@@ -34,8 +34,7 @@ In this repo's delivery flow, `design` is an optional step between `prd` and `im
 
 ## Pattern Memory
 
-When a project keeps design memory (for example, a local `system.md`),
-treat it as source-of-truth.
+When `tasks/context.md` records design-system patterns, treat them as source-of-truth.
 Examples: established spacing, depth, or component rules.
 
 Add patterns to memory when all conditions are true:

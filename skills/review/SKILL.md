@@ -15,10 +15,10 @@ Review one change set and return a decision-led report.
 - Do not implement or modify code.
 - Do not commit, merge, push, or delete branches.
 - Do not update PRD tracking files here.
-- Update `tasks/memory.md` only for durable review outcomes.
+- Update `tasks/context.md` only for durable review outcomes.
 - Examples: recurring risks, release-critical gotchas, or confirmed follow-up decisions.
 - Do not invent test results; run checks or call out missing evidence.
-- When asking for user decisions (for example base branch/scope clarification), provide numbered short-reply options.
+- When asking for user decisions (e.g. base branch/scope clarification), provide numbered short-reply options (e.g. `1`, `2`, `3`).
 
 ---
 
@@ -51,11 +51,11 @@ Review one change set and return a decision-led report.
 5. Produce the report with a clear recommendation:
    - `Good to commit: Yes` or `Good to commit: No`
    - if decision is `No`, include explicit fix items and ask the user to address them before rerunning `review`
-6. Evaluate memory-worthy review outcomes and update `tasks/memory.md` inline when needed:
+6. Evaluate context-worthy review outcomes and update `tasks/context.md` inline when needed:
    - systemic risks likely to recur
    - key security or data-handling decisions
    - durable follow-up decisions that affect future work
-   - if no durable outcome exists, mark memory as skipped with reason in the report
+   - if no durable outcome exists, mark context as skipped with reason in the report
 
 ---
 
@@ -80,41 +80,15 @@ Review one change set and return a decision-led report.
 
 ---
 
-## Report Template
+## References
 
-```text
-Review Report
-Decision:
-- Good to commit: Yes | No
-
-Blockers (must fix):
-- …
-
-Suggestions (nice to have):
-- …
-
-Missing evidence:
-- …
-
-Security notes:
-- …
-
-Regression risks / watch-outs:
-- …
-
-Memory updates:
-- Updated: <summary> | Skipped: <reason>
-
-Recommended next step:
-- If Good to commit=No: ask user to fix blockers, then rerun `review`.
-- If Good to commit=Yes: run `commit` (`commit` mode for new commits, `finalise` mode when ready to merge).
-```
+- `references/report-template.md`: standard report structure for review outputs.
 
 ---
 
 ## Output
 
-- Return the review report with explicit memory update status.
+- Return the review report with explicit context update status.
 - Keep the decision explicit and unambiguous.
 - End with a short status block:
   - **Files changed**: list of created/updated files

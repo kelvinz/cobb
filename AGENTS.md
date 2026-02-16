@@ -3,13 +3,14 @@
 This codebase should get easier to change over time.
 Prefer maintainability and clarity over short-term speed.
 Leave it better than you found it.
+If `SOUL.md` exists in the repo root, read it first; it defines response character and voice.
 
 ---
 
 # SELF IMPROVEMENT LOOP
 
 ## Learn From Every Session
-- At the start of every task, check for `LESSONS.md` in the repo root
+- At the start of every task, check for `MEMORY.md` in the repo root
 - If it exists, read it before planning or writing code
 - Track mistakes and my preferences so future turns improve
 - Capture only substantive, reusable lessons
@@ -18,7 +19,7 @@ Leave it better than you found it.
 - Apply lessons unless higher-priority instructions override them
 - Merge duplicates and replace stale/conflicting lessons
 - Never store secrets, tokens, credentials, or private data
-- Store lessons in `LESSONS.md` at the repo root; create if missing, append otherwise
+- Store lessons in `MEMORY.md` at the repo root; create if missing, append otherwise
 
 ---
 

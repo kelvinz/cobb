@@ -19,9 +19,9 @@ Create, update, or list PRDs. Each PRD is a self-contained feature spec with sta
 - Use plain language, explicit edge cases, and verifiable acceptance criteria.
 - Do not use Markdown tables (use checklists + bullets).
 - When asking users for decisions, always provide numbered options with low-keystroke reply formats.
-- Treat memory capture as built-in.
-- If durable decisions are made, update `tasks/memory.md` in this step.
-- Do not defer to a separate memory pass.
+- Treat context capture as built-in.
+- If durable decisions are made, update `tasks/context.md` in this step.
+- Do not defer to a separate context pass.
 
 ---
 
@@ -35,11 +35,11 @@ Create, update, or list PRDs. Each PRD is a self-contained feature spec with sta
 ## Workflow — Create / Update
 
 1. **Determine intent:**
-   - **New project** (no `tasks/memory.md` or empty): ask project-definition questions, initialise `tasks/memory.md` with project gist, then write the first PRD.
+   - **New project** (no `tasks/context.md` or empty): ask project-definition questions, initialise `tasks/context.md` with project gist, then write the first PRD.
    - **New PRD** (project exists): proceed to PRD creation.
    - **Update existing PRD**: locate the existing PRD file and edit in place.
 2. **Read context:**
-   - If `tasks/memory.md` exists, skim project gist, key decisions, and notes/gotchas.
+   - If `tasks/context.md` exists, skim project gist, key decisions, and notes/gotchas.
    - Avoid conflicts with prior decisions.
 3. **Assign feature ID:**
    - Scan existing PRD files in `tasks/` and `tasks/archive/` for the highest `f-##` number.
@@ -56,8 +56,8 @@ Create, update, or list PRDs. Each PRD is a self-contained feature spec with sta
    - `Priority:` uses P0 (critical), P1 (high), P2 (medium), P3 (low).
    - Ensure implementation progress is trackable via checklist items.
    - For UI/UX-heavy features, include expected design inputs and state whether `design` should run before `implement`.
-7. **Update memory:**
-   - Update project gist in `tasks/memory.md` if this is the first PRD or project scope changed.
+7. **Update context:**
+   - Update project gist in `tasks/context.md` if this is the first PRD or project scope changed.
    - Capture any durable decisions or constraints.
 8. **Reply** with updated file paths and a short change summary.
 
@@ -139,7 +139,7 @@ Use `references/prd-template.md` as the default PRD template and checklist.
 
 - Create or reuse `tasks/`.
 - Save/update the PRD at the chosen path.
-- Update `tasks/memory.md` when durable decisions or project scope changes warrant it.
+- Update `tasks/context.md` when durable decisions or project scope changes warrant it.
 - For UI/UX-heavy PRDs, recommend `design` (optional) before `implement`.
 - Suggest the next action:
   - If `Status: draft`, suggest refining to `ready`.
@@ -162,4 +162,4 @@ Before saving:
 - [ ] Each feature has a user-visible outcome and explicit scope boundaries (goals + non-goals).
 - [ ] Dependencies reference valid feature IDs.
 - [ ] Acceptance criteria are concrete and verifiable.
-- [ ] PRD is consistent with `tasks/memory.md` (or memory was updated in this run).
+- [ ] PRD is consistent with `tasks/context.md` (or `tasks/context.md` was updated in this run).

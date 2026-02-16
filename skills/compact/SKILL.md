@@ -1,11 +1,11 @@
 ---
 name: compact
-description: "Compact `tasks/memory.md` by summarising older completed history while preserving active context. Triggers: compact memory, prune memory log, trim memory."
+description: "Compact `tasks/context.md` by summarising older completed history while preserving active context. Triggers: compact context, prune context log, trim context."
 ---
 
 # compact
 
-Keep `tasks/memory.md` short and scannable by consolidating older entries into readable summaries.
+Keep `tasks/context.md` short and scannable by consolidating older entries into readable summaries.
 
 ---
 
@@ -13,10 +13,10 @@ Keep `tasks/memory.md` short and scannable by consolidating older entries into r
 
 - Do not change product scope or implementation code.
 - Do not move or rename PRDs here; completed PRDs are archived during `commit` finalise.
-- Do not create separate memory archive files.
+- Do not create separate context archive files.
 - Ask for explicit confirmation before applying consolidation edits.
 - Always propose retention/consolidation counts first; let the user choose the final numbers.
-- When asking for user decisions, provide numbered short-reply options.
+- When asking for user decisions, provide numbered short-reply options (e.g. `1`, `2`, `3`).
 
 ---
 
@@ -24,13 +24,12 @@ Keep `tasks/memory.md` short and scannable by consolidating older entries into r
 
 1. Preflight:
    - Ensure `tasks/` exists.
-   - Inspect `tasks/memory.md`.
-   - Count items to compact:
-     - `memory`: entries in `Key decisions`, `Completed`, `Notes / gotchas`
+   - Inspect `tasks/context.md`.
+   - Count entries to compact in `tasks/context.md`: `Key decisions`, `Completed`, `Notes / gotchas`.
 2. Propose consolidation options and ask for a decision:
    - Suggest how many entries to keep in full detail vs consolidate into summary.
    - Provide recommended defaults, then allow user override (more or fewer).
-3. Compact `tasks/memory.md` in place:
+3. Compact `tasks/context.md` in place:
    - Preserve `Project` and `Current state` sections.
    - Keep the user-selected number of most recent detailed entries (entries are newest-first, so keep from the top).
    - Before consolidating, extract still-relevant risks, open questions, or gotchas
@@ -47,44 +46,21 @@ Keep `tasks/memory.md` short and scannable by consolidating older entries into r
 
 Use these as initial recommendations, then ask the user to confirm or adjust:
 
-- `tasks/memory.md`:
+- `tasks/context.md`:
   - Keep the latest 10 entries in detail across historical sections.
   - Consolidate older entries into summary.
 
 ---
 
-## Prompt Format for Threshold Choice
+## References
 
-Use a short choice prompt before edits:
-
-```text
-Proposed compact plan:
-- Memory detailed entries to keep: 15 (consolidate: 41)
-
-Reply with:
-- `1` for "use defaults", or
-- `2 <n>` for custom number (for example: `2 20`), or
-- `3` for "less", `4` for "more".
-```
-
----
-
-## Summary Patterns
-
-### `tasks/memory.md` historical-summary example
-
-```markdown
-## Historical summary
-- Earlier phase focused on onboarding, auth hardening, and export reliability.
-- Main recurring risk was cross-feature dependency ordering; mitigated by stricter finalise discipline.
-- Key tradeoff pattern: shipped simpler defaults first, then expanded configurability.
-```
+- `references/compact-templates.md`: threshold-choice prompt and historical-summary examples.
 
 ---
 
 ## Output
 
-- Update only `tasks/memory.md`.
+- Update only `tasks/context.md`.
 - Return:
   - proposed numbers and user-selected numbers
   - retained vs consolidated counts

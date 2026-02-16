@@ -13,7 +13,7 @@ Use this when `commit` runs in `finalise` mode.
 Resolve the merge strategy using this priority (highest wins):
 
 1. User explicitly requests a strategy in the current session.
-2. Repo-level merge preference declared in project `CLAUDE.md`, `AGENTS.md`, or `LESSONS.md`.
+2. Repo-level merge preference declared in `tasks/context.md`.
 3. Default: **merge-commit** (`git merge --no-ff`).
 
 ## Policy-specific merge flows

@@ -21,8 +21,8 @@ Implement a feature from a PRD.
   - If you discover out-of-scope requirements or bugs during execution, do not expand scope.
   - Create a new PRD via `prd` instead.
 - Do not reset any existing PRD checklist items when updating an existing PRD.
-- Treat memory capture as built-in.
-- When implementation yields durable decisions/gotchas, update `tasks/memory.md` in this step.
+- Treat context capture as built-in.
+- When implementation yields durable decisions/gotchas, update `tasks/context.md` in this step.
 - Use `design` as an optional companion for UI/UX-heavy work:
   - If visual direction, interaction states, or design-token choices are unclear, run `design` before coding that area.
   - If approved design artifacts already exist, proceed directly with implementation.
@@ -52,7 +52,7 @@ Implement a feature from a PRD.
        - `Type: fix` → `fix/f-##-<short-slug>`
        - `Type: chore` → `chore/f-##-<short-slug>`
        - default (`Type: feat`) → `feat/f-##-<short-slug>`
-   - If `tasks/memory.md` exists, skim key decisions / notes / gotchas relevant to this area before coding.
+   - If `tasks/context.md` exists, skim key decisions / notes / gotchas relevant to this area before coding.
    - Parse the PRD into an execution plan.
    - Include user stories, functional requirements, non-goals, risks, rollout, and testing notes.
    - Decide whether `design` is needed:
@@ -67,7 +67,7 @@ Implement a feature from a PRD.
      - If a dependency has no PRD yet, stop and use `prd` to create that dependency PRD first.
     - Override: if the user confirms dependencies are satisfied, proceed.
     - Example: dependency work merged but not yet archived.
-    - Record the override in `tasks/memory.md`.
+    - Record the override in `tasks/context.md`.
 
 3. **Execute**
    - Implement the feature as specified.
@@ -86,8 +86,8 @@ Implement a feature from a PRD.
    - If the PRD lacks checklist items for implementation progress, add a small checklist section and use it.
    - Do not reset existing checked items.
 
-6. **Update memory inline when needed**
-   - Update `tasks/memory.md` when implementation produces durable information:
+6. **Update context inline when needed**
+   - Update `tasks/context.md` when implementation produces durable information:
      - important gotchas or constraints
      - architectural/technical decisions with trade-offs
      - milestone-level completion notes worth preserving
@@ -105,7 +105,7 @@ Implement a feature from a PRD.
 
 - Update code and tests as needed.
 - Update PRD story/task checklist progress in the PRD file.
-- If you discover a durable decision/gotcha, update `tasks/memory.md` in the same run.
+- If you discover a durable decision/gotcha, update `tasks/context.md` in the same run.
 - Also update it when you complete a significant milestone.
 - Reply with:
   - PRD path
