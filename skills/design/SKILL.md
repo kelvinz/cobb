@@ -1,147 +1,114 @@
 ---
 name: design
-description: "Comprehensive workflow for creating and reviewing high-craft digital and visual design. Use when designing or refining web interfaces (landing pages, websites, dashboards, admin panels, SaaS apps, components), implementing interaction and motion systems, producing static visual artifacts (.png/.pdf posters or compositions), defining design-system tokens and reusable patterns, or auditing UI/UX/accessibility quality. Triggers: design ui, refine interface, design landing page, create visual artifact, design audit, define design tokens."
+description: "Router-first workflow for high-craft design execution across four modes: ui, ux, motion, and imagery. Use when designing or refining interfaces, structuring and auditing UX/usability/accessibility, implementing or specifying interaction motion, or producing static visual artifacts (.png/.pdf) with a matching philosophy note. Triggers: design ui, improve ux flow, run design audit, add transitions, reduce motion issues, create visual imagery, craft poster composition."
 ---
 
 # Design
 
-## Overview
-
-Create distinctive, production-grade design outcomes without defaulting to generic templates.
-Select the right mode, anchor decisions in user intent and product context, and ship with system consistency, interaction polish, and quality checks.
-
-## Workflow Integration
-
-In this repo's delivery flow, `design` is an optional step between `prd` and `implement` for UI/UX-heavy features.
-
-- Use the feature PRD (`tasks/f-##-*.md`) as the scope source when available.
-- Do not change feature scope in `design`; route scope changes back through `prd`.
-- If `tasks/context.md` exists, record durable design decisions that implementation or review will depend on.
-- Produce implementation-ready outputs (states, tokens, interaction notes).
-- Let `implement` execute with minimal reinterpretation.
+Route each design request to the correct mode, then execute that mode's output contract with shared quality constraints.
 
 ## Core Workflow
 
-1. Select the mode from `references/modes.md`.
-2. Check for project-specific design-system patterns in `tasks/context.md` and follow them.
-3. Write a mandatory design brief.
-4. Run domain exploration before proposing direction.
-5. Build with `references/craft-system.md`.
-6. Apply `references/motion.md` when interaction is in scope.
-7. For static artifacts, follow `references/static-canvas.md`.
-8. For reviews/audits, follow `references/design-audit.md`.
-9. Run quality gates before presenting output.
+1. Select a primary mode from the mode map in this file.
+2. Select one secondary mode only when the request clearly spans multiple concerns.
+3. Fill the mandatory routing brief before producing output. If inputs are missing, state explicit assumptions.
+4. Load only the reference files required for the chosen mode(s).
+5. Deliver the primary mode contract completely; add secondary mode deltas without diluting the primary outcome.
 
-## Pattern Memory
+## Mode Map
 
-When `tasks/context.md` records design-system patterns, treat them as source-of-truth.
-Examples: established spacing, depth, or component rules.
+Select one primary mode before work starts. Add one secondary mode only when needed.
 
-Add patterns to memory when all conditions are true:
+1. `ui`
+Typical request patterns: build or refine screens, components, dashboards, landing pages, settings, and app flows.
+Primary goal: ship clear and distinctive interfaces.
+Expected deliverables: working UI code, token mapping, full state coverage, concise hierarchy rationale.
+Load reference: `references/ui.md`.
+Load `references/ui-examples.md` only when concrete code examples are needed, especially for `5` or `7` tier token sets.
 
-1. the component appears 2+ times
-2. the pattern is reusable
-3. the pattern has concrete measurements worth preserving
+2. `ux`
+Typical request patterns: plan or improve flows, IA, usability, accessibility, or run design audits.
+Primary goal: improve task success, comprehension, and evidence-based quality.
+Expected deliverables: UX structure outputs or severity-ordered audit findings with concrete fixes.
+Load reference: `references/ux.md`.
 
-Do not store one-off experiments.
+3. `motion`
+Typical request patterns: define or implement transitions, microfeedback, loading, and continuity behavior.
+Primary goal: communicate state change and preserve orientation without friction.
+Expected deliverables: motion spec or code, timing/easing choices, reduced-motion fallback.
+Load reference: `references/motion.md`.
 
-## Mode Selection
+4. `imagery`
+Typical request patterns: produce posters, editorial visuals, and static compositions.
+Primary goal: deliver high-impact static visual artifacts.
+Expected deliverables: philosophy `.md` plus `.png` or `.pdf` artifact (single page unless requested).
+Load reference: `references/imagery.md`.
 
-- `product-ui`: Dashboards, admin panels, tools, app screens, settings, data-heavy interfaces.
-- `marketing-web`: Landing pages, brand websites, campaign pages.
-- `interaction-motion`: Microinteractions, transitions, loading states, feedback loops, gestures.
-- `static-canvas`: Posters, editorial pages, visual artifacts in `.png` or `.pdf`.
-- `design-audit`: Review existing UI code or screens for craft, accessibility, and guideline compliance.
+### Selection Rules
 
-When a request spans multiple modes, pick one primary mode and one secondary mode.
-Use the stricter constraint when rules conflict.
+1. Select `ui` for implementation-heavy interface design and visual system decisions.
+2. Select `ux` for information architecture, usability, accessibility, or audit-heavy requests.
+3. Select `motion` when behavior choreography is the core task.
+4. Select `imagery` for non-interactive visual composition outputs.
+5. When requests blend concerns, keep one primary mode and one secondary mode.
 
-## Mandatory Design Brief
+### Routing Decision Tree
 
-Complete this before writing code or visual output:
+Use this sequence to select the primary mode:
+
+1. If the request is for a non-interactive visual artifact (`.png`, `.pdf`, poster, editorial composition), select `imagery`.
+2. If the request is primarily about IA, usability, accessibility, or audits, select `ux`.
+3. If the request is primarily about transitions, microfeedback, choreography, or reduced-motion behavior, select `motion`.
+4. If the request is primarily about building/refining interface code, components, layout, or visual systems, select `ui`.
+
+Then add one secondary mode only when required:
+
+1. Use `ux` as secondary to `ui` when task flow or accessibility structure changes are a core part of the implementation.
+2. Use `motion` as secondary to `ui` when animation behavior is explicitly in scope.
+3. Use `motion` as secondary to `ux` when motion quality or reduced-motion compliance is a key audit axis.
+4. Keep `imagery` standalone by default; add a secondary mode only when the user explicitly asks for a companion interactive adaptation.
+
+### Complexity Budget
+
+Choose one level early and stay consistent:
+
+1. `baseline`: practical, concise, low-risk execution.
+2. `expressive`: clear personality with controlled complexity.
+3. `maximal`: high visual and motion complexity with strict quality control.
+
+Default to `baseline` for internal or time-constrained work. Default to `expressive` for most public-facing work. Use `maximal` only when the brief explicitly rewards spectacle and budget supports it.
+
+## Mandatory Routing Brief
+
+Complete this brief before solution design:
 
 ```text
-Mode:
-Human:
-Primary task:
+Primary mode:
+Secondary mode (optional):
+Request type (new design, refinement, audit, artifact):
+Human and audience:
+Primary task to enable:
 Context and constraints:
-Desired tone:
-Signature element:
-Three defaults to reject:
+Complexity budget (baseline | expressive | maximal):
+Output artifact(s) required:
+Success criteria:
 ```
 
-If critical context is missing, ask concise follow-up questions first.
-When asking for user choices (mode, constraints, direction), provide numbered options and accept short replies like `1`, `2`, or `1A`.
-If answers are unavailable, make explicit assumptions and proceed.
+## Global Non-Negotiables
 
-## Mandatory Domain Exploration
+Apply these across all modes:
 
-Produce all four before proposing direction:
-
-1. `Domain`: at least 5 domain concepts, metaphors, or vocabulary terms.
-2. `Color world`: at least 5 domain-grounded colors from the product or brand world.
-3. `Signature`: one design element that feels specific to this problem.
-4. `Defaults and replacements`: 3 default patterns to avoid and what replaces them.
-
-## Per-Component Checkpoint
-
-Before implementing each major component, state:
-
-```text
-Intent:
-Palette:
-Depth:
-Surfaces:
-Typography:
-Spacing:
-```
-
-If any line has no clear reason, revise before coding.
-
-## Design Principles
-
-1. Make every major decision explainable with a concrete `why`.
-2. Keep color, typography, spacing, and depth inside one coherent system.
-3. Prefer expressive originality without sacrificing usability.
-4. Keep hierarchy legible when squinting or stepping back.
-5. Include complete interaction states when relevant.
-   States: default, hover, active, focus, disabled, loading, empty, error.
-6. Preserve accessibility and performance as non-negotiable constraints.
-7. Present decisions and outcomes directly; avoid unnecessary process narration.
-
-## Conflict Resolution Rules
-
-1. Professional utility interfaces prioritize clarity over theatrics.
-   Use subtle layering, restrained motion, and low-noise color.
-2. Marketing and brand-forward pages can use stronger expression.
-   Use bolder type, richer backgrounds, and dramatic composition.
-3. Use non-bouncy easing for serious product flows.
-4. Use spring-like motion for playful or direct-manipulation moments only.
-5. Scale motion intensity with context:
-   utility workflows need restraint, hero moments can carry more expression.
-6. Decoration is valid only when it supports hierarchy, emphasis, comprehension, or brand story.
-7. Use native controls by default for semantics and accessibility.
-   Use custom controls only when native rendering blocks required styling/behavior.
-   Preserve accessibility semantics when custom controls are used.
-
-## Quality Gates
-
-Run all gates before final output:
-
-1. `Swap test`: replacing major choices with defaults should clearly degrade the concept.
-2. `Squint test`: hierarchy remains clear; no harsh visual noise dominates.
-3. `Signature test`: signature appears in at least 5 concrete design decisions.
-4. `Token test`: color, spacing, and type values map to a coherent token system.
-5. `Content coherence`: text, data, and context read as one believable story.
-6. `State completeness`: interactive and data states are fully covered.
-7. `Accessibility`: contrast, keyboard reachability, focus visibility, reduced-motion support.
-8. `Responsiveness`: layout and type remain intentional on mobile and desktop.
-9. `Performance`: animation relies on `transform` and `opacity` where possible.
+1. Preserve accessibility fundamentals (contrast, keyboard reachability, visible focus, reduced-motion support).
+2. Preserve responsive intent across mobile and desktop where screens are involved.
+3. Preserve performance by preferring efficient rendering and animation primitives.
+4. Cover required interaction and data states for any interactive surface.
+5. Keep decisions explainable with concrete rationale tied to the request and constraints.
+6. Layouts must tolerate longer copy, dynamic data, and localisation (wrapping, truncation rules, min/max widths).
 
 ## References
 
-- `references/modes.md`: mode map, output contracts, and complexity budget.
-- `references/craft-system.md`: token architecture, depth, typography, spacing, and anti-default craft checks.
-- `references/motion.md`: timing scales, easing decisions, motion patterns, and reduced-motion requirements.
-- `references/static-canvas.md`: static artifact workflow for philosophy-led visual compositions.
-- `references/design-audit.md`: audit workflow, checklist, and guideline-based review instructions.
+- `references/ui.md`: interface craft system, tokens, component rules, output contract, and quality checks.
+- `references/ui-examples.md`: concrete Tailwind and component examples for 3/5/7 tier token systems.
+- `references/ux.md`: UX structure, usability/accessibility checks, and audit workflow/report format.
+- `references/motion.md`: motion purpose, timing/easing, performance, accessibility, and motion delivery contract.
+- `references/imagery.md`: static visual artifact workflow and required output format.
