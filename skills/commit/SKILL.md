@@ -14,7 +14,8 @@ Commit changes in atomic steps, then finalise and clean up the feature branch wh
 - Require user confirmation before every commit.
 - For every atomic commit proposal, provide a proposed title.
 - Provide a proposed body before asking for approval.
-- When asking for a user decision, provide numbered short-reply options (for example: `1`, `2`, `3`, `4`).
+- When asking for a single user decision, provide numbered short-reply options (for example: `1`, `2`, `3`, `4`).
+- For bundled finalise decisions, use field+choice codes (for example: `1A`, `2B`, `3A`) so users can reply in one line.
 - Keep commits atomic; if a title needs "and", split the change set.
 - Never mix unrelated files in one commit.
 - Determine commit `type` from the actual diff intent, not from branch name, file paths, or habit.
@@ -23,7 +24,8 @@ Commit changes in atomic steps, then finalise and clean up the feature branch wh
 - Examples: `feat` + `fix`, `fix` + `chore`.
 - Never add AI attribution or `Co-authored-by` trailers unless the user explicitly asks.
 - Do not push to remote without explicit user confirmation.
-- Ask for the merge target branch during finalise mode.
+- In finalise mode, collect merge target, merge strategy, push choice, and local/remote branch deletion choices in one decision prompt.
+- Treat explicit yes/no decisions from that prompt as confirmation; only ask follow-ups for missing or conflicting inputs.
 - Do not assume `main`; it may be `dev` or another branch.
 - Before final merge, sync with the target branch and resolve any conflicts.
 - Use `review` as a quality gate before commit/finalise when needed.
@@ -145,19 +147,33 @@ Use after all intended commits are done.
    - if no tracking changes are needed, explicitly state why and skip the finalise commit
    - do not use this finalise commit to catch up missed atomic PRD/context updates
    - only do that if the user explicitly approves
-4. Ask the user to confirm the target branch for merge (for example: `main`, `dev`, `release/*`).
+4. Collect one finalise decision bundle before merge/cleanup:
+   - ask once for: target branch, merge strategy, push-after-merge, delete-local-branch, delete-remote-branch
+   - merge strategy choices: `auto` (policy-resolved), `merge-commit`, `linear-history`, `squash`, `rebase`
+   - present options with field+choice codes:
+     - `1A`/`1B`/... for target branch choices, and include `1X` for custom branch text
+     - `2A`=`auto`, `2B`=`merge-commit`, `2C`=`linear-history`, `2D`=`squash`, `2E`=`rebase`
+     - `3A`=`yes push-after-merge`, `3B`=`no push-after-merge`
+     - `4A`=`yes delete-local-branch`, `4B`=`no delete-local-branch`
+     - `5A`=`yes delete-remote-branch`, `5B`=`no delete-remote-branch`
+   - accept compact replies like `1B 2A 3A 4B 5B`, plus keyword/freeform equivalents
+   - if any field is missing or ambiguous, ask only for the missing field(s)
+   - treat explicit yes/no values in this bundle as the required confirmations for push and branch deletion
 5. Confirm finalise gate before merging:
    - require `review: Good to commit: Yes`; if missing, run `review` before merging
    - ensure the branch is synced with the target; if not, sync and rerun `review`
 6. Resolve the merge strategy per `references/finalise-policy.md`.
-   Present the resolved strategy as a suggestion and let the user confirm or override before merging.
-7. Apply branch safety checks before deletion:
+   - if bundle strategy is `auto`, present the resolved strategy as a suggestion and let the user confirm or override
+   - if bundle strategy is explicit, use it directly unless policy/safety checks require an override
+7. Merge feature branch into the target branch using the confirmed strategy.
+8. If `push-after-merge` is `yes`, push target branch to remote; if `no`, skip and state that remote update is pending.
+9. Apply branch safety checks before deletion:
    - confirm `<feature-branch>` is not the target branch
    - confirm `<feature-branch>` is not the default branch
    - confirm current HEAD is not `<feature-branch>` when deleting it
-8. Delete completed feature branch only after explicit user confirmation:
-   - local: `git branch -d <feature-branch>`
-   - remote: `git push origin --delete <feature-branch>`
+10. Delete completed feature branch according to bundle confirmations:
+   - if `delete-local-branch` is `yes`: `git branch -d <feature-branch>`; otherwise skip
+   - if `delete-remote-branch` is `yes`: `git push origin --delete <feature-branch>`; otherwise skip
 
 ---
 

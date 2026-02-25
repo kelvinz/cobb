@@ -5,6 +5,7 @@ Use this when `commit` runs in `finalise` mode.
 ## Preconditions
 
 - `review` returns `Good to commit: Yes`
+- finalise decision bundle is collected (target branch, merge strategy, push/delete choices)
 - target branch is user-confirmed
 - feature branch is not default/base
 
