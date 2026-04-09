@@ -16,6 +16,7 @@ Commit changes in atomic steps, then finalise and clean up the feature branch wh
 - Provide a proposed body before asking for approval.
 - When asking for a single user decision, provide numbered short-reply options (for example: `1`, `2`, `3`, `4`).
 - For bundled finalise decisions, use field+choice codes (for example: `1A`, `2B`, `3A`) so users can reply in one line.
+- For bundled finalise decisions, also offer `0` (`default`) as a short reply. Treat `0` and `default` as `1A 2B 3B 4B 5B`.
 - Keep commits atomic; if a title needs "and", split the change set.
 - Never mix unrelated files in one commit.
 - Determine commit `type` from the actual diff intent, not from branch name, file paths, or habit.
@@ -150,13 +151,14 @@ Use after all intended commits are done.
 4. Collect one finalise decision bundle before merge/cleanup:
    - ask once for: target branch, merge strategy, push-after-merge, delete-local-branch, delete-remote-branch
    - merge strategy choices: `auto` (policy-resolved), `merge-commit`, `linear-history`, `squash`, `rebase`
+   - include a default shortcut line: `0` / `default` = `1A 2B 3B 4B 5B`
    - present options with field+choice codes:
-     - `1A`/`1B`/... for target branch choices, and include `1X` for custom branch text
+     - `1A`/`1B`/... for target branch choices; make `1A` the resolved default target branch and include `1X` for custom branch text
      - `2A`=`auto`, `2B`=`merge-commit`, `2C`=`linear-history`, `2D`=`squash`, `2E`=`rebase`
      - `3A`=`yes push-after-merge`, `3B`=`no push-after-merge`
      - `4A`=`yes delete-local-branch`, `4B`=`no delete-local-branch`
      - `5A`=`yes delete-remote-branch`, `5B`=`no delete-remote-branch`
-   - accept compact replies like `1B 2A 3A 4B 5B`, plus keyword/freeform equivalents
+   - accept compact replies like `1B 2A 3A 4B 5B`, `0`, or `default`, plus keyword/freeform equivalents
    - if any field is missing or ambiguous, ask only for the missing field(s)
    - treat explicit yes/no values in this bundle as the required confirmations for push and branch deletion
 5. Confirm finalise gate before merging:

@@ -1,6 +1,6 @@
 ---
 name: review
-description: "Review branch changes against a base branch for correctness, security, tests, and scope, then return a clear go/no-go decision. Triggers: review, readiness check, pre-commit review, pre-finalise review."
+description: "Review the current branch changes for correctness, security, tests, and scope, then return a clear go/no-go decision. Triggers: review, readiness check, pre-commit review, pre-finalise review."
 ---
 
 # review
@@ -11,35 +11,44 @@ Review one change set and return a decision-led report.
 
 ## Guardrails
 
-- Review branch changes against the selected base branch.
+- Review changes made on the currently checked-out branch.
 - Do not implement or modify code.
 - Do not commit, merge, push, or delete branches.
-- Block approval if the branch is behind the base branch; require sync + re-review.
+- Do not ask the user which branch to check against.
+- Resolve the comparison base automatically from the repository default/base branch.
+- Block approval if the current branch is behind the resolved comparison base; require sync + re-review.
 - Do not update PRD tracking files here.
 - Update `tasks/context.md` only for durable review outcomes.
 - Examples: recurring risks, release-critical gotchas, or confirmed follow-up decisions.
 - Do not invent test results; run checks or call out missing evidence.
-- When asking for user decisions (e.g. base branch/scope clarification), provide numbered short-reply options (e.g. `1`, `2`, `3`).
+- When asking for user decisions (e.g. scope clarification), provide numbered short-reply options (e.g. `1`, `2`, `3`).
 
 ---
 
 ## Inputs
 
-- base branch (default: repository default branch resolved from `origin/HEAD`; ask if unclear)
+- current branch (resolved from `git branch --show-current`)
+- comparison base (default/base branch resolved automatically; do not prompt for it)
 - optional PRD path (if scope validation is needed)
 
 ---
 
 ## Workflow
 
-1. Confirm base branch and scope target.
+1. Resolve current branch and comparison base automatically.
+   - Prefer the repository default branch resolved from `origin/HEAD`.
+   - Otherwise use the local default branch (`main`, `master`, or `dev`) when exactly one exists.
+   - If the comparison base cannot be resolved, return `Good to commit: No` with the exact commands/data needed to resolve it.
 2. Collect context:
    - `git fetch --all --prune` to refresh remote state
-   - `git diff "<base>...HEAD"`
-   - `git log "<base>..HEAD" --oneline`
+   - `git diff "<comparison-base>...HEAD"`
+   - `git log "<comparison-base>..HEAD" --oneline`
+   - `git merge-base --is-ancestor "<comparison-base>" HEAD`
+   - `git diff --staged`
+   - `git diff`
    - `git status --short`
 3. Compare the change set against required behaviour:
-   - If behind `<base>`, return `Good to commit: No` and require sync before re-review.
+   - If `git merge-base --is-ancestor "<comparison-base>" HEAD` fails, return `Good to commit: No` and require sync before re-review.
    - correctness and edge cases
    - security risks and data handling
    - test depth and regression risk
