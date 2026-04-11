@@ -16,7 +16,7 @@ Commit changes in atomic steps, then finalise and clean up the feature branch wh
 - Provide a proposed body before asking for approval.
 - When asking for a single user decision, provide numbered short-reply options (for example: `1`, `2`, `3`, `4`).
 - For bundled finalise decisions, use field+choice codes (for example: `1A`, `2B`, `3A`) so users can reply in one line.
-- For bundled finalise decisions, also offer `0` (`default`) as a short reply. Treat `0` and `default` as `1A 2B 3B 4B 5B`.
+- For bundled finalise decisions, also offer `0` (`default`) as a short reply. Treat `0` and `default` as `1A 2B 3B 4A 5B`.
 - Keep commits atomic; if a title needs "and", split the change set.
 - Never mix unrelated files in one commit.
 - Determine commit `type` from the actual diff intent, not from branch name, file paths, or habit.
@@ -151,7 +151,7 @@ Use after all intended commits are done.
 4. Collect one finalise decision bundle before merge/cleanup:
    - ask once for: target branch, merge strategy, push-after-merge, delete-local-branch, delete-remote-branch
    - merge strategy choices: `auto` (policy-resolved), `merge-commit`, `linear-history`, `squash`, `rebase`
-   - include a default shortcut line: `0` / `default` = `1A 2B 3B 4B 5B`
+   - include a default shortcut line: `0` / `default` = `1A 2B 3B 4A 5B`
    - present options with field+choice codes:
      - `1A`/`1B`/... for target branch choices; make `1A` the resolved default target branch and include `1X` for custom branch text
      - `2A`=`auto`, `2B`=`merge-commit`, `2C`=`linear-history`, `2D`=`squash`, `2E`=`rebase`
