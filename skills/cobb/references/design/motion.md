@@ -64,7 +64,7 @@ Use consistent easing tokens:
 
 Use `--ease-spring` only for playful or direct-manipulation moments.
 
-When working alongside `ui` mode, these values map to the Tailwind motion token tier set defined in `references/ui.md` -> `Tailwind Config Pattern`. Default mapping uses `sm: 150ms`, `md: 250ms`, `lg: 400ms` and matching easing tokens.
+When working alongside `ui` mode, these values map to the Tailwind motion token tier set defined in `references/design/ui.md` -> `Tailwind Config Pattern`. Default mapping uses `sm: 150ms`, `md: 250ms`, `lg: 400ms` and matching easing tokens.
 
 ## Performance Rules
 

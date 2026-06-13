@@ -1,11 +1,8 @@
----
-name: commit
-description: "Create atomic user-approved commits with `feat`/`fix`/`chore` titles. Include inline PRD checklist and context updates per atomic commit. Finalise branch merge/cleanup when requested. Triggers: commit changes, split commits, finalise branch, commit message."
----
-
 # commit
 
 Commit changes in atomic steps, then finalise and clean up the feature branch when requested.
+
+Shared guardrails from the cobb router apply (built-in context capture, handoff-friendly, never claim untested checks passed, status block). The rules below are commit-specific.
 
 ---
 
@@ -29,7 +26,7 @@ Commit changes in atomic steps, then finalise and clean up the feature branch wh
 - Treat explicit yes/no decisions from that prompt as confirmation; only ask follow-ups for missing or conflicting inputs.
 - Do not assume `main`; it may be `dev` or another branch.
 - Before final merge, sync with the target branch and resolve any conflicts.
-- Use `review` as a quality gate before commit/finalise when needed.
+- Use `/cobb review` as a quality gate before commit/finalise when needed.
 - Capture context inline: update `tasks/context.md` during commit/finalise when durable info appears.
 - Do not add a separate context-only step.
 - Keep PRD checklist updates inside the atomic commit that completes that work.
@@ -39,11 +36,10 @@ Commit changes in atomic steps, then finalise and clean up the feature branch wh
 - If no tracking changes are needed, skip the finalise commit and state why.
 - Use finalise tracking for closeout only.
 - Do not retroactively log completed atomic work unless the user explicitly asks.
-- Follow the merge strategy resolution order in `references/finalise-policy.md`.
+- Follow the merge strategy resolution order in `references/templates/finalise-policy.md`.
 - Never delete the base/default branch.
 - Never delete the currently checked-out branch.
 - Require explicit user confirmation before deleting local or remote branches.
-- Do not claim tests passed or checks succeeded without actually running them; if you didn't run it, say so.
 
 ---
 
@@ -75,7 +71,7 @@ Use a different emoji only if it more precisely matches the change.
 
 ### Type and body guidance (required)
 
-Use the detailed rubric and templates in `references/commit-rules.md` for:
+Use the detailed rubric and templates in `references/templates/commit-rules.md` for:
 
 - selecting `feat` vs `fix` vs `chore`
 - classifying mixed-intent diffs
@@ -162,9 +158,9 @@ Use after all intended commits are done.
    - if any field is missing or ambiguous, ask only for the missing field(s)
    - treat explicit yes/no values in this bundle as the required confirmations for push and branch deletion
 5. Confirm finalise gate before merging:
-   - require `review: Good to commit: Yes`; if missing, run `review` before merging
-   - ensure the branch is synced with the target; if not, sync and rerun `review`
-6. Resolve the merge strategy per `references/finalise-policy.md`.
+   - require `review: Good to commit: Yes`; if missing, run `/cobb review` before merging
+   - ensure the branch is synced with the target; if not, sync and rerun `/cobb review`
+6. Resolve the merge strategy per `references/templates/finalise-policy.md`.
    - if bundle strategy is `auto`, present the resolved strategy as a suggestion and let the user confirm or override
    - if bundle strategy is explicit, use it directly unless policy/safety checks require an override
 7. Merge feature branch into the target branch using the confirmed strategy.
@@ -184,7 +180,7 @@ Use after all intended commits are done.
 Use for urgent fixes committed directly to the default branch without a feature branch.
 
 1. Confirm on the default branch (not a feature branch).
-2. Require `review` approval before committing.
+2. Require `/cobb review` approval before committing.
 3. Follow the standard atomic commit workflow (steps 1-6 above).
    - PRD checklist: mark as `none` — hotfixes typically have no PRD.
    - Type: use `fix` unless the change is purely non-behavioural (`chore`).
@@ -212,7 +208,4 @@ After execution, provide:
 - finalise recommendation when all groups are complete
 - PRD checklist sync status (`updated` or `none` with reason)
 - context sync status (`updated` or `skipped` with reason)
-- End with a short status block:
-  - **Files changed**: list of created/updated files
-  - **Key decisions**: any assumptions or choices made (if any)
-  - **Next step**: recommended next skill or action
+- End with the shared status block (Files changed / Key decisions / Next step).

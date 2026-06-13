@@ -1,11 +1,8 @@
----
-name: prd
-description: "Create, update, or list PRDs for features, fixes, and chores. Handles project setup (first PRD) and ongoing PRD management. Each PRD is a self-contained spec with status, priority, and acceptance criteria. Triggers: prd, new feature, write prd, plan feature, create spec, list prds, update prd, add feature."
----
-
 # prd
 
 Create, update, or list PRDs. Each PRD is a self-contained feature spec with status and priority.
+
+Shared guardrails from the cobb router apply (numbered short-reply options, built-in context capture, handoff-friendly, status block). The rules below are PRD-specific.
 
 ---
 
@@ -15,13 +12,10 @@ Create, update, or list PRDs. Each PRD is a self-contained feature spec with sta
 - Keep features "PRD-sized": one feature = one PRD.
 - Split the feature if it spans >2 subsystems, >1 UI surface + backend, or >~1 day of work.
 - Prefer asking a small number of high-value questions; otherwise write a draft PRD with explicit assumptions.
-- Write the PRD so a junior dev (or another AI) can implement it without extra context.
 - Use plain language, explicit edge cases, and verifiable acceptance criteria.
 - Do not use Markdown tables (use checklists + bullets).
-- When asking users for decisions, always provide numbered options with low-keystroke reply formats.
-- Treat context capture as built-in.
-- If durable decisions are made, update `tasks/context.md` in this step.
-- Do not defer to a separate context pass.
+- PRD decision prompts are answerable in one line like `1A, 2C, 3B`.
+- If durable decisions are made, update `tasks/context.md` in this step (do not defer to a separate pass).
 
 ---
 
@@ -50,7 +44,7 @@ Create, update, or list PRDs. Each PRD is a self-contained feature spec with sta
    - Look for an existing active PRD matching the feature ID in `tasks/` (`tasks/f-##-*.md`).
    - If found, use it (update in place).
    - Otherwise use `tasks/f-##-<feature-slug>.md`.
-6. **Write or update the PRD** at the chosen path using `references/prd-template.md`:
+6. **Write or update the PRD** at the chosen path using `references/templates/prd-template.md`:
    - Set `Status:` and `Priority:` in the Summary section.
    - For new PRDs, default `Status: draft`. Prompt the user to confirm `ready` when scope is locked.
    - `Priority:` uses P0 (critical), P1 (high), P2 (medium), P3 (low).
@@ -68,7 +62,7 @@ Create, update, or list PRDs. Each PRD is a self-contained feature spec with sta
 1. Scan `tasks/` for files matching `f-##-*.md` (exclude `tasks/archive/`).
 2. For each file, extract from the Summary section: Feature ID, name, Type, Status, Priority.
 3. Display sorted by priority (P0 first), then by feature ID.
-4. Suggest the highest-priority `Status: ready` PRD as the next candidate for `implement`.
+4. Suggest the highest-priority `Status: ready` PRD as the next candidate for `/cobb implement`.
 5. No file modifications in list mode.
 
 ---
@@ -127,7 +121,7 @@ Focus on ambiguity around:
 
 ## PRD Template
 
-Use `references/prd-template.md` as the default PRD template and checklist.
+Use `references/templates/prd-template.md` as the default PRD template and checklist.
 
 - Read it before drafting a new PRD.
 - For updates to an existing PRD, edit only impacted sections and preserve existing checkbox state.
@@ -140,14 +134,11 @@ Use `references/prd-template.md` as the default PRD template and checklist.
 - Create or reuse `tasks/`.
 - Save/update the PRD at the chosen path.
 - Update `tasks/context.md` when durable decisions or project scope changes warrant it.
-- For UI/UX-heavy PRDs, recommend `design` (optional) before `implement`.
+- For UI/UX-heavy PRDs, recommend `/cobb design` (optional) before `/cobb implement`.
 - Suggest the next action:
   - If `Status: draft`, suggest refining to `ready`.
-  - If `Status: ready`, suggest `implement`.
-- End with a short status block:
-  - **Files changed**: list of created/updated files
-  - **Key decisions**: any assumptions or choices made (if any)
-  - **Next step**: recommended next skill or action
+  - If `Status: ready`, suggest `/cobb implement`.
+- End with the shared status block (Files changed / Key decisions / Next step).
 
 ---
 

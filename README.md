@@ -1,49 +1,53 @@
 # cobb
 
-A small set of skills for ongoing product development.
+A single skill for ongoing product development, split into phases you call as subcommands.
 
-Supported workflows:
-- Workflow: `prd` → `design` (optional, for UI/UX-heavy features) → `implement` → `review` (when needed) → `commit` (`commit` mode) → `review` (when needed) → `commit` (`finalise` mode) → `compact` (periodic)
+`cobb` routes each request to a phase, then runs that phase under shared guardrails. Everything lives in one skill (`skills/cobb/`) — the phases are reference files loaded on demand, not separate skills.
 
-These skills are written to be handoff-friendly: assume a junior dev (or another AI) may pick up the project later.
+## Subcommands
 
-## What this repo contains
+- `/cobb` — show the subcommand menu and recommend the next phase based on `tasks/` state (read-only; never runs a phase on its own).
+- `/cobb prd` — create, update, or list PRDs (`tasks/f-##-*.md`) with status and priority. Handles project setup (first PRD) and ongoing planning.
+- `/cobb design` — optional design router for UI/UX direction, interaction/motion, and static imagery (`ui` / `ux` / `motion` / `imagery` modes). **WIP** — all four modes are still basic and being refined; not yet considered ready.
+- `/cobb implement` — implement a PRD in the codebase and check off completed stories/tasks.
+- `/cobb review` — strict branch review for correctness, security, tests, and scope, with a clear go/no-go decision.
+- `/cobb commit` — propose atomic, user-approved commits (emoji + type + imperative summary). Also `/cobb commit finalise` (merge/branch cleanup) and `/cobb commit hotfix`.
+- `/cobb context` — maintain `tasks/context.md` inline or via explicit backfill.
+- `/cobb compact` — compact `tasks/context.md` by summarising older entries when it gets noisy.
 
-- `skills/prd/`: create, update, or list PRDs (`tasks/f-##-*.md`) with status and priority. Handles project setup and ongoing feature planning.
-- `skills/design/`: optional design workflow for UI/UX direction, interaction/motion, and reusable visual patterns before or during implementation.
-- `skills/implement/`: implement a PRD in the codebase and check off completed PRD stories/tasks.
-- `skills/review/`: strict decision review for correctness, security, tests, and scope, with optional durable context capture.
-- `skills/commit/`: propose atomic commits, require user approval, commit with emoji + type + imperative summary, and finalise merge/branch cleanup.
-- `skills/context/`: shared guidance for maintaining `tasks/context.md` inline across other skills (or via explicit backfill).
-- `skills/compact/`: compact `tasks/context.md` by summarising older entries when tracking files get noisy.
-- `skills/*/references/` (where present): shared templates/rubrics loaded on demand to keep `SKILL.md` concise.
+These phases are written to be handoff-friendly: assume a junior dev (or another AI) may pick up the project later.
 
-## Files the skills manage
+## Recommended workflow: idea → merged
 
-- `tasks/f-##-*.md`
-  - One PRD per feature, named with feature ID (e.g., `f-01-invite-teammates.md`).
-  - Each PRD is a self-contained spec with `Status:` (draft | ready), `Priority:` (P0–P3), and `Type:` (feat | fix | chore).
-  - Tracks progress through checklist items on user stories/tasks/acceptance criteria.
-  - During finalise, completed PRDs are moved to `tasks/archive/` (same filename, no rename).
+1. `/cobb prd` → `/cobb design` (optional, UI/UX-heavy features) → `/cobb implement`
+   Context: capture durable decisions inline as each step executes.
+2. `/cobb review` (when needed): quality check before commit.
+3. `/cobb commit` (`commit` mode): atomic commits with user approval.
+4. `/cobb review` (when needed): quality check before finalise.
+5. `/cobb commit finalise`: archive the completed PRD, update `tasks/context.md` if needed, create one pre-merge finalise commit (only when tracking changes exist), then merge using the repo-approved strategy and delete the feature branch safely.
+6. `/cobb compact` (periodic): summarise older context entries to keep tracking files easy to scan.
+
+## Files the skill manages
+
+- `tasks/f-##-<slug>.md`
+  - One PRD per feature, named with feature ID (e.g. `f-01-invite-teammates.md`).
+  - Self-contained spec with `Status:` (draft | ready), `Priority:` (P0–P3), and `Type:` (feat | fix | chore).
+  - Tracks progress via checklist items on stories/tasks/acceptance criteria.
+  - During finalise, completed PRDs move to `tasks/archive/` (same filename, no rename).
 
 - `tasks/context.md`
   - Project state, key decisions, milestones, and gotchas — written for handoff.
 
 - `tasks/archive/`
-  - Archived completed PRDs moved during `commit` finalise.
+  - Archived completed PRDs, moved during `commit` finalise.
 
-## Recommended workflows
+## Layout
 
-### Workflow: idea → merged
-
-1. `prd` → `design` (optional for UI/UX-heavy features) → `implement`
-   Context: capture durable decisions inline as each step executes.
-2. `review` (when needed): run a quality check before commit.
-   Context: capture durable risks/follow-ups inline when needed.
-3. `commit` (`commit` mode): create atomic commits with user approval.
-   Context: capture durable rationale/gotchas inline when needed.
-4. `review` (when needed): run a quality check before finalise.
-   Context: capture durable risks/follow-ups inline when needed.
-5. `commit` (`finalise` mode): prepare tracking updates (archive completed PRD and update `tasks/context.md` when needed).
-   Create one pre-merge finalise commit only when tracking changes exist, then merge using the repository-approved strategy and delete the completed feature branch safely.
-6. `compact` (periodic): summarise older context entries to keep tracking files easy to scan.
+```
+skills/cobb/
+  SKILL.md                    # router: dispatch table, shared guardrails, bare-/cobb behaviour
+  references/
+    prd.md  design.md  implement.md  review.md  commit.md  context.md  compact.md
+    design/                   # ui / ux / motion / imagery mode references
+    templates/                # PRD, report, context, compact, commit, finalise templates
+```

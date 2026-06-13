@@ -1,16 +1,12 @@
----
-name: context
-description: "Maintain durable project context in `tasks/context.md` (state, decisions, milestones, gotchas, optional context links), inline during other workflows or standalone for cleanup/backfill. Triggers: update context.md, decision log, record project context, capture high-value reference links that improve context handoff."
----
-
 # context
 
 Maintain `tasks/context.md` as a living, durable "what matters" record for the project.
 Write it for someone taking over the project (or a future session resuming later).
 Explain where things are, what was decided, and what to watch before proceeding.
-Treat this as shared behaviour embedded in other skills, not a mandatory standalone step in normal workflows.
-When invoked inline (from another skill), apply this workflow as part of that skill's execution.
-When invoked directly, use for explicit backfill/repair/cleanup requests.
+
+This behaviour is embedded in other phases (`prd`, `design`, `implement`, `review`, `commit`), not a mandatory standalone step in normal workflows. When applied inline from another phase, follow this workflow as part of that phase. When invoked directly (`/cobb context`), use it for explicit backfill/repair/cleanup requests.
+
+Shared guardrails from the cobb router apply. The rules below are context-specific.
 
 ---
 
@@ -20,10 +16,9 @@ When invoked directly, use for explicit backfill/repair/cleanup requests.
 - Keep entries short and durable; avoid duplicating long PRDs or code.
 - Update `tasks/context.md` in place; do not rewrite the whole file.
 - Write in plain language so a junior dev (or another AI) can take over without extra context.
-- Prefer inline updates during active skills (`prd`, `design`, `implement`, `review`, `commit`).
+- Prefer inline updates during active phases (`prd`, `design`, `implement`, `review`, `commit`).
 - Update when worthwhile information emerges.
 - Links are optional and high-signal only; see Links Format below.
-- When asking users for decisions/clarifications, provide numbered short-reply options (e.g. `1`, `2`, `3`).
 
 ### What goes where
 - PRD files (`tasks/f-##-*.md`) = what we intend to do (the spec + progress checklist for one feature)
@@ -60,7 +55,7 @@ Avoid:
 ## Workflow
 
 1. Ensure `tasks/` exists; create `tasks/context.md` if missing.
-   - Use `references/context-template.md` as the default file template when creating it.
+   - Use `references/templates/context-template.md` as the default file template when creating it.
 2. Add short entries (1–3 lines) in the most relevant section.
 3. Prepend new entries at the top of each section (newest-first order).
 4. Prefer referencing stable feature IDs (`f-##`) and avoid file paths (paths can change after archiving/compaction).
@@ -71,15 +66,12 @@ Avoid:
 
 ## References
 
-- `references/context-template.md`: default structure for creating `tasks/context.md`.
+- `references/templates/context-template.md`: default structure for creating `tasks/context.md`.
 
 ---
 
 ## Output
 
 - Create or update `tasks/context.md`.
-- **Inline** (from another skill): reply with a short summary of what was added/updated. Let the calling skill's output format take precedence.
-- **Standalone** (direct invocation): reply with the file path, summary, and a status block:
-  - **Files changed**: list of created/updated files
-  - **Key decisions**: any assumptions or choices made (if any)
-  - **Next step**: recommended next skill or action
+- **Inline** (from another phase): reply with a short summary of what was added/updated. Let the calling phase's output format take precedence.
+- **Standalone** (`/cobb context`): reply with the file path, summary, and the shared status block (Files changed / Key decisions / Next step).

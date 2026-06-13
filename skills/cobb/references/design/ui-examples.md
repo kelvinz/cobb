@@ -1,7 +1,7 @@
 # UI Examples
 
 Use this reference for concrete UI implementation examples.
-Keep `references/ui.md` as the rule source of truth and use these snippets as starting points.
+Keep `references/design/ui.md` as the rule source of truth and use these snippets as starting points.
 
 ## Table of Contents
 

@@ -1,11 +1,8 @@
----
-name: design
-description: "Router-first workflow for high-craft design execution across four modes: ui, ux, motion, and imagery. Use when designing or refining interfaces, structuring and auditing UX/usability/accessibility, implementing or specifying interaction motion, or producing static visual artifacts (.png/.pdf) with a matching philosophy note. Triggers: design ui, improve ux flow, run design audit, add transitions, reduce motion issues, create visual imagery, craft poster composition."
----
-
-# Design
+# design
 
 Route each design request to the correct mode, then execute that mode's output contract with shared quality constraints.
+
+This is a nested router: `/cobb design <mode>` selects a design mode (`ui`, `ux`, `motion`, `imagery`). If no mode is given, infer the primary mode from the request using the routing decision tree below.
 
 ## Core Workflow
 
@@ -23,26 +20,26 @@ Select one primary mode before work starts. Add one secondary mode only when nee
 Typical request patterns: build or refine screens, components, dashboards, landing pages, settings, and app flows.
 Primary goal: ship clear and distinctive interfaces.
 Expected deliverables: working UI code, token mapping, full state coverage, concise hierarchy rationale.
-Load reference: `references/ui.md`.
-Load `references/ui-examples.md` only when concrete code examples are needed, especially for `5` or `7` tier token sets.
+Load reference: `references/design/ui.md`.
+Load `references/design/ui-examples.md` only when concrete code examples are needed, especially for `5` or `7` tier token sets.
 
 2. `ux`
 Typical request patterns: plan or improve flows, IA, usability, accessibility, or run design audits.
 Primary goal: improve task success, comprehension, and evidence-based quality.
 Expected deliverables: UX structure outputs or severity-ordered audit findings with concrete fixes.
-Load reference: `references/ux.md`.
+Load reference: `references/design/ux.md`.
 
 3. `motion`
 Typical request patterns: define or implement transitions, microfeedback, loading, and continuity behavior.
 Primary goal: communicate state change and preserve orientation without friction.
 Expected deliverables: motion spec or code, timing/easing choices, reduced-motion fallback.
-Load reference: `references/motion.md`.
+Load reference: `references/design/motion.md`.
 
 4. `imagery`
 Typical request patterns: produce posters, editorial visuals, and static compositions.
 Primary goal: deliver high-impact static visual artifacts.
 Expected deliverables: philosophy `.md` plus `.png` or `.pdf` artifact (single page unless requested).
-Load reference: `references/imagery.md`.
+Load reference: `references/design/imagery.md`.
 
 ### Selection Rules
 
@@ -107,8 +104,8 @@ Apply these across all modes:
 
 ## References
 
-- `references/ui.md`: interface craft system, tokens, component rules, output contract, and quality checks.
-- `references/ui-examples.md`: concrete Tailwind and component examples for 3/5/7 tier token systems.
-- `references/ux.md`: UX structure, usability/accessibility checks, and audit workflow/report format.
-- `references/motion.md`: motion purpose, timing/easing, performance, accessibility, and motion delivery contract.
-- `references/imagery.md`: static visual artifact workflow and required output format.
+- `references/design/ui.md`: interface craft system, tokens, component rules, output contract, and quality checks.
+- `references/design/ui-examples.md`: concrete Tailwind and component examples for 3/5/7 tier token systems.
+- `references/design/ux.md`: UX structure, usability/accessibility checks, and audit workflow/report format.
+- `references/design/motion.md`: motion purpose, timing/easing, performance, accessibility, and motion delivery contract.
+- `references/design/imagery.md`: static visual artifact workflow and required output format.

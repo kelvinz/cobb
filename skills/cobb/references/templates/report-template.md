@@ -26,6 +26,6 @@ Context updates:
 - Updated: <summary> | Skipped: <reason>
 
 Recommended next step:
-- If Good to commit=No: ask user to fix blockers, then rerun `review`.
-- If Good to commit=Yes: run `commit` (`commit` mode for new commits, `finalise` mode when ready to merge).
+- If Good to commit=No: ask user to fix blockers, then rerun `/cobb review`.
+- If Good to commit=Yes: run `/cobb commit` (`commit` mode for new commits, `finalise` mode when ready to merge).
 ```

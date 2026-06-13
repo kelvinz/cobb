@@ -1,22 +1,18 @@
----
-name: compact
-description: "Compact `tasks/context.md` by summarising older completed history while preserving active context. Triggers: compact context, prune context log, trim context."
----
-
 # compact
 
 Keep `tasks/context.md` short and scannable by consolidating older entries into readable summaries.
+
+Shared guardrails from the cobb router apply. The rules below are compact-specific.
 
 ---
 
 ## Guardrails
 
 - Do not change product scope or implementation code.
-- Do not move or rename PRDs here; completed PRDs are archived during `commit` finalise.
+- Do not move or rename PRDs here; completed PRDs are archived during `/cobb commit` finalise.
 - Do not create separate context archive files.
 - Ask for explicit confirmation before applying consolidation edits.
 - Always propose retention/consolidation counts first; let the user choose the final numbers.
-- When asking for user decisions, provide numbered short-reply options (e.g. `1`, `2`, `3`).
 
 ---
 
@@ -54,7 +50,7 @@ Use these as initial recommendations, then ask the user to confirm or adjust:
 
 ## References
 
-- `references/compact-templates.md`: threshold-choice prompt and historical-summary examples.
+- `references/templates/compact-templates.md`: threshold-choice prompt and historical-summary examples.
 
 ---
 
@@ -65,7 +61,4 @@ Use these as initial recommendations, then ask the user to confirm or adjust:
   - proposed numbers and user-selected numbers
   - retained vs consolidated counts
   - concise summary of what changed
-- End with a short status block:
-  - **Files changed**: list of created/updated files
-  - **Key decisions**: any assumptions or choices made (if any)
-  - **Next step**: recommended next skill or action
+- End with the shared status block (Files changed / Key decisions / Next step).

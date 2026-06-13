@@ -1,35 +1,28 @@
----
-name: implement
-description: "Implement an existing PRD (`Type: feat`/`fix`/`chore`), update tests/checks, and mark completed PRD checklist items. Triggers: implement prd, build feature from prd, execute prd checklist."
----
-
 # implement
 
 Implement a feature from a PRD.
+
+Shared guardrails from the cobb router apply (numbered short-reply options, built-in context capture, handoff-friendly, never claim untested checks passed, status block). The rules below are implement-specific.
 
 ---
 
 ## Guardrails
 
 - Follow the repo's `AGENTS.md` instructions (if present) for any files you touch.
-- Keep changes simple and handoff-friendly: assume a junior dev (or another AI) will maintain this later.
 - Do not change product scope while executing:
-  - If the PRD is missing details or ambiguous, stop and use `prd` to refine the PRD first.
-  - If implementation reveals the PRD is incorrect, pause and propose PRD edits via `prd`.
+  - If the PRD is missing details or ambiguous, stop and use `/cobb prd` to refine the PRD first.
+  - If implementation reveals the PRD is incorrect, pause and propose PRD edits via `/cobb prd`.
   - Do not silently deviate.
-  - If the feature has no PRD in `tasks/`, stop and use `prd` first.
+  - If the feature has no PRD in `tasks/`, stop and use `/cobb prd` first.
   - If you discover out-of-scope requirements or bugs during execution, do not expand scope.
-  - Create a new PRD via `prd` instead.
+  - Create a new PRD via `/cobb prd` instead.
 - Do not reset any existing PRD checklist items when updating an existing PRD.
-- Treat context capture as built-in.
 - When implementation yields durable decisions/gotchas, update `tasks/context.md` in this step.
 - Use `design` as an optional companion for UI/UX-heavy work:
-  - If visual direction, interaction states, or design-token choices are unclear, run `design` before coding that area.
+  - If visual direction, interaction states, or design-token choices are unclear, run `/cobb design` before coding that area.
   - If approved design artifacts already exist, proceed directly with implementation.
 - Require user confirmation before creating or switching git branches.
-- When requesting user decisions or confirmations, use numbered short-reply options (for example: `1`, `2`, `3`).
-- Do not commit, merge, push, or delete branches; delegate these to `commit`.
-- Do not claim tests passed or checks succeeded without actually running them; if you didn't run it, say so.
+- Do not commit, merge, push, or delete branches; delegate these to `/cobb commit`.
 
 ---
 
@@ -58,13 +51,13 @@ Implement a feature from a PRD.
    - Decide whether `design` is needed:
     - Trigger it when the PRD adds/changes UI surfaces, interaction/motion behaviour, or design-system patterns.
     - Also require that no approved design direction is available.
-     - If `design` runs, treat its output as implementation constraints and keep PRD scope unchanged.
+     - If `/cobb design` runs, treat its output as implementation constraints and keep PRD scope unchanged.
    - Verify dependencies:
      - Read this PRD's "Dependencies & Constraints" section for feature dependency IDs.
      - For each dependency ID, locate PRD files by feature ID in `tasks/` and `tasks/archive/`.
      - Treat dependencies as complete only when the dependency PRD is archived in `tasks/archive/`.
      - If any dependency is still in `tasks/`, recommend finalising that dependency first.
-     - If a dependency has no PRD yet, stop and use `prd` to create that dependency PRD first.
+     - If a dependency has no PRD yet, stop and use `/cobb prd` to create that dependency PRD first.
     - Override: if the user confirms dependencies are satisfied, proceed.
     - Example: dependency work merged but not yet archived.
     - Record the override in `tasks/context.md`.
@@ -95,9 +88,9 @@ Implement a feature from a PRD.
 7. **Close out**
    - Summarise what was changed and what remains.
    - Next steps:
-     - If unresolved UI/UX direction remains, run `design` and continue `implement`.
-     - Run `review` when needed, then `commit` in `commit` mode.
-     - When the feature is ready to merge, run `review` when needed, then `commit` in `finalise` mode.
+     - If unresolved UI/UX direction remains, run `/cobb design` and continue `/cobb implement`.
+     - Run `/cobb review` when needed, then `/cobb commit` in `commit` mode.
+     - When the feature is ready to merge, run `/cobb review` when needed, then `/cobb commit` in `finalise` mode.
 
 ---
 
@@ -111,7 +104,4 @@ Implement a feature from a PRD.
   - PRD path
   - Which checklist items were completed
   - Any follow-ups or open issues
-- End with a short status block:
-  - **Files changed**: list of created/updated files
-  - **Key decisions**: any assumptions or choices made (if any)
-  - **Next step**: recommended next skill or action
+- End with the shared status block (Files changed / Key decisions / Next step).

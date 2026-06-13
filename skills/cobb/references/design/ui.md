@@ -30,7 +30,7 @@ Deliver all of the following for UI work:
 5. Preserve responsive behavior on mobile and desktop when applicable.
 6. Use Tailwind CSS for examples and implementation when project constraints allow.
 7. Default component styling to inline Tailwind utilities.
-8. Apply accessibility options from `references/ux.md` as required component behavior.
+8. Apply accessibility options from `references/design/ux.md` as required component behavior.
 
 ## Project Constraint Detection
 
@@ -99,7 +99,7 @@ shadow levels and surface emphasis.
 7. Opacity tokens:
 use the selected tier set (3, 5, or 7) with three-tier as the default.
 8. Motion tokens:
-duration and easing tiers aligned with `references/motion.md`.
+duration and easing tiers aligned with `references/design/motion.md`.
 9. Content width tokens:
 use the selected tier set (3, 5, or 7) with three-tier as the default.
 
@@ -163,11 +163,11 @@ Avoid arbitrary hex/oklch values and one-off spacing/radius in reusable primitiv
 
 Apply one consistent tier pattern per token family across all `theme.extend` keys: `colors`, `spacing`, `borderRadius`, `boxShadow`, `opacity`, `fontSize`, `transitionDuration`, `transitionTimingFunction`, etc. Default to three-tier `sm`/`md`/`lg`; use five-tier or seven-tier only when justified. Anchor all values to Tailwind scale families and defaults.
 
-Load `references/ui-examples.md` for concrete Tailwind config and component examples.
+Load `references/design/ui-examples.md` for concrete Tailwind config and component examples.
 
 ## Example Library
 
-Load rules for `references/ui-examples.md` are defined in `SKILL.md` under the `ui` mode entry.
+Load rules for `references/design/ui-examples.md` are defined in `references/design.md` under the `ui` mode entry.
 
 ## Shadcn State Pattern Extraction
 
@@ -256,7 +256,7 @@ Revise before implementation if any line lacks clear rationale.
 1. Use native controls by default for semantics and accessibility.
 2. Use custom controls only when native rendering blocks required behavior or styling.
 3. Preserve semantics, keyboard behavior, and focus management in custom controls.
-4. For focus, keyboard, labeling, and state semantics, follow `references/ux.md` -> `Accessibility Option Set for UI Components`.
+4. For focus, keyboard, labeling, and state semantics, follow `references/design/ux.md` -> `Accessibility Option Set for UI Components`.
 
 ## Interaction and Data State Coverage
 
@@ -274,7 +274,7 @@ Cover every relevant state:
 10. Optimistic update with rollback on failure
 11. Partial data (some fields loaded, some pending)
 
-Accessibility details for these states are defined in `references/ux.md` and must be applied to every reusable UI primitive.
+Accessibility details for these states are defined in `references/design/ux.md` and must be applied to every reusable UI primitive.
 
 ## Expression vs Clarity Scaling
 
@@ -305,6 +305,6 @@ Run these checks before final output:
 4. `Token test`: visual values map cleanly to the token system.
 5. `Content coherence`: copy, data, and visuals read as one believable product story.
 6. `State completeness`: interaction and data states are fully covered.
-7. `Accessibility`: satisfy the full `references/ux.md` accessibility option set, including focus visibility, keyboard reachability, naming, semantic states, contrast, and reduced-motion support.
+7. `Accessibility`: satisfy the full `references/design/ux.md` accessibility option set, including focus visibility, keyboard reachability, naming, semantic states, contrast, and reduced-motion support.
 8. `Responsiveness`: layout and type remain intentional on mobile and desktop.
 9. `Performance`: interactive effects rely on efficient rendering paths.

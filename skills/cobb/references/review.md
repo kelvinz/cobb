@@ -1,11 +1,8 @@
----
-name: review
-description: "Review the current branch changes for correctness, security, tests, and scope, then return a clear go/no-go decision. Triggers: review, readiness check, pre-commit review, pre-finalise review."
----
-
 # review
 
 Review one change set and return a decision-led report.
+
+Shared guardrails from the cobb router apply (numbered short-reply options, built-in context capture, handoff-friendly, never claim untested checks passed, status block). The rules below are review-specific.
 
 ---
 
@@ -21,7 +18,6 @@ Review one change set and return a decision-led report.
 - Update `tasks/context.md` only for durable review outcomes.
 - Examples: recurring risks, release-critical gotchas, or confirmed follow-up decisions.
 - Do not invent test results; run checks or call out missing evidence.
-- When asking for user decisions (e.g. scope clarification), provide numbered short-reply options (e.g. `1`, `2`, `3`).
 
 ---
 
@@ -62,7 +58,7 @@ Review one change set and return a decision-led report.
      - Request a specific artifact: CI link, log, or command the user can run.
 5. Produce the report with a clear recommendation:
    - `Good to commit: Yes` or `Good to commit: No`
-   - if decision is `No`, include explicit fix items and ask the user to address them before rerunning `review`
+   - if decision is `No`, include explicit fix items and ask the user to address them before rerunning `/cobb review`
 6. Evaluate context-worthy review outcomes and update `tasks/context.md` inline when needed:
    - systemic risks likely to recur
    - key security or data-handling decisions
@@ -94,7 +90,7 @@ Review one change set and return a decision-led report.
 
 ## References
 
-- `references/report-template.md`: standard report structure for review outputs.
+- `references/templates/report-template.md`: standard report structure for review outputs.
 
 ---
 
@@ -102,7 +98,4 @@ Review one change set and return a decision-led report.
 
 - Return the review report with explicit context update status.
 - Keep the decision explicit and unambiguous.
-- End with a short status block:
-  - **Files changed**: list of created/updated files
-  - **Key decisions**: any assumptions or choices made (if any)
-  - **Next step**: recommended next skill or action
+- End with the shared status block (Files changed / Key decisions / Next step).
