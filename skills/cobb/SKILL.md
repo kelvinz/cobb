@@ -11,6 +11,18 @@ The full flow is: `prd` → `design` (optional, UI/UX-heavy work) → `implement
 
 ---
 
+## Progressive Disclosure Contract
+
+This file is navigation, not the full operating manual. On activation:
+
+1. Do not preload every file listed in References.
+2. Load only the selected phase reference from Dispatch.
+3. For nested routers, load the router first, then only the selected child reference.
+4. Load templates, examples, and secondary references only when the selected reference explicitly requires them for the current task.
+5. For multi-phase requests, complete one phase at a time and load the next phase reference only when that phase begins.
+
+---
+
 ## Dispatch
 
 Parse the first token of the args and route to the matching phase. Load **only** that phase's reference file, then execute it.
@@ -74,17 +86,17 @@ Do not execute any phase. Instead:
 
 ## References
 
-Phase bodies (loaded on dispatch):
+Phase bodies (loaded on dispatch only):
 
 - `references/prd.md` — create, update, or list PRDs.
-- `references/design.md` — design sub-router (ui / ux / motion / imagery); loads `references/design/*.md`.
+- `references/design.md` — design sub-router (ui / ux / motion / imagery); selects one child reference.
 - `references/implement.md` — implement a PRD and check off progress.
 - `references/review.md` — branch review with a go/no-go decision.
 - `references/commit.md` — atomic commits, finalise, and hotfix modes.
 - `references/context.md` — maintain `tasks/context.md` (inline or standalone).
 - `references/compact.md` — compact `tasks/context.md`.
 
-Templates and rubrics (loaded by the relevant phase):
+Templates and rubrics (loaded only when the active phase asks for them):
 
 - `references/templates/prd-template.md`
 - `references/templates/report-template.md`

@@ -10,10 +10,12 @@ Use this mode to shape task flows, information architecture, usability, accessib
 4. Accessibility and Usability Checks
 5. Accessibility Option Set for UI Components
 6. Audit Workflow and Axes
-7. Severity Scale
-8. Findings Format
-9. Guideline-Driven Audit Procedure
-10. UX Output Contracts
+7. Redesign Fix Priority
+8. Severity Scale
+9. Findings Format
+10. Polish Review Table
+11. Guideline-Driven Audit Procedure
+12. UX Output Contracts
 
 ## UX Discovery Inputs
 
@@ -81,6 +83,24 @@ Use this workflow when auditing existing UI code or built interfaces.
 10. Evaluate microcopy and content clarity (labels, errors, empty states, instructions).
 11. Evaluate implementation risks and maintainability.
 
+For redesigns, run `scan -> diagnose -> fix`:
+
+1. `scan`: identify framework, styling method, component primitives, routes, and current design patterns.
+2. `diagnose`: list generic patterns, weak hierarchy, missing states, accessibility failures, and implementation risks before changing files.
+3. `fix`: apply focused upgrades inside the existing stack. Do not rewrite from scratch unless the current structure blocks the requested outcome.
+
+## Redesign Fix Priority
+
+Use this order when improving existing screens so changes stay high-impact and reviewable:
+
+1. Typography and font use: fix default fonts, weak headings, line length, hierarchy weights, and tabular numbers.
+2. Colour and surfaces: remove clashing accents, inconsistent grey families, low contrast, and generic shadows.
+3. Interaction feedback: add hover, active, focus, loading, empty, error, and success states.
+4. Layout and spacing: fix max-widths, grids, mobile collapse, alignment, and repeated section patterns.
+5. Generic components: replace cliché cards, fake screenshots, decorative labels, and redundant CTAs.
+6. Copy and content clarity: remove vague labels, invented precision, placeholder copy, and mixed voice.
+7. Polish: tune spacing, animation, depth, and responsive edge cases after functional paths are stable.
+
 ## Severity Scale
 
 Use one severity level per finding:
@@ -110,6 +130,16 @@ Use this default structure unless the user requests another format:
 6. `## Residual Risks / Test Gaps`
 
 If no issues are found, state that explicitly and list residual risks or test gaps.
+
+## Polish Review Table
+
+For design-polish reviews where the user asks for refinement guidance rather than a bug/risk audit, use a compact markdown table:
+
+| Before | After | Why |
+| --- | --- | --- |
+| Current pattern or code | Recommended change | Practical design reason |
+
+Use one row per issue. Keep severity-ordered findings first when the request is a branch review, accessibility audit, correctness review, or risk review.
 
 ## Guideline-Driven Audit Procedure
 

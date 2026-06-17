@@ -40,9 +40,9 @@ export default {
       opacity: { sm: "0.6", md: "0.8", lg: "1" },
       transitionDuration: { sm: "150ms", md: "250ms", lg: "400ms" },
       transitionTimingFunction: {
-        sm: "cubic-bezier(0.16, 1, 0.3, 1)",
-        md: "cubic-bezier(0.65, 0, 0.35, 1)",
-        lg: "cubic-bezier(0.55, 0, 1, 0.45)",
+        sm: "cubic-bezier(0.23, 1, 0.32, 1)",
+        md: "cubic-bezier(0.77, 0, 0.175, 1)",
+        lg: "cubic-bezier(0.32, 0.72, 0, 1)",
       },
     },
   },
@@ -154,7 +154,7 @@ const sizeClasses = {
 export const Button = ({ size = "md", className = "", ...props }) => (
   <button
     className={`inline-flex items-center justify-center gap-2 font-medium
-      transition-colors duration-md
+      transition-[transform,background-color,color,box-shadow] duration-sm ease-out active:scale-[0.97]
       bg-brand-md text-white hover:bg-brand-lg active:bg-brand-lg
       focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-md focus-visible:ring-offset-1
       disabled:pointer-events-none disabled:opacity-sm ${sizeClasses[size]} ${className}`}
