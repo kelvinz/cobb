@@ -39,8 +39,8 @@ Proposed context updates:
 
 Recommended next step:
 - Good to commit=No: use the numbered blocker workflow; finalise is unavailable.
-- Good to commit=Yes with suggestions: use the numbered suggestion workflow; 0 proceeds to finalise.
-- Good to commit=Yes with no suggestions: 0 enters finalise.
+- Good to commit=Yes with suggestions: use the numbered suggestion workflow; `0` finalises a feature branch or concludes a direct default-branch review.
+- Good to commit=Yes with no suggestions: offer `0` to finalise a feature branch; conclude a direct default-branch review without finalise.
 
 Numbered next actions:
 - <render the applicable blocker/suggestion/clean-pass numeric menu and mark one evidence-based reply Recommended>
