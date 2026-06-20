@@ -13,6 +13,7 @@ Shared guardrails from the cobb router apply. The rules below are compact-specif
 - Do not create separate context archive files.
 - Ask for explicit confirmation before applying consolidation edits.
 - Always propose retention/consolidation counts first; let the user choose the final numbers.
+- Mark exactly one numbered plan **Recommended** based on document length, recency, and handoff value.
 
 ---
 
@@ -24,7 +25,7 @@ Shared guardrails from the cobb router apply. The rules below are compact-specif
    - Count entries to compact in `tasks/context.md`: `Key decisions`, `Completed`, `Notes / gotchas`.
 2. Propose consolidation options and ask for a decision:
    - Suggest how many entries to keep in full detail vs consolidate into summary.
-   - Provide recommended defaults, then allow user override (more or fewer).
+   - Provide numbered options, mark one **Recommended**, then allow a numbered custom-count option.
 3. Compact `tasks/context.md` in place:
    - Preserve `Project` and `Current state` sections.
    - Keep the user-selected number of most recent detailed entries (entries are newest-first, so keep from the top).

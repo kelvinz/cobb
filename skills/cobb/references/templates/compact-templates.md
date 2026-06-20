@@ -6,12 +6,14 @@ Use this short choice prompt before edits:
 
 ```text
 Proposed compact plan:
-- Context detailed entries to keep: 15 (consolidate: 41)
+- Context detailed entries to keep: <recommended-count> (consolidate: <older-count>)
 
 Reply with:
-- `1` for "use defaults", or
-- `2 <n>` for custom number (for example: `2 20`), or
-- `3` for "less", `4` for "more".
+- `0` **Recommended:** use the proposed plan; it preserves recent operational detail while compacting older history
+- `1 <n>`: keep a custom number (for example: `1 20`)
+- `2`: keep fewer detailed entries
+- `3`: keep more detailed entries
+- `4`: stop without editing
 ```
 
 ## Historical Summary Pattern

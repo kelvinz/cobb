@@ -7,7 +7,9 @@ description: "Product-development workflow toolkit. Subcommands: prd, design, im
 
 A single skill for ongoing product development. Route a request to the right phase, then execute that phase under the shared guardrails below.
 
-The full flow is: `prd` → `design` (optional, UI/UX-heavy work) → `implement` → `review` (when needed) → `commit` (`commit` mode) → `review` (when needed) → `commit` (`finalise` mode) → `compact` (periodic). `context` is captured inline throughout, not as a separate step.
+The full flow is: `prd` → `design` (optional, UI/UX-heavy work) → `implement` → `commit` (`commit` mode, followed by automatic `review`) → selected fixes/suggestions and re-review when needed → `commit` (`finalise` mode) → `compact` (periodic). `context` is captured inline throughout, not as a separate step.
+
+Default delivery order: `implement -> commit -> review -> finalise`. Review the stable atomic branch diff, not a moving pre-commit worktree.
 
 ---
 
@@ -35,7 +37,7 @@ Parse the first token of the args and route to the matching phase. Load **only**
 | `implement`              | implement a PRD  | `references/implement.md`       |
 | `review`                 | branch review    | `references/review.md`          |
 | `commit`                 | atomic commit    | `references/commit.md`          |
-| `commit finalise` / `finalise` | finalise branch | `references/commit.md` (finalise mode) |
+| `commit finalise` / `finalise` | finalise branch | `references/finalise.md` |
 | `commit hotfix` / `hotfix` | hotfix commit  | `references/commit.md` (hotfix mode) |
 | `context`                | maintain context.md | `references/context.md`      |
 | `compact`                | compact context.md | `references/compact.md`       |
@@ -53,26 +55,31 @@ Do not execute any phase. Instead:
 
 1. Read `tasks/` — list active PRDs (`f-##`, name, `Status`, `Priority`) and check git branch/commit state.
 2. Print the subcommand menu (the dispatch table above) so the user sees the options.
-3. Recommend the single next phase based on state, for example:
+3. Render the available phases as numbered reply options and mark exactly one as **Recommended** from repository state. Do not require the user to type a command name.
+4. Recommend the single next phase based on state, for example:
    - no `tasks/context.md` or no PRDs → "start with `/cobb prd`"
    - a `Status: ready` PRD with no feature branch → "`/cobb implement <prd>`"
-   - feature branch ahead of base with uncommitted changes → "`/cobb review`, then `/cobb commit`"
-   - all commits done on a feature branch → "`/cobb review`, then `/cobb commit finalise`"
+   - feature branch ahead of base with uncommitted changes → "`/cobb commit` (review runs after the final clean commit group)"
+   - all commits done on a feature branch → "`/cobb commit finalise` (it refreshes review automatically)"
    - `tasks/context.md` long/noisy → "`/cobb compact`"
-4. Wait for an explicit subcommand before acting.
+5. Wait for the user's option number or explicit subcommand before acting.
 
 ---
 
 ## Shared Guardrails (apply to every phase)
 
-- **Numbered short-reply options.** When asking the user for any decision or confirmation, present numbered options with low-keystroke replies (e.g. `1`, `2`, `3`). Some phases define richer codes (PRD: `1A, 2C`; commit finalise: `1A 2B …`, `0`/`default`).
-- **Context capture is built-in.** Update `tasks/context.md` inline whenever durable decisions, risks, or gotchas emerge — never defer to a separate pass. See `references/context.md` for what/where to record.
+- **Number every closed choice.** Whenever a response ends by asking the user to choose, confirm, approve, continue, stop, or select a next step, provide numbered reply options. Accept the number alone. Use open-ended input only when honest answers cannot be bounded without losing essential information.
+- **Recommend exactly one option.** Mark one numbered option **Recommended** using repository evidence, safety, best practice, and critical reasoning. Briefly explain why. The recommendation may be to stop, investigate, split, or defer; do not mechanically recommend proceeding.
+- **Show questionnaire progress.** Before a one-question-at-a-time interview, explore enough context to build the question queue and state the total. Label every prompt `Question X of Y`. If a new answer creates or removes dependent questions, announce the revised total and why before continuing.
+- **Keep phase-specific reply codes.** PRD interviews use `0` for the recommendation and `1..N` for alternatives. Commit review menus use `0` for the branch default and numbered finding selection. Commit finalise may use field codes such as `1A 2B` plus `0`/`default`; identify the recommended complete bundle.
+- **Context capture is built-in.** Update `tasks/context.md` inline whenever durable decisions, risks, or gotchas emerge, except in read-only `review`, which reports proposed entries for the next implement/finalise commit. See `references/context.md` for what/where to record.
 - **Handoff-friendly.** Assume a junior dev (or another AI) picks this up later. Plain language, explicit edge cases, no hidden assumptions.
 - **Never claim untested success.** Do not say tests/checks/builds passed unless you actually ran them; if you didn't run it, say so.
 - **Status block.** End every standalone phase reply with:
   - **Files changed**: created/updated files
   - **Key decisions**: assumptions or choices made (if any)
   - **Next step**: recommended next phase or action
+  - If the next step requires a user decision, follow it immediately with numbered options and one **Recommended** option.
 
 ---
 
@@ -91,10 +98,22 @@ Phase bodies (loaded on dispatch only):
 - `references/prd.md` — create, update, or list PRDs.
 - `references/design.md` — design sub-router (ui / ux / motion / imagery); selects one child reference.
 - `references/implement.md` — implement a PRD and check off progress.
+- `references/tdd.md` — shared behavioural testing contract, loaded by PRD/implement only when applicable.
 - `references/review.md` — branch review with a go/no-go decision.
-- `references/commit.md` — atomic commits, finalise, and hotfix modes.
+- `references/commit.md` — atomic commit core and hotfix mode.
+- `references/commit-review.md` — post-commit review action tree; load only after a review result.
+- `references/finalise.md` — finalise/merge/cleanup mode; load only for finalise.
 - `references/context.md` — maintain `tasks/context.md` (inline or standalone).
 - `references/compact.md` — compact `tasks/context.md`.
+
+Conditional design references (load only after `design` routes):
+
+- `references/design/ui.md`
+- `references/design/ux.md`
+- `references/design/motion.md`
+- `references/design/imagery.md`
+- `references/design/ui-tokens.md` — only for Tailwind/token-system changes.
+- `references/design/ui-examples.md` — only when concrete snippets are needed.
 
 Templates and rubrics (loaded only when the active phase asks for them):
 
