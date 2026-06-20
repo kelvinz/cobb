@@ -10,21 +10,18 @@ Use this mode to design or refine interactive interfaces and component systems.
 4. Official Design System Fit
 5. Subject-Specific Design Pass
 6. Project Component Library
-7. Tailwind-First Implementation
-8. Styling Topology
-9. Global Token System
-10. Example Library
-11. Shadcn State Pattern Extraction
-12. Intent and Anti-Default Checklist
-13. Per-Component Checkpoint
-14. Visual Rules
-15. Microinteraction Details
-16. Landing and Marketing Guardrails
-17. Interaction and Data State Coverage
-18. Compact Accessibility Baseline
-19. Expression vs Clarity Scaling
-20. Anti-Patterns
-21. Quality Checks
+7. Styling and Token Loading
+8. Shadcn State Pattern Extraction
+9. Intent and Anti-Default Checklist
+10. Per-Component Checkpoint
+11. Visual Rules
+12. Microinteraction Details
+13. Landing and Marketing Guardrails
+14. Interaction and Data State Coverage
+15. Compact Accessibility Baseline
+16. Expression vs Clarity Scaling
+17. Anti-Patterns
+18. Quality Checks
 
 ## Output Contract
 
@@ -35,8 +32,8 @@ Deliver all of the following for UI work:
 3. Cover relevant interaction and data states.
 4. Include a brief hierarchy rationale tied to task goals.
 5. Preserve responsive behavior on mobile and desktop when applicable.
-6. Use Tailwind CSS for examples and implementation when project constraints allow.
-7. Default component styling to inline Tailwind utilities.
+6. Follow the repository's established styling system; use Tailwind only when already present or when no established system exists and it is the smallest fit.
+7. Reuse the project's component and token conventions before introducing new primitives.
 8. Apply the compact accessibility baseline in this file for routine UI work.
 
 ## Reference Loading Rules
@@ -47,7 +44,8 @@ Start with this file only.
 2. Load `references/design/ux.md` only when UX is a selected secondary mode, the request asks for accessibility/flow/audit depth, or this file's compact accessibility baseline is not enough.
 3. Load `references/design/ui-examples.md` only when concrete Tailwind config or component snippets are needed.
 4. Load `references/design/motion.md` only when motion is a selected secondary mode or the request explicitly asks for transition implementation details.
-5. Keep routine UI implementation self-contained in this file.
+5. Load `references/design/ui-tokens.md` only when creating or materially changing a Tailwind/token system.
+6. Keep routine UI implementation self-contained in this file.
 
 ## Project Constraint Detection
 
@@ -97,123 +95,14 @@ Before writing code, define a compact design plan tied to the actual product ins
 4. Follow the library's established API conventions, naming patterns, and composition model.
 5. Only create a fully custom component when no library primitive can reasonably serve the requirement.
 
-## Tailwind-First Implementation
+## Styling and Token Loading
 
-1. Default to inline Tailwind utility classes in JSX/TSX/HTML for component styling.
-2. Treat inline Tailwind as the first-choice pattern, not a fallback pattern.
-3. Extract the smallest reusable primitives when class sets repeat, such as `Button`, `Input`, `Badge`, and `CardShell`.
-4. Keep Tailwind utility strings inside those primitives so reuse stays local and explicit.
-5. Avoid global component CSS for styling primitives.
-6. Use examples in Tailwind first; provide raw CSS only when necessary for selectors/utilities that Tailwind cannot express cleanly.
-
-## Styling Topology
-
-Apply this styling hierarchy in order:
-
-1. Component layer (default): inline Tailwind classes inside the smallest reusable components.
-2. System layer (global): Tailwind-enabled global stylesheet for token variables, base element defaults, and theme scopes.
-3. Exception layer: targeted global rules only for third-party overrides, complex selectors, or browser-specific limitations.
-
-Global CSS still should be Tailwind-first even though it is not inline:
-
-1. Use `@tailwind base`, `@tailwind components`, and `@tailwind utilities`.
-2. Use `@layer base` to define token variables and baseline element styling.
-3. Use `@layer components` with `@apply` sparingly when a pattern cannot be cleanly expressed through a reusable primitive.
-4. Avoid plain hand-written global CSS when Tailwind directives or utilities can express the rule.
-
-## Global Token System
-
-Define one shared Tailwind-first token contract and apply it consistently across all components.
-Prefer three options (`sm`, `md`, `lg`) for most token families. Allow five or seven when needed, and never exceed seven.
-
-### Comprehensive Coverage Model
-
-Include all token families below in the system:
-
-1. Color tokens:
-structure (`bg`, `fg`, `border`) plus semantic (`brand`, `success`, `warning`, `destructive`, `info`) in Tailwind scale steps.
-2. Interaction state tokens:
-`default`, `hover`, `active`, `focus-visible`, `disabled`, `invalid`.
-3. Typography tokens:
-`fontFamily`, `fontSize`, `lineHeight`, `fontWeight`, `letterSpacing`.
-4. Spacing and sizing tokens:
-layout gaps/padding, control heights, icon sizes.
-5. Shape and edge tokens:
-radius, border width, ring width, ring offset.
-6. Depth tokens:
-shadow levels and surface emphasis.
-7. Opacity tokens:
-use the selected tier set (3, 5, or 7) with three-tier as the default.
-8. Motion tokens:
-duration and easing tiers aligned with `references/design/motion.md`.
-9. Content width tokens:
-use the selected tier set (3, 5, or 7) with three-tier as the default.
-
-### Tier Count Rule
-
-Use this default mapping:
-
-1. Spacing keys:
-`sm -> 2`, `md -> 4`, `lg -> 8` (for example `gap-2`, `p-4`, `px-8`).
-2. Radius keys:
-`sm -> rounded-sm`, `md -> rounded-md`, `lg -> rounded-lg`.
-3. Type-size keys:
-`sm -> text-sm`, `md -> text-base`, `lg -> text-lg`.
-4. Control-height keys:
-`sm -> h-8`, `md -> h-10`, `lg -> h-12`.
-5. Icon-size keys:
-`sm -> size-4`, `md -> size-5`, `lg -> size-6`.
-6. Opacity keys:
-`sm -> opacity-60`, `md -> opacity-80`, `lg -> opacity-100`.
-7. Color intensity keys:
-`sm -> 400`, `md -> 500`, `lg -> 600` in a single Tailwind color family.
-
-Then apply these tier-count constraints:
-
-1. Use exactly one of these tier counts per token family: `3`, `5`, or `7`.
-2. Use `3` tiers by default: `sm`, `md`, `lg`.
-3. Use `5` tiers only when finer control is required: `xs`, `sm`, `md`, `lg`, `xl`.
-4. Use `7` tiers only for dense systems with proven need: `2xs`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl`.
-5. Never exceed `7` tiers.
-6. Document why a family uses `5` or `7` instead of `3`.
-
-### Opacity Guide
-
-Treat opacity as a first-class token family:
-
-1. `opacity-sm` (`opacity-60`):
-muted icons, supporting labels, subtle separators.
-2. `opacity-md` (`opacity-80`):
-secondary text/surfaces that still require strong readability.
-3. `opacity-lg` (`opacity-100`):
-primary text, key actions, and critical affordances.
-
-Avoid ad hoc opacity percentages in reusable components.
-
-### Tailwind Scale Discipline
-
-Anchor all canonical values to Tailwind scales:
-
-1. Colors:
-select from Tailwind families (`zinc`, `sky`, `emerald`, `amber`, `red`, `blue`) with scale steps.
-2. Spacing and sizing:
-use Tailwind keys (`2`, `4`, `8`, `h-8`, `h-10`, `h-12`, `size-4`, `size-5`, `size-6`).
-3. Radius and boundaries:
-use Tailwind keys (`rounded-sm`, `rounded-md`, `rounded-lg`, `border`, `border-2`, `ring-1`, `ring-2`, `ring-4`).
-4. Typography:
-use Tailwind utilities (`font-sans`, `text-sm`, `text-base`, `text-lg`, `leading-5`, `leading-6`, `leading-7`).
-
-Avoid arbitrary hex/oklch values and one-off spacing/radius in reusable primitives.
-
-### Tailwind Config Pattern
-
-Apply one consistent tier pattern per token family across all `theme.extend` keys: `colors`, `spacing`, `borderRadius`, `boxShadow`, `opacity`, `fontSize`, `transitionDuration`, `transitionTimingFunction`, etc. Default to three-tier `sm`/`md`/`lg`; use five-tier or seven-tier only when justified. Anchor all values to Tailwind scale families and defaults.
-
-Load `references/design/ui-examples.md` only when concrete Tailwind config and component examples are required.
-
-## Example Library
-
-Load rules for `references/design/ui-examples.md` are defined in `references/design.md` under the `ui` mode entry.
+1. Follow the repository's existing styling topology and token vocabulary.
+2. Keep component-local styling local; keep global files for tokens, base defaults, themes, and unavoidable third-party/browser overrides.
+3. Extract reusable primitives only when repetition or a stable shared contract justifies them.
+4. Do not introduce Tailwind, a component library, or a second token system into an established alternative without explicit scope.
+5. When Tailwind or token-system design is in scope, load `references/design/ui-tokens.md`.
+6. Load `references/design/ui-examples.md` only when concrete implementation snippets improve delivery.
 
 ## Shadcn State Pattern Extraction
 
