@@ -12,7 +12,7 @@ Shared guardrails from the cobb router apply (numbered short-reply options, buil
 - Be fully read-only. Do not modify code, PRDs, `tasks/context.md`, or any other file.
 - Do not commit, merge, push, or delete branches.
 - Do not ask the user which branch to check against.
-- Resolve the comparison base automatically from a caller-confirmed finalise target or the repository default/base branch.
+- Resolve the comparison base automatically from a caller-confirmed finalise target, a commit-mode session-start hash for direct default-branch work, or the repository default/base branch.
 - Block approval if the current branch is behind the resolved comparison base; require sync + re-review.
 - Do not update PRD tracking files here.
 - Report proposed durable context updates, but do not apply them.
