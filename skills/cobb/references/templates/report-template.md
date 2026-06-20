@@ -1,31 +1,49 @@
 # Review Report Template
 
-Use this template for the final review output.
+Use this exact result contract for standalone and commit-triggered reviews.
 
 ```text
 Review Report
+
 Decision:
 - Good to commit: Yes | No
 
-Blockers (must fix):
-- …
+Review fingerprint:
+- Branch: <current branch>
+- HEAD: <full commit hash>
+- Comparison base: <branch> @ <full commit hash>
+- Worktree: clean | dirty
+- Valid until: any commit, base movement, or worktree change
 
-Suggestions (nice to have):
-- …
+Blockers (must fix):
+- B1: <finding with file/line, impact, and required change>
+- None
+
+Suggestions (optional):
+- S1: <finding with file/line, value, scope classification, and concrete improvement>
+- None
 
 Missing evidence:
-- …
+- E1: <required or optional evidence, exact command/artifact, and B#/S# cross-reference>
+- None
 
 Security notes:
-- …
+- ...
 
 Regression risks / watch-outs:
-- …
+- ...
 
-Context updates:
-- Updated: <summary> | Skipped: <reason>
+Proposed context updates:
+- B# | S# | Finalise: <entry for selected implement/finalise workflow>
+- None: <reason>
 
 Recommended next step:
-- If Good to commit=No: ask user to fix blockers, then rerun `/cobb review`.
-- If Good to commit=Yes: run `/cobb commit` (`commit` mode for new commits, `finalise` mode when ready to merge).
+- Good to commit=No: use the numbered blocker workflow; finalise is unavailable.
+- Good to commit=Yes with suggestions: use the numbered suggestion workflow; 0 proceeds to finalise.
+- Good to commit=Yes with no suggestions: 0 enters finalise.
+
+Numbered next actions:
+- <render the applicable blocker/suggestion/clean-pass numeric menu and mark one evidence-based reply Recommended>
 ```
+
+Number only actual findings. Do not emit placeholder IDs when a section is empty.

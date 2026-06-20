@@ -1,211 +1,93 @@
 # commit
 
-Commit changes in atomic steps, then finalise and clean up the feature branch when requested.
+Create approved atomic commits. Normal mode runs review automatically after the final clean group; finalise and hotfix use conditional workflows.
 
-Shared guardrails from the cobb router apply (built-in context capture, handoff-friendly, never claim untested checks passed, status block). The rules below are commit-specific.
+The default delivery order is `implement -> commit -> review -> finalise`.
 
----
+## Mode Loading
+
+- `commit`: use this file, then load `references/commit-review.md` only after review returns.
+- `finalise` / `commit finalise`: load `references/finalise.md`; do not load normal commit workflow sections unnecessarily.
+- `hotfix` / `commit hotfix`: use Hotfix Mode below.
+
+For commit classification and bodies, load `references/templates/commit-rules.md` before the first proposal or when classification is ambiguous.
 
 ## Guardrails
 
-- Require user confirmation before every commit.
-- For every atomic commit proposal, provide a proposed title.
-- Provide a proposed body before asking for approval.
-- When asking for a single user decision, provide numbered short-reply options (for example: `1`, `2`, `3`, `4`).
-- For bundled finalise decisions, use field+choice codes (for example: `1A`, `2B`, `3A`) so users can reply in one line.
-- For bundled finalise decisions, also offer `0` (`default`) as a short reply. Treat `0` and `default` as `1A 2B 3B 4A 5B`.
+- Require numbered user confirmation before every commit.
+- Show files/hunks, intent, tracking updates, title, and body before approval.
+- Mark exactly one commit action **Recommended** from diff quality. Recommend `split` or `edit`, not `commit`, when atomicity or message quality is weak.
 - Keep commits atomic; if a title needs "and", split the change set.
-- Never mix unrelated files in one commit.
-- Determine commit `type` from the actual diff intent, not from branch name, file paths, or habit.
-- Never use `chore` for behaviour changes (flow, API/data semantics, bug fixes, or security fixes).
-- If a change group contains multiple intents, split it before proposing.
-- Examples: `feat` + `fix`, `fix` + `chore`.
-- Never add AI attribution or `Co-authored-by` trailers unless the user explicitly asks.
-- Do not push to remote without explicit user confirmation.
-- In finalise mode, collect merge target, merge strategy, push choice, and local/remote branch deletion choices in one decision prompt.
-- Treat explicit yes/no decisions from that prompt as confirmation; only ask follow-ups for missing or conflicting inputs.
-- Do not assume `main`; it may be `dev` or another branch.
-- Before final merge, sync with the target branch and resolve any conflicts.
-- Use `/cobb review` as a quality gate before commit/finalise when needed.
-- Capture context inline: update `tasks/context.md` during commit/finalise when durable info appears.
-- Do not add a separate context-only step.
-- Keep PRD checklist updates inside the atomic commit that completes that work.
-- Never make a trailing commit only to catch up PRD checklist or context updates.
-- In finalise, bundle tracking updates into one pre-merge commit.
-- Include PRD archive and context updates as needed.
-- If no tracking changes are needed, skip the finalise commit and state why.
-- Use finalise tracking for closeout only.
-- Do not retroactively log completed atomic work unless the user explicitly asks.
-- Follow the merge strategy resolution order in `references/templates/finalise-policy.md`.
-- Never delete the base/default branch.
-- Never delete the currently checked-out branch.
-- Require explicit user confirmation before deleting local or remote branches.
+- Never mix unrelated intents or use `chore` for behavioural changes.
+- Determine type from the diff, not branch name, paths, or habit.
+- Never add AI attribution or `Co-authored-by` unless explicitly requested.
+- Never push in normal mode.
+- Couple completed PRD checklist and durable context updates to the atomic change that produced them.
+- Do not create trailing tracking-only catch-up commits outside finalise unless explicitly approved.
+- Run review automatically only after all intended groups are committed and the worktree is clean.
+- Review approval is valid only for its exact clean HEAD and comparison-base fingerprint.
+- On direct default-branch work, preserve the session-start HEAD and review `<session-start>..HEAD`; never compare the default branch to itself or offer finalise.
 
----
+## Message Rules
 
-## Commit Message Rules
-
-### Title format (required)
+Title:
 
 `<emoji> <type>: <imperative summary>`
 
-- `type` must be one of: `feat`, `fix`, `chore`
-- Summary must be short, specific, and imperative (e.g., "add", "fix", "remove", "refactor")
-- Avoid vague summaries like "update code" or "fix stuff"
+- `feat` -> `✨`
+- `fix` -> `🐛`
+- `chore` -> `🧹`
 
-### Finalise title (required)
+Use another emoji only when it is more precise. Keep the summary short, specific, and imperative.
 
-For a finalise commit, require:
+## Normal Commit Workflow
 
-`🧹 chore: finalise f-## <short-summary>`
-
-Keep the summary short and imperative.
-
-### Emoji mapping (default)
-
-- `feat` → `✨`
-- `fix` → `🐛`
-- `chore` → `🧹`
-
-Use a different emoji only if it more precisely matches the change.
-
-### Type and body guidance (required)
-
-Use the detailed rubric and templates in `references/templates/commit-rules.md` for:
-
-- selecting `feat` vs `fix` vs `chore`
-- classifying mixed-intent diffs
-- writing standard commit bodies
-- writing finalise commit bodies
-
-Read this reference before proposing the first commit in a session, and revisit it whenever classification is ambiguous.
-
----
-
-## Modes
-
-- `commit` mode: propose and execute one atomic commit at a time.
-- `finalise` mode: merge/close the completed branch and delete feature branches.
-- `hotfix` mode: for urgent fixes committed directly to the default branch.
-- Requires `review` approval and a `tasks/context.md` hotfix rationale update.
-
----
-
-## Workflow
-
-1. Inspect current changes (`git status --short`, `git diff`, `git diff --staged`).
-   Identify the active feature PRD when applicable.
-2. Partition changes into atomic commit groups and map each group to:
-   - PRD checklist/user-story items completed by that group (if any)
-   - context-worthy outcomes produced by that group (if any)
-3. For the next group, propose:
-   - files/hunks included
-   - type rationale (why this is `feat` / `fix` / `chore`, citing concrete diff intent)
-   - PRD checklist lines to update in this same commit (or explicit `none` with reason)
-   - context updates to include in this same commit (or explicit `none` with reason)
-   - commit title (emoji + type + imperative summary)
-   - commit body (Summary/Why/Context/Alternatives/Trade-offs/Consequences)
-4. Ask for a decision (accept number or keyword):
-   - `1` (`yes`): stage only that group and commit
-   - `2` (`edit`): revise message/scope and ask again
-   - `3` (`skip`): leave group uncommitted and move on
-   - `4` (`split`): break the group into smaller commits and repropose
-5. After each accepted commit:
-   - commit immediately
-   - report commit hash + title + short "what changed" summary
-   - propose the next atomic group until done
-6. During commit mode, ensure tracking is coupled to the atomic change:
-   - include PRD checklist updates for completed stories in that same commit
-   - include context updates only when durable rationale/gotchas emerge from that same commit
-   - if no PRD/context updates are needed for a group, explicitly mark them as `none` with reason
-
----
-
-## Finalise Mode
-
-Use after all intended commits are done.
-
-1. Confirm preconditions:
-   - working tree clean
-   - on feature branch (not base)
-2. Determine the feature PRD path to finalise:
-   - prefer active feature PRD files in `tasks/` matching the feature ID (`tasks/f-##-*.md`)
-   - if multiple matches exist or feature ID is unclear, ask the user for the exact path
-3. Before merge, prepare tracking updates:
-   - if the PRD path matches `tasks/f-##-<slug>.md`, ensure `tasks/archive/` exists
-   - move the PRD to `tasks/archive/f-##-<slug>.md` (same filename); if already archived, skip
-   - if `tasks/context.md` exists (or should exist), update it when durable state changed:
-     - add completed milestone entry for the finalised feature
-     - update "Current state" (next up / blockers) if it changed
-     - capture any key decisions or gotchas discovered during completion
-   - stage all resulting tracking changes together
-   - propose exactly one `🧹 chore: finalise f-## ...` commit (use short finalise body)
-   - ask for user confirmation before committing (same `1`/`2`/`3` or yes/edit/skip options as commit mode)
-   - if no tracking changes are needed, explicitly state why and skip the finalise commit
-   - do not use this finalise commit to catch up missed atomic PRD/context updates
-   - only do that if the user explicitly approves
-4. Collect one finalise decision bundle before merge/cleanup:
-   - ask once for: target branch, merge strategy, push-after-merge, delete-local-branch, delete-remote-branch
-   - merge strategy choices: `auto` (policy-resolved), `merge-commit`, `linear-history`, `squash`, `rebase`
-   - include a default shortcut line: `0` / `default` = `1A 2B 3B 4A 5B`
-   - present options with field+choice codes:
-     - `1A`/`1B`/... for target branch choices; make `1A` the resolved default target branch and include `1X` for custom branch text
-     - `2A`=`auto`, `2B`=`merge-commit`, `2C`=`linear-history`, `2D`=`squash`, `2E`=`rebase`
-     - `3A`=`yes push-after-merge`, `3B`=`no push-after-merge`
-     - `4A`=`yes delete-local-branch`, `4B`=`no delete-local-branch`
-     - `5A`=`yes delete-remote-branch`, `5B`=`no delete-remote-branch`
-   - accept compact replies like `1B 2A 3A 4B 5B`, `0`, or `default`, plus keyword/freeform equivalents
-   - if any field is missing or ambiguous, ask only for the missing field(s)
-   - treat explicit yes/no values in this bundle as the required confirmations for push and branch deletion
-5. Confirm finalise gate before merging:
-   - require `review: Good to commit: Yes`; if missing, run `/cobb review` before merging
-   - ensure the branch is synced with the target; if not, sync and rerun `/cobb review`
-6. Resolve the merge strategy per `references/templates/finalise-policy.md`.
-   - if bundle strategy is `auto`, present the resolved strategy as a suggestion and let the user confirm or override
-   - if bundle strategy is explicit, use it directly unless policy/safety checks require an override
-7. Merge feature branch into the target branch using the confirmed strategy.
-8. If `push-after-merge` is `yes`, push target branch to remote; if `no`, skip and state that remote update is pending.
-9. Apply branch safety checks before deletion:
-   - confirm `<feature-branch>` is not the target branch
-   - confirm `<feature-branch>` is not the default branch
-   - confirm current HEAD is not `<feature-branch>` when deleting it
-10. Delete completed feature branch according to bundle confirmations:
-   - if `delete-local-branch` is `yes`: `git branch -d <feature-branch>`; otherwise skip
-   - if `delete-remote-branch` is `yes`: `git push origin --delete <feature-branch>`; otherwise skip
-
----
+1. Record the session-start HEAD, then inspect `git status --short`, staged diff, and unstaged diff. Identify the active PRD when applicable.
+2. Partition changes into atomic groups. Map each group to:
+   - completed PRD checklist/story items, or `none` with reason
+   - durable context outcomes, or `none` with reason
+3. Propose the next group:
+   - files and hunks
+   - concise change summary
+   - evidence-based `feat`/`fix`/`chore` rationale
+   - PRD and context updates included
+   - full title and body
+4. Prompt with numbered actions:
+   - `1`: commit this group
+   - `2`: edit scope/message and repropose
+   - `3`: skip and leave uncommitted
+   - `4`: split into smaller groups and repropose
+   - mark exactly one **Recommended** with a short reason
+5. On commit approval, stage only that group, commit immediately, and report hash/title/summary.
+6. Repeat until no intended groups remain.
+7. Recheck the worktree:
+   - if changes remain, do not review
+   - prompt:
+     - `0`: resume proposals for remaining groups
+     - `1`: defer them and stop; review has not run
+     - `2`: show remaining files/hunks for a manual keep/discard decision
+   - mark `0` **Recommended** when changes are expected intended work; mark `2` **Recommended** when they are unexpected, ambiguous, or potentially unrelated
+   - never discard automatically
+8. When clean, run `review` automatically without another prompt:
+   - on a feature branch, compare against the resolved default/base branch
+   - on the default branch, compare the recorded session-start commit to HEAD and disable finalise
+9. Load `references/commit-review.md` and execute the branch matching the review result.
 
 ## Hotfix Mode
 
-Use for urgent fixes committed directly to the default branch without a feature branch.
+Use only for an urgent fix committed directly to the default branch.
 
-1. Confirm on the default branch (not a feature branch).
-2. Require `/cobb review` approval before committing.
-3. Follow the standard atomic commit workflow (steps 1-6 above).
-   - PRD checklist: mark as `none` — hotfixes typically have no PRD.
-   - Type: use `fix` unless the change is purely non-behavioural (`chore`).
-4. Record hotfix rationale in `tasks/context.md` (what broke, why the hotfix was necessary, follow-up actions).
-5. No finalise step needed — already on the default branch.
-
----
+1. Verify HEAD is the default branch.
+2. Run `review` before committing; post-commit branch comparison cannot review a default-branch hotfix meaningfully.
+3. Require `Good to commit: Yes` for the exact staged/unstaged hotfix state.
+4. Follow Normal Commit Workflow steps 1-6.
+   - use `fix` unless the change is genuinely non-behavioural
+   - PRD sync is usually `none` with reason
+5. Record the failure, urgency, rationale, and follow-up in `tasks/context.md` within the hotfix commit.
+6. Do not run normal post-commit review or finalise; the hotfix is already on the default branch.
 
 ## Output
 
-For each proposed commit, provide:
+For each proposal, provide atomic scope, summary, type rationale, PRD/context sync, title, body, and numbered actions with one **Recommended** choice.
 
-- atomic scope (files/hunks)
-- short "what changed" summary
-- type rationale (1-2 lines; evidence-based)
-- proposed title
-- proposed body
-- explicit confirmation prompt (`Commit this change now?`)
-
-After execution, provide:
-
-- created commit hash/title
-- short "what changed" summary
-- remaining uncommitted groups
-- finalise recommendation when all groups are complete
-- PRD checklist sync status (`updated` or `none` with reason)
-- context sync status (`updated` or `skipped` with reason)
-- End with the shared status block (Files changed / Key decisions / Next step).
+After execution, report commit hash/title, remaining groups, tracking sync, and automatic review result. End with the shared status block and numbered next steps when a user decision remains.
