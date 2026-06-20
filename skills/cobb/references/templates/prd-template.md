@@ -1,143 +1,300 @@
 # PRD Template Reference
 
-## Table of contents
+## Table of Contents
+
 - [Template](#template)
-- [Acceptance criteria examples](#acceptance-criteria-examples)
-- [Quality checklist](#quality-checklist)
+- [Writing Rules](#writing-rules)
+- [Acceptance Criteria Example](#acceptance-criteria-example)
+- [Readiness Checklist](#readiness-checklist)
 
 ## Template
 
-Use this as the default structure for new PRDs. Drop sections only when they truly do not apply.
+Use this structure for new PRDs. Keep every major numbered section. When a concern does not apply, write `Not applicable` and give a short reason.
 
-```markdown
+````markdown
 # PRD: <Feature name>
 
 ## 0. Summary
+
 - **Feature ID**: f-##
 - **Type**: feat | fix | chore
 - **Status**: draft | ready
 - **Priority**: P0 | P1 | P2 | P3
-- **Dependencies**: <none> | f-02, f-10
-- **What**: …
-- **Why**: …
-- **Who**: …
-- **Success looks like**: …
-- **Assumptions** (if any): …
+- **Dependencies**: none | f-02, f-10
+- **Outcome**: <one observable user or operational outcome>
+- **Why now**: <reason and evidence>
+- **Primary user**: <specific user or caller>
+- **Success signal**: <measurable or directly verifiable result>
+- **Implementation shape**: <one-paragraph technical summary grounded in the repository>
+- **Unresolved blockers**: none | numbered Q-### items
 
-## 1. Problem / Opportunity
-Describe the user pain / opportunity and why now.
+## 1. Problem and Evidence
 
-### For `Type: fix` items, also include:
-- **Current behaviour**: what happens now
-- **Expected behaviour**: what should happen
-- **Repro steps** (if known): step-by-step to reproduce
-- **Suspected root cause** (if known): …
-- **Minimal fix approach**: smallest change to resolve
-- **Regression tests to add**: what to test to prevent recurrence
+Describe the current pain or opportunity, its impact, and the evidence available.
 
-## 2. Goals
-- G-1: …
-- G-2: …
+For `Type: fix`, include:
 
-## 3. Non-goals
-- NG-1: …
-- NG-2: … (may revisit later)
+- **Current behaviour**: ...
+- **Expected behaviour**: ...
+- **Reproduction**: exact steps, inputs, environment, and frequency
+- **Root cause**: confirmed cause, or bounded hypotheses and how to distinguish them
+- **Regression surface**: related paths that must remain unchanged
 
-## 4. Users & Use Cases
-- Primary user: …
-- Secondary user(s): …
-- Key scenarios: …
+## 2. Goals and Non-Goals
 
-## 5. UX / Flows (if applicable)
-### 5.1 Primary flow
-1. …
-2. …
+### Goals
 
-### 5.2 Edge cases & error states
-- …
+- G-001: <measurable outcome>
 
-### 5.3 Accessibility (UI)
-- …
+### Non-goals
 
-## 6. Requirements
-### 6.1 User stories
-Write small stories that can be implemented in a focused session.
-Make each story a checklist item so `implement` can execute in pieces and check things off.
+- NG-001: <explicit exclusion and why>
 
-- [ ] US-001: <Title>
-  - **Description:** As a <user>, I want <capability> so that <benefit>.
-  - **Acceptance criteria:**
-    - [ ] Specific, verifiable criterion (avoid "works", "correctly", "fast" without numbers)
-    - [ ] Key edge cases + error states are specified (including empty/loading states if applicable)
-    - [ ] Permissions/roles are specified (if applicable)
-    - [ ] Manual verification steps are listed (if UI)
+## 3. Users, Permissions, and Scenarios
 
-### 6.2 Functional requirements
-- FR-1: …
-- FR-2: …
+- **Primary user**: ...
+- **Secondary users/callers**: ...
+- **Roles and permissions**: ...
+- **Assumptions about user state**: ...
 
-### 6.3 Non-functional requirements
-- NFR-1 (performance): …
-- NFR-2 (security/privacy): …
-- NFR-3 (reliability/observability): …
+### Scenarios
 
-## 7. Dependencies & Constraints (if applicable)
-- Feature dependencies: <none> | f-02, f-10
-- External dependencies (if any): …
-- Constraints: …
+- SC-001: <happy-path scenario>
+- SC-002: <failure, recovery, or boundary scenario>
 
-## 8. Data, APIs, and Integrations (if applicable)
-- Data model changes: …
-- API changes: …
-- Backward compatibility / migration: …
+## 4. Scope and Behaviour
 
-## 9. Analytics & Success Metrics
-- Metrics: …
-- Events/instrumentation: …
+### User stories
 
-## 10. Rollout / Release Plan
-- Feature flag: …
-- Phases: …
-- Rollback plan: …
+- [ ] US-001: <title>
+  - **As a** ...
+  - **I want** ...
+  - **So that** ...
+  - **Covers scenarios**: SC-001
+  - **Acceptance criteria**: AC-001, AC-002
 
-## 11. Testing & QA Plan (if applicable)
-- Test cases (happy path + key edge cases): …
-- What is automated vs manual: …
-- Environments / data setup needed: …
+### Acceptance criteria
 
-## 12. Risks & Mitigations
-- R-1: …
-- R-2: …
+- [ ] AC-001: Given <state>, when <action>, then <observable result>.
+- [ ] AC-002: Given <failure or boundary>, when <action>, then <observable recovery/error result>.
 
-## 13. Open Questions
-- Q-1: …
-- Q-2: …
-For unresolved decisions that need user input, prefer numbered/lettered options so replies can be short (for example: `Q-1` options `A/B/C` and reply `Q1A`).
+### Business rules
 
-## 14. Appendix (optional)
-- Alternatives considered: …
-- Links to mockups/designs: …
+- BR-001: <unambiguous rule, precedence, and boundary values>
+
+## 5. Experience and State Model
+
+### Primary flow
+
+1. ...
+2. ...
+
+### States
+
+- Initial/empty: ...
+- Loading/in progress: ...
+- Success: ...
+- Partial success: ...
+- Error: ...
+- Retry/recovery: ...
+
+### Accessibility
+
+- Keyboard/focus behaviour: ...
+- Semantic labels and announcements: ...
+- Contrast, motion, and non-visual alternatives: ...
+
+## 6. Technical Design
+
+### Existing architecture
+
+- Relevant files and symbols: `path/to/file` — <current responsibility>
+- Existing conventions to preserve: ...
+- Installed/target versions that constrain the design: ...
+
+### Chosen approach
+
+Describe control flow, ownership boundaries, and why this is the smallest maintainable design.
+
+### Files and symbols
+
+- `path/to/file`
+  - Change `<symbol>` to ...
+  - Add `<symbol>` with input/output contract ...
+- `path/to/new-file`
+  - Purpose and public surface ...
+
+### Interfaces and contracts
+
+```ts
+// Include exact types, signatures, request/response examples, or pseudocode
+// when they remove ambiguity. Omit routine implementation syntax.
 ```
 
-## Acceptance criteria examples
+### Data and persistence
 
-- Bad: "Export works."
-- Good: "When a user clicks **Export CSV**, the app downloads a CSV that includes columns A/B/C in that order; if there are 0 rows, download still occurs with headers only; errors show a non-blocking toast with retry."
+- Schema/model changes: ...
+- Validation and invariants: ...
+- Migration/backfill: ...
+- Compatibility and rollback: ...
 
-## Quality checklist
+### External integrations and sources
 
-Before saving the PRD:
+- System/API and boundary adapter: ...
+- Failure, timeout, retry, and idempotency behaviour: ...
+- Authoritative source: <versioned documentation link and resulting constraint>
 
-- [ ] If a PRD already existed, it was updated in place (no duplicates).
-- [ ] If updating an existing PRD, keep existing story/task checkboxes (do not reset them).
-- [ ] PRD Summary includes `Type:`, `Status:`, and `Priority:`.
-- [ ] If the feature has dependencies, they are referenced by ID and included in "Dependencies & Constraints".
-- [ ] PRD is consistent with `tasks/context.md` (or `tasks/context.md` was updated in this run).
-- [ ] Goals are measurable and directly tied to success metrics.
-- [ ] Non-goals are explicit (prevent scope creep).
-- [ ] User stories are checklist items with verifiable acceptance criteria.
-- [ ] Requirements are numbered (FR/NFR) and unambiguous.
-- [ ] Edge cases, error states, and permissions are specified.
-- [ ] Open questions that require user decisions use short-reply option formats (for example: `Q1A`).
-- [ ] Rollout plan and rollback plan exist (if risk warrants it).
-- [ ] Saved/updated at the chosen PRD path.
+## 7. Quality Attributes
+
+- **Security/privacy**: validation, authorisation, sensitive data, abuse cases
+- **Performance**: workload, limits, latency/budget, measurement method
+- **Reliability**: failure containment, retries, consistency, recovery
+- **Observability**: structured logs, metrics, traces, alerts; exclude secrets/PII
+- **Accessibility**: applicable standard and verification
+
+## 8. Implementation Plan
+
+Execute in dependency order. Each slice must produce an independently verifiable behaviour and an atomic commit group.
+
+### SL-001: <behavioural tracer slice>
+
+- **Requirements**: US-001, AC-001, BR-001
+- **Depends on**: none
+- **Files/symbols**: `path/to/file#symbol`
+- **RED**: add `<test name>` in `path/to/test`; expected failure is ...
+- **GREEN**: implement the minimum behaviour by ...
+- **REFACTOR**: permitted cleanup within touched scope ...
+- **Edge cases**: ...
+- **Commands**: `<focused test command>`
+- **Completion evidence**: exact passing assertion/output and manual observation, if any
+- [ ] Slice complete
+
+### SL-002: <next behaviour>
+
+- **Requirements**: ...
+- **Depends on**: SL-001
+- **Files/symbols**: ...
+- **RED**: ...
+- **GREEN**: ...
+- **REFACTOR**: ...
+- **Edge cases**: ...
+- **Commands**: ...
+- **Completion evidence**: ...
+- [ ] Slice complete
+
+## 9. Testing and Verification
+
+This section is the approved TDD contract for behavioural `feat` and `fix` work; implementation should execute it without a second planning interview.
+
+### Test strategy
+
+- Public interfaces under test: ...
+- Integration tests: ...
+- Focused unit tests for complex pure logic: ...
+- Real controlled dependencies: ...
+- Mocked system boundaries and why: ...
+- Fixtures/data setup and cleanup: ...
+
+### Behaviour coverage
+
+- AC-001 -> `<test name>` in `path/to/test` -> automated command/evidence
+- AC-002 -> `<test name or manual case>` -> evidence
+
+### Commands
+
+- Focused test: ...
+- Full regression suite: ...
+- Typecheck/lint/build: ...
+- Manual QA: exact steps and expected results
+
+### TDD exception, if any
+
+- Behaviour without practical automation: ...
+- Justification: ...
+- Risk: ...
+- Repeatable manual verification: ...
+- Testability follow-up: none | ...
+
+## 10. Rollout, Migration, and Recovery
+
+- Feature flag or compatibility strategy: ...
+- Deployment/migration order: ...
+- Progressive rollout and monitoring: ...
+- Rollback trigger and exact rollback steps: ...
+- Data recovery implications: ...
+
+## 11. Analytics and Success Evaluation
+
+- Metric/event and owner: ...
+- Baseline and target: ...
+- Evaluation window: ...
+- How to distinguish success from unrelated effects: ...
+
+## 12. Risks and Mitigations
+
+- R-001: <risk>
+  - Likelihood/impact: ...
+  - Prevention: ...
+  - Detection: ...
+  - Recovery: ...
+
+## 13. Decisions and Alternatives
+
+- D-001: <decision>
+  - **Chosen**: ...
+  - **Why**: ...
+  - **Alternatives rejected**: ...
+  - **Trade-offs/consequences**: ...
+  - **Source/evidence**: repository finding or authoritative versioned link
+
+## 14. Open Questions
+
+- Q-001: <blocking question>
+  - `0` **Recommended:** ...
+  - `1` ...
+  - `2` Custom answer
+  - **Blocks**: status ready | SL-### | rollout | other
+
+Use `None` when all questions are resolved. A PRD with a high-risk or irreversible unresolved question cannot be `ready`.
+
+## 15. Readiness Record
+
+- **Interview confirmation**: confirmed | pending
+- **Interview progress**: <answered>/<total> questions resolved
+- **Codebase exploration**: files/areas inspected
+- **External research**: none | sources and versions checked
+- **Requirement-to-slice traceability**: complete | gaps
+- **Verification coverage**: complete | justified gaps
+- **Ready rationale**: why a less-capable agent can implement without product/design decisions
+````
+
+## Writing Rules
+
+- Use stable IDs consistently; do not renumber existing IDs during updates.
+- Map every acceptance criterion to at least one implementation slice and verification item.
+- Name verified repository paths and symbols. Do not invent line numbers or structures.
+- Include exact contracts or reusable snippets for difficult logic, not full routine production files.
+- Preserve material decision rationale, not the interview transcript.
+- Keep existing checked items checked when updating a PRD.
+
+## Acceptance Criteria Example
+
+- Weak: "Export works correctly."
+- Strong: `AC-003: Given zero matching rows, when the user selects Export CSV, then the app downloads a UTF-8 CSV containing the configured headers in order and no data rows; an export failure leaves the page usable and exposes one retry action.`
+
+## Readiness Checklist
+
+- [ ] Summary includes unique `Feature ID`, `Type`, `Status`, `Priority`, dependencies, outcome, and success signal.
+- [ ] Scope represents one independently verifiable outcome; child PRDs and dependencies cover independent work.
+- [ ] Every major design branch is specified or marked non-applicable with a reason.
+- [ ] No high-risk or irreversible question remains unresolved or provisional.
+- [ ] Existing architecture, files, symbols, versions, and commands were verified rather than guessed.
+- [ ] Difficult contracts and algorithms include usable types, examples, pseudocode, or snippets.
+- [ ] Every story and acceptance criterion has stable traceability to an ordered implementation slice and evidence.
+- [ ] Behavioural work has vertical RED/GREEN/REFACTOR instructions conforming to `references/tdd.md`.
+- [ ] Mocks are limited to system boundaries; exceptions are explained.
+- [ ] Security, privacy, permissions, performance, reliability, observability, accessibility, migration, rollout, and rollback are addressed.
+- [ ] Automated and manual commands, fixtures, expected failures, and completion evidence are explicit.
+- [ ] Material decisions include rationale and relevant rejected alternatives.
+- [ ] Existing checklist state and settled decisions were preserved during updates.
+- [ ] `Status: ready` appears only when every item above passes or has a documented non-blocking exception.

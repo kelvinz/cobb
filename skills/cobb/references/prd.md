@@ -1,6 +1,6 @@
 # prd
 
-Create, update, or list PRDs. Each PRD is a self-contained feature spec with status and priority.
+Create, update, or list implementation-ready PRDs. Each PRD must let a less-capable implementation agent execute the work without rediscovering product or technical decisions.
 
 Shared guardrails from the cobb router apply (numbered short-reply options, built-in context capture, handoff-friendly, status block). The rules below are PRD-specific.
 
@@ -9,13 +9,23 @@ Shared guardrails from the cobb router apply (numbered short-reply options, buil
 ## Guardrails
 
 - Do not implement code.
-- Keep features "PRD-sized": one feature = one PRD.
-- Split the feature if it spans >2 subsystems, >1 UI surface + backend, or >~1 day of work.
-- Prefer asking a small number of high-value questions; otherwise write a draft PRD with explicit assumptions.
+- Keep features PRD-sized by independently verifiable user outcome and dependency boundary.
+- Allow a coherent cross-layer vertical slice when the outcome requires UI, API, and data changes together.
+- Fully understand an oversized idea, then propose a dependency-ordered PRD breakdown before writing files.
+- For new PRDs, interview exhaustively until every material branch of the design tree is resolved.
+- For updates, audit completeness and interview only implementation-critical gaps.
+- Ask one question at a time. Do not batch questions.
+- After exploration, state the planned total and label every prompt `Question X of Y`.
+- If an answer changes the dependency tree, announce the revised total and reason before the next question.
+- Explore the codebase instead of asking questions it can answer. Consult authoritative, version-relevant documentation when external APIs, libraries, or standards constrain the design.
+- For each user question, provide a recommended answer with reasoning.
+- Use `0` for the recommendation, `1..N` for alternatives, and a final numbered custom-answer option.
+- Maintain the full dependency tree internally. Show a short resolved/current/remaining summary only when moving to a major branch.
+- If an earlier answer changes, invalidate and revisit only downstream decisions that depend on it.
 - Use plain language, explicit edge cases, and verifiable acceptance criteria.
 - Do not use Markdown tables (use checklists + bullets).
-- PRD decision prompts are answerable in one line like `1A, 2C, 3B`.
 - If durable decisions are made, update `tasks/context.md` in this step (do not defer to a separate pass).
+- Do not preserve the interview transcript. Preserve material decisions, rationale, trade-offs, and rejected alternatives.
 
 ---
 
@@ -37,23 +47,55 @@ Shared guardrails from the cobb router apply (numbered short-reply options, buil
    - Avoid conflicts with prior decisions.
 3. **Assign feature ID:**
    - Scan existing PRD files in `tasks/` and `tasks/archive/` for the highest `f-##` number.
-   - New PRD gets `(max existing f-##) + 1`.
+   - Establish `(max existing f-##) + 1` as the next available ID, but do not assign all new IDs until any multi-PRD breakdown is confirmed.
+   - A single new PRD gets the next available ID.
    - For updates, preserve the existing ID.
-4. **Ask clarifying questions** only when needed (numbered A/B/C/D options, up to ~7, answerable like `1A, 2C`).
-5. **Determine PRD file path:**
+4. **Explore before interviewing:**
+   - Inspect repository structure, conventions, relevant implementation, tests, configuration, and installed dependency versions.
+   - Resolve answerable questions from evidence and record the evidence-backed recommendation.
+   - Use authoritative documentation for unstable or unfamiliar external contracts; record the relevant version, link, and resulting constraint in the PRD.
+5. **Build and walk the design tree:**
+   - Cover product outcome, users, scope, flows, states, data, APIs, permissions, security/privacy, accessibility, performance, reliability, observability, migrations, rollout/rollback, and verification.
+   - Mark a branch non-applicable only with a short reason.
+   - Resolve prerequisite decisions before dependent decisions.
+   - Build the initial question queue, state its total, and track progress as `Question X of Y`.
+   - Ask one question at a time using the `0`-recommended numeric format.
+   - If the user cannot decide, apply a labelled provisional recommendation only when the choice is reversible and low-risk.
+   - Keep high-risk or irreversible unresolved choices open and leave the PRD in `draft`.
+6. **Split oversized ideas when needed:**
+   - Split by independently verifiable outcomes and dependency boundaries, not arbitrary file, subsystem, or duration limits.
+   - Resolve shared decisions once, then interview only child-specific gaps.
+   - Present the numbered breakdown and dependency order for confirmation.
+   - Assign consecutive new feature IDs in dependency order after confirmation.
+   - Create all approved child PRDs by repeating the path, write, readiness, and context steps for each; do not hide independent work inside one oversized PRD.
+7. **Confirm shared understanding:**
+   - Present a concise scope, decisions, assumptions, PRD breakdown, and unresolved-items summary.
+   - Require numbered user confirmation before writing or materially rewriting PRDs:
+     - `0` **Recommended:** write the confirmed PRD set
+     - `1`: revise a specific decision
+     - `2`: stop without writing
+8. **Determine PRD file path:**
    - Look for an existing active PRD matching the feature ID in `tasks/` (`tasks/f-##-*.md`).
    - If found, use it (update in place).
    - Otherwise use `tasks/f-##-<feature-slug>.md`.
-6. **Write or update the PRD** at the chosen path using `references/templates/prd-template.md`:
+9. **Write or update the PRD** at the chosen path using `references/templates/prd-template.md`:
    - Set `Status:` and `Priority:` in the Summary section.
-   - For new PRDs, default `Status: draft`. Prompt the user to confirm `ready` when scope is locked.
+   - Set `Status: ready` only when every implementation-blocking decision is resolved and the readiness checklist passes.
+   - Otherwise set `Status: draft` and number each unresolved item.
    - `Priority:` uses P0 (critical), P1 (high), P2 (medium), P3 (low).
    - Ensure implementation progress is trackable via checklist items.
+   - Ground the technical design in actual files, symbols, interfaces, schemas, and repository commands.
+   - Include production-ready snippets or pseudocode for difficult logic, but leave routine syntax to the implementer.
+   - Map stable requirement and acceptance-criterion IDs to ordered vertical implementation slices and verification evidence.
+   - For behavioural `feat` and `fix` work, read `references/tdd.md` and include its complete PRD testing contract.
    - For UI/UX-heavy features, include expected design inputs and state whether `design` should run before `implement`.
-7. **Update context:**
+10. **Run the readiness gate:**
+   - Audit the written PRD against the Quality Checklist and template traceability rules.
+   - Downgrade to `draft` if any blocking detail remains, even if the user previously expected `ready`.
+11. **Update context:**
    - Update project gist in `tasks/context.md` if this is the first PRD or project scope changed.
    - Capture any durable decisions or constraints.
-8. **Reply** with updated file paths and a short change summary.
+12. **Reply** with updated file paths, status, readiness result, and a short change summary.
 
 ---
 
@@ -67,9 +109,9 @@ Shared guardrails from the cobb router apply (numbered short-reply options, buil
 
 ---
 
-## Clarifying Questions (Only If Needed)
+## Interview Protocol
 
-Ask up to ~7 high-value questions. Keep them answerable via `1A, 2C, 3B`.
+Ask as many high-value questions as needed for shared understanding, but exactly one per turn. Derive and announce the initial total after codebase exploration; do not invent a total before dependencies are understood.
 
 Focus on ambiguity around:
 
@@ -82,14 +124,17 @@ Focus on ambiguity around:
 - priority (P0 / P1 / P2 / P3)
 - dependencies between features (by ID)
 
-### Example question format
+Do not ask about repository facts that can be discovered locally. Do not ask the user to choose between technically invalid or unsafe options.
+
+### Question format
 
 ```text
-1. What are we building?
-   A. A brand new feature
-   B. A fix for existing behaviour
-   C. A maintenance/chore item
-   D. Other: [describe]
+Question 3 of 11: What outcome should this change optimise for?
+
+0. **Recommended:** Reduce checkout abandonment; this matches the stated user problem and existing funnel metrics.
+1. Reduce support workload.
+2. Increase average order value.
+3. Custom answer: describe the outcome.
 ```
 
 ---
@@ -105,6 +150,9 @@ Focus on ambiguity around:
 - Ensure each feature has a crisp outcome (what changes for the user).
 - Avoid implementation tasks ("refactor", "set up DB") unless they are truly user-facing requirements.
 - If a feature is too large, split by user goal or workflow step until each item could reasonably become a single PRD.
+- Specify the chosen technical approach and why it fits existing architecture.
+- Record rejected approaches only when their trade-offs help prevent implementation drift.
+- Prefer exact contracts and examples over adjectives such as "robust", "fast", or "secure".
 
 ---
 
@@ -124,7 +172,7 @@ Focus on ambiguity around:
 Use `references/templates/prd-template.md` as the default PRD template and checklist.
 
 - Read it before drafting a new PRD.
-- For updates to an existing PRD, edit only impacted sections and preserve existing checkbox state.
+- For updates to an existing PRD, audit the whole document for implementation-critical gaps, edit the affected sections, and preserve existing checkbox state and settled decisions.
 - Keep acceptance criteria concrete and verifiable; examples are in the reference file.
 
 ---
@@ -136,8 +184,8 @@ Use `references/templates/prd-template.md` as the default PRD template and check
 - Update `tasks/context.md` when durable decisions or project scope changes warrant it.
 - For UI/UX-heavy PRDs, recommend `/cobb design` (optional) before `/cobb implement`.
 - Suggest the next action:
-  - If `Status: draft`, suggest refining to `ready`.
-  - If `Status: ready`, suggest `/cobb implement`.
+  - If `Status: draft`, recommend refining to `ready` and provide numbered continue/stop choices.
+  - If `Status: ready`, recommend `design` or `implement` from the PRD's needs and provide numbered choices.
 - End with the shared status block (Files changed / Key decisions / Next step).
 
 ---
@@ -153,4 +201,11 @@ Before saving:
 - [ ] Each feature has a user-visible outcome and explicit scope boundaries (goals + non-goals).
 - [ ] Dependencies reference valid feature IDs.
 - [ ] Acceptance criteria are concrete and verifiable.
+- [ ] Every major design-tree concern was addressed or marked non-applicable with a reason.
+- [ ] Technical guidance names verified files/symbols/contracts and does not guess repository structure.
+- [ ] Difficult logic includes usable pseudocode or code where it reduces implementation ambiguity.
+- [ ] Stable IDs trace stories and criteria through implementation slices and verification evidence.
+- [ ] Behavioural work includes the complete `references/tdd.md` contract or a justified exception.
+- [ ] No high-risk or irreversible decision remains provisional.
+- [ ] `Status: ready` is used only when all implementation blockers are resolved.
 - [ ] PRD is consistent with `tasks/context.md` (or `tasks/context.md` was updated in this run).
