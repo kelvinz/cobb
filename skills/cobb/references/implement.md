@@ -115,7 +115,7 @@ Shared guardrails from the cobb router apply (numbered short-reply options, buil
    - Next steps:
      - If unresolved UI/UX direction remains, run `/cobb design` and continue `/cobb implement`.
      - Run `/cobb commit` in `commit` mode; it will run `/cobb review` automatically after all intended groups are committed and the worktree is clean.
-     - When the feature is ready to merge and its atomic commits are complete, run `/cobb commit` in `finalise` mode; it refreshes review automatically when its fingerprint is absent or stale.
+     - Once review has passed, run `/cobb commit` in `finalise` mode to archive the PRD and merge; it trusts the completed review rather than re-running one.
 
 ---
 

@@ -2,31 +2,36 @@
 
 Load this reference only for `commit finalise` or `finalise` mode.
 
+Finalise runs **after** the review phase. In the standard flow (`implement → commit → review → finalise`), `review` runs automatically once all atomic commits are clean and `references/commit-review.md` hands off here on a clean pass — so finalise starts right after a passing review. Finalise trusts that review; it does not re-review the code for its own closeout commit or for the merge/push/delete choices.
+
 ## Guardrails
 
 - Require a clean feature branch, never the default/base branch.
-- Collect target, merge strategy, push, local deletion, and remote deletion in one coded decision bundle.
+- Trust the review the review phase already produced. The finalise closeout commit touches only `tasks/` bookkeeping, so it does not trigger re-review; neither do the merge/push/delete choices.
+- Re-review only when new code would actually enter the merge: no clean review exists for the current code, the confirmed target differs from the reviewed base, or the target advanced with commits that get synced in.
+- Confirm the target, then collect merge strategy, push, local deletion, and remote deletion as one coded decision bundle.
 - Mark one evidence-based value **Recommended** for every field and show one **Recommended** complete bundle.
 - Treat explicit coded choices as confirmation; ask only for missing or conflicting fields.
 - Never assume `main`; resolve repository defaults and policy.
-- Sync with the confirmed target before merge.
 - Keep closeout tracking in one approved pre-merge commit; do not use it to catch up missed atomic updates without explicit approval.
+- Sync with the confirmed target before merge.
 - Never delete the target, default, or currently checked-out branch.
 - Require explicit coded confirmation for push and each deletion.
 
 ## Workflow
 
-1. Verify the worktree is clean and HEAD is a feature branch.
+1. Verify the worktree is clean, HEAD is a feature branch, and a clean review already covers the current code. The review phase normally provides this; run `review` once here only if none exists, route the result through `references/commit-review.md`, and continue only on a clean pass.
 2. Resolve the active PRD:
    - prefer the PRD matching the branch feature ID
    - if several candidates exist, number them and recommend the strongest ID/name match
    - request an open-ended path only when repository discovery cannot produce candidates
-3. Prepare closeout tracking:
+3. Mark the PRD done and archive it (closeout tracking commit):
    - move `tasks/f-##-<slug>.md` to the same filename under `tasks/archive/` when not already archived
    - update `tasks/context.md` completed/current-state sections and applicable review-proposed `Finalise` entries
    - stage only those tracking changes
    - propose one `🧹 chore: finalise f-## <short-summary>` commit with the finalise body from `references/templates/commit-rules.md`
    - present numbered commit/edit/skip choices and mark the safe evidence-based choice **Recommended**
+   - this commit touches only tracking files, so it does not invalidate the review
    - skip the commit when no tracking change is needed and state why
 4. Collect the finalise bundle:
    - target: coded `1A`, `1B`, ...; make the resolved default `1A`, include `1X` for open custom text
@@ -36,13 +41,8 @@ Load this reference only for `commit finalise` or `finalise` mode.
    - delete remote: `5A` yes, `5B` no
    - show why each recommended value fits repository policy and risk
    - `0`/`default` means the displayed **Recommended** complete bundle, not a hardcoded strategy
-5. Refresh review:
-   - a tracking commit invalidates any earlier fingerprint
-   - if no valid review exists for the exact clean HEAD and confirmed target-base hash, run `review` automatically against that target
-   - load `references/commit-review.md` and apply its decision tree
-   - after a clean pass and finalise choice, continue here
-6. Confirm HEAD is synced with the target; if sync changes HEAD or the target moves, rerun review automatically.
-7. Resolve strategy using `references/templates/finalise-policy.md`.
+5. Sync HEAD with the confirmed target. This is normally a no-op; only if the target differs from the reviewed base or has advanced with new commits does unreviewed code enter the merge — rerun `review` against the target before merging in that case.
+6. Resolve strategy using `references/templates/finalise-policy.md`.
    - when the user chose `auto`, show the resolved strategy and prompt:
      - `0` **Recommended:** confirm the policy-resolved strategy
      - `1`: merge-commit
@@ -50,10 +50,10 @@ Load this reference only for `commit finalise` or `finalise` mode.
      - `3`: squash
      - `4`: rebase
      - `5`: stop
-8. Merge using the confirmed strategy.
-9. Push the target only when the bundle confirms push; otherwise state that remote update remains pending.
-10. Recheck branch-deletion safety, then apply only the confirmed local/remote deletions.
+7. Merge using the confirmed strategy.
+8. Push the target only when the bundle confirms push; otherwise state that remote update remains pending.
+9. Recheck branch-deletion safety, then apply only the confirmed local/remote deletions.
 
 ## Output
 
-Report the tracking commit, review fingerprint, merge result, push result, and branch cleanup. If any action remains, provide numbered next-step choices and mark one **Recommended**.
+Report the closeout commit, the review the merge relied on, merge result, push result, and branch cleanup. If any action remains, provide numbered next-step choices and mark one **Recommended**.

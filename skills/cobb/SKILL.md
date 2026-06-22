@@ -61,7 +61,8 @@ Do not execute any phase. Instead:
    - no `tasks/context.md` or no PRDs → "start with `/cobb prd`"
    - a `Status: ready` PRD with no feature branch → "`/cobb implement <prd>`"
    - feature branch ahead of base with uncommitted changes → "`/cobb commit` (review runs after the final clean commit group)"
-   - all commits done on a feature branch → "`/cobb commit finalise` (it refreshes review automatically)"
+   - all commits reviewed and clean on a feature branch → "`/cobb commit finalise` (it trusts the completed review and merges)"
+   - all commits done but not yet reviewed → "`/cobb review`, then `/cobb commit finalise`"
    - `tasks/context.md` long/noisy → "`/cobb compact`"
 5. Wait for the user's option number or explicit subcommand before acting.
 

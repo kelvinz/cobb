@@ -4,12 +4,13 @@ Use this when `commit` runs in `finalise` mode.
 
 ## Preconditions
 
-- `review` returns `Good to commit: Yes` for the exact clean HEAD and target-base commit fingerprint
-- finalise decision bundle is collected (target branch, merge strategy, push/delete choices)
-- target branch is user-confirmed
 - feature branch is not default/base
+- the review phase already returned `Good to commit: Yes` for the feature code against the target base, before finalise began
+- the only change since that review is the finalise closeout commit (`tasks/` tracking files only)
+- target branch is user-confirmed
+- finalise decision bundle is collected (merge strategy, push/delete choices)
 
-Any commit, target-base movement, or worktree change invalidates the review gate and requires automatic re-review before merge.
+The finalise closeout commit is review-neutral and does not require re-review. A code change, target-base movement, or worktree change since the review does require re-review before merge.
 
 ## Default strategy
 
