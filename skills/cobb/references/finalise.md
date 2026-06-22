@@ -13,6 +13,7 @@ Finalise runs **after** the review phase. In the standard flow (`implement → c
 - Mark one evidence-based value **Recommended** for every field and show one **Recommended** complete bundle.
 - Treat explicit coded choices as confirmation; ask only for missing or conflicting fields.
 - Never assume `main`; resolve repository defaults and policy.
+- Default push to **no** (`3B`); never present pushing to remote as the recommended default.
 - Keep closeout tracking in one approved pre-merge commit; do not use it to catch up missed atomic updates without explicit approval.
 - Sync with the confirmed target before merge.
 - Never delete the target, default, or currently checked-out branch.
@@ -33,14 +34,14 @@ Finalise runs **after** the review phase. In the standard flow (`implement → c
    - present numbered commit/edit/skip choices and mark the safe evidence-based choice **Recommended**
    - this commit touches only tracking files, so it does not invalidate the review
    - skip the commit when no tracking change is needed and state why
-4. Collect the finalise bundle:
-   - target: coded `1A`, `1B`, ...; make the resolved default `1A`, include `1X` for open custom text
-   - strategy: `2A` auto, `2B` merge-commit, `2C` linear-history, `2D` squash, `2E` rebase
-   - push: `3A` yes, `3B` no
-   - delete local: `4A` yes, `4B` no
-   - delete remote: `5A` yes, `5B` no
-   - show why each recommended value fits repository policy and risk
-   - `0`/`default` means the displayed **Recommended** complete bundle, not a hardcoded strategy
+4. Collect the finalise bundle. Mark one value **Recommended** in every field and show why it fits repository policy and risk:
+   - target: `1A` (resolved default, **Recommended**), `1B`, ...; include `1X` for open custom text
+   - strategy: `2A` auto (**Recommended**, resolves via `references/templates/finalise-policy.md`), `2B` merge-commit, `2C` linear-history, `2D` squash, `2E` rebase
+   - push: `3A` yes, `3B` no (**Recommended**)
+   - delete local: `4A` yes (**Recommended**), `4B` no
+   - delete remote: `5A` yes, `5B` no (**Recommended**)
+   - `0`/`default` means the displayed **Recommended** complete bundle (here `1A 2A 3B 4A 5B`), not a hardcoded strategy
+   - shift a field's recommendation when repository evidence (e.g. a `tasks/context.md` merge preference, an unmerged or shared local branch) clearly favors another value, and say why
 5. Sync HEAD with the confirmed target. This is normally a no-op; only if the target differs from the reviewed base or has advanced with new commits does unreviewed code enter the merge — rerun `review` against the target before merging in that case.
 6. Resolve strategy using `references/templates/finalise-policy.md`.
    - when the user chose `auto`, show the resolved strategy and prompt:

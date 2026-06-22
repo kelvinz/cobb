@@ -8,7 +8,7 @@ Use this when `commit` runs in `finalise` mode.
 - the review phase already returned `Good to commit: Yes` for the feature code against the target base, before finalise began
 - the only change since that review is the finalise closeout commit (`tasks/` tracking files only)
 - target branch is user-confirmed
-- finalise decision bundle is collected (merge strategy, push/delete choices)
+- finalise decision bundle is collected (merge strategy, push/delete choices); push defaults to no
 
 The finalise closeout commit is review-neutral and does not require re-review. A code change, target-base movement, or worktree change since the review does require re-review before merge.
 
@@ -39,4 +39,5 @@ Resolve the merge strategy using this priority (highest wins):
 - confirm `<feature-branch>` is not the target branch
 - confirm `<feature-branch>` is not the default branch
 - confirm current HEAD is not `<feature-branch>` when deleting it
-- require explicit numbered/coded user confirmation before deleting local or remote branch; mark the safer evidence-based choice **Recommended**
+- require explicit numbered/coded user confirmation before deleting local or remote branch
+- recommend deleting the local branch once it is merged (the work is preserved on the target); recommend keeping the remote branch unless evidence clearly favors removing it
