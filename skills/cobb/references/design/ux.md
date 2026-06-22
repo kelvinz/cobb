@@ -57,7 +57,7 @@ When context is thin, state explicit assumptions and proceed.
 
 ## Accessibility Option Set for UI Components
 
-Treat this section as the accessibility source of truth for component design in `ui` mode.
+Use this section as the deeper accessibility reference for `ui` mode; the compact baseline in `references/design/ui.md` covers routine UI work, and this fuller set applies when more UX/accessibility depth is needed.
 
 1. Focus: include visible `focus-visible` styles with strong contrast and non-color-only indication.
 2. Keyboard: support tab order, Enter/Space activation, Escape handling where applicable, and no keyboard traps.
