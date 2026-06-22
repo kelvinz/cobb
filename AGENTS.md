@@ -1,9 +1,17 @@
+# PROJECT FILES
+
+Repo-root files that carry standing context — keep each to its own job:
+- `SOUL.md` — response voice and character. If it exists, read it first.
+- `README.md` — project overview: tech stack, commands, scope, workflows, and external docs. Keep it current.
+- `MEMORY.md` — mistakes and preferences learned across sessions (see the Self Improvement Loop below).
+
+---
+
 # PHILOSOPHY
 
 This codebase should get easier to change over time.
 Prefer maintainability and clarity over short-term speed.
 Leave it better than you found it.
-If `SOUL.md` exists in the repo root, read it first; it defines response character and voice.
 
 ---
 
