@@ -41,7 +41,6 @@ Shared guardrails from the cobb router apply (numbered short-reply options, buil
    - Require `Status: ready`. If it is `draft`, transition to `/cobb prd` and resolve its numbered blockers first.
 
 2. **Preflight**
-   - Read `AGENTS.md` (if present) and follow it.
    - Check priority:
      - Scan active PRD files in `tasks/` for their `Status:` and `Priority:` fields.
      - If higher-priority PRDs with `Status: ready` exist above this feature (P0 > P1 > P2 > P3), ask the user to confirm working on this item now.

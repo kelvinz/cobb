@@ -17,11 +17,12 @@ Default delivery order: `implement -> commit -> review -> finalise`. Review the 
 
 This file is navigation, not the full operating manual. On activation:
 
-1. Do not preload every file listed in References.
-2. Load only the selected phase reference from Dispatch.
-3. For nested routers, load the router first, then only the selected child reference.
-4. Load templates, examples, and secondary references only when the selected reference explicitly requires them for the current task.
-5. For multi-phase requests, complete one phase at a time and load the next phase reference only when that phase begins.
+1. If `AGENTS.md` exists in the repo root and has not already been read in this context, read it first — it carries repo-wide instructions and points to `SOUL.md` (voice) and `MEMORY.md` (lessons). Read it once per session, not per phase.
+2. Do not preload every file listed in References.
+3. Load only the selected phase reference from Dispatch.
+4. For nested routers, load the router first, then only the selected child reference.
+5. Load templates, examples, and secondary references only when the selected reference explicitly requires them for the current task.
+6. For multi-phase requests, complete one phase at a time and load the next phase reference only when that phase begins.
 
 ---
 
@@ -73,6 +74,7 @@ Do not execute any phase. Instead:
 - **Show questionnaire progress.** Before a one-question-at-a-time interview, explore enough context to build the question queue and state the total. Label every prompt `Question X of Y`. If a new answer creates or removes dependent questions, announce the revised total and why before continuing.
 - **Keep phase-specific reply codes.** PRD interviews use `0` for the recommendation and `1..N` for alternatives. Commit review menus use `0` for the branch default and numbered finding selection. Commit finalise may use field codes such as `1A 2B` plus `0`/`default`; identify the recommended complete bundle.
 - **Context capture is built-in.** Update `tasks/context.md` inline whenever durable decisions, risks, or gotchas emerge, except in read-only `review`, which reports proposed entries for the next implement/finalise commit. See `references/context.md` for what/where to record.
+- **Honour repo instructions.** Follow the repo's `AGENTS.md` (if present) for any files you touch; it is read once at activation (see Progressive Disclosure Contract).
 - **Handoff-friendly.** Assume a junior dev (or another AI) picks this up later. Plain language, explicit edge cases, no hidden assumptions.
 - **Never claim untested success.** Do not say tests/checks/builds passed unless you actually ran them; if you didn't run it, say so.
 - **Status block.** End every standalone phase reply with:
