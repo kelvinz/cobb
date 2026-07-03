@@ -10,7 +10,7 @@ Use this when `commit` runs in `finalise` mode.
 - target branch is user-confirmed
 - finalise decision bundle is collected (merge strategy, push/delete choices); push defaults to no
 
-The finalise closeout commit is review-neutral and does not require re-review. A code change, target-base movement, or worktree change since the review does require re-review before merge.
+Re-review conditions are defined canonically by the re-review guardrail in `references/finalise.md`; do not restate or reinterpret them here.
 
 ## Default strategy
 

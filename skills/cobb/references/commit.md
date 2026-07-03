@@ -14,7 +14,7 @@ For commit classification and bodies, load `references/templates/commit-rules.md
 
 ## Guardrails
 
-- Require numbered user confirmation before every commit.
+- Require numbered user confirmation before every commit; a batch `approve all` reply confirms exactly the presented groups with their shown titles and bodies.
 - Show files/hunks, intent, tracking updates, title, and body before approval.
 - Mark exactly one commit action **Recommended** from diff quality. Recommend `split` or `edit`, not `commit`, when atomicity or message quality is weak.
 - Keep commits atomic; if a title needs "and", split the change set.
@@ -46,32 +46,41 @@ Use another emoji only when it is more precise. Keep the summary short, specific
 2. Partition changes into atomic groups. Map each group to:
    - completed PRD checklist/story items, or `none` with reason
    - durable context outcomes, or `none` with reason
-3. Propose the next group:
+3. Present each group's proposal:
    - files and hunks
    - concise change summary
    - evidence-based `feat`/`fix`/`chore` rationale
    - PRD and context updates included
    - full title and body
-4. Prompt with numbered actions:
+   - single group: show it and use the per-group actions in step 5
+   - multiple groups: show the full plan (every group's proposal, in commit order), then choose the approval mode in step 4
+4. With multiple groups, prompt for the approval mode:
+   - `1`: approve all — commit every group sequentially as shown, with no further prompts
+   - `2`: go one group at a time using the per-group actions below
+   - `3`: edit a group's scope/message and re-present the plan
+   - `4`: split a group and re-present the plan
+   - `5`: stop and leave everything uncommitted
+   - mark exactly one **Recommended**: `1` only when every group is atomic with an accurate message; otherwise the action that fixes the weakest group
+5. Per-group actions (single group, or one-at-a-time mode):
    - `1`: commit this group
    - `2`: edit scope/message and repropose
    - `3`: skip and leave uncommitted
    - `4`: split into smaller groups and repropose
    - mark exactly one **Recommended** with a short reason
-5. On commit approval, stage only that group, commit immediately, and report hash/title/summary.
-6. Repeat until no intended groups remain.
-7. Recheck the worktree:
+6. On approval, stage only the approved group, commit immediately, and report hash/title/summary. In approve-all mode, do this per group in the presented order; if staging drifts from the presented plan (missing files, conflicting hunks, new changes), stop the batch, report the drift, and fall back to one-at-a-time for the remaining groups.
+7. Repeat until no intended groups remain.
+8. Recheck the worktree:
    - if changes remain, do not review
    - prompt:
-     - `0`: resume proposals for remaining groups
-     - `1`: defer them and stop; review has not run
-     - `2`: show remaining files/hunks for a manual keep/discard decision
-   - mark `0` **Recommended** when changes are expected intended work; mark `2` **Recommended** when they are unexpected, ambiguous, or potentially unrelated
+     - `1`: resume proposals for remaining groups
+     - `2`: defer them and stop; review has not run
+     - `3`: show remaining files/hunks for a manual keep/discard decision
+   - mark `1` **Recommended** when changes are expected intended work; mark `3` **Recommended** when they are unexpected, ambiguous, or potentially unrelated
    - never discard automatically
-8. When clean, run `review` automatically without another prompt:
+9. When clean, run `review` automatically without another prompt:
    - on a feature branch, compare against the resolved default/base branch
    - on the default branch, compare the recorded session-start commit to HEAD and disable finalise
-9. Load `references/commit-review.md` and execute the branch matching the review result.
+10. Load `references/commit-review.md` and execute the branch matching the review result.
 
 ## Hotfix Mode
 
@@ -80,7 +89,7 @@ Use only for an urgent fix committed directly to the default branch.
 1. Verify HEAD is the default branch.
 2. Run `review` before committing; post-commit branch comparison cannot review a default-branch hotfix meaningfully.
 3. Require `Good to commit: Yes` for the exact staged/unstaged hotfix state.
-4. Follow Normal Commit Workflow steps 1-6.
+4. Follow Normal Commit Workflow steps 1-7.
    - use `fix` unless the change is genuinely non-behavioural
    - PRD sync is usually `none` with reason
 5. Record the failure, urgency, rationale, and follow-up in `tasks/context.md` within the hotfix commit.

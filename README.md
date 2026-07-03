@@ -11,7 +11,7 @@ A single skill for ongoing product development, split into phases you call as su
 - `/cobb design` — optional design router for UI/UX direction, interaction/motion, and static imagery (`ui` / `ux` / `motion` / `imagery` modes). The mode references are detailed but still being refined and not yet battle-tested; treat their output as a strong starting point and review it before relying on it.
 - `/cobb implement` — implement a ready PRD as vertical behavioural slices, using red-green-refactor where practical, and check off completed stories/tasks.
 - `/cobb review` — read-only branch review for correctness, security, tests, and scope, with numbered findings, a clear go/no-go decision, and an exact state fingerprint.
-- `/cobb commit` — propose atomic, user-approved commits, then run review automatically after the final clean group and route numbered fixes/suggestions. Also `/cobb commit finalise` (merge/branch cleanup) and `/cobb commit hotfix`.
+- `/cobb commit` — propose atomic, user-approved commits (one at a time, or approve a multi-commit plan in one go), then run review automatically after the final clean group and route numbered fixes/suggestions. Also `/cobb commit finalise` (merge/branch cleanup) and `/cobb commit hotfix`.
 - `/cobb context` — maintain `tasks/context.md` inline or via explicit backfill.
 - `/cobb compact` — compact `tasks/context.md` by summarising older entries when it gets noisy.
 
@@ -20,7 +20,7 @@ These phases are written to be handoff-friendly: assume a junior dev (or another
 ## Interaction contract
 
 - Every bounded user choice is numbered so a reply can be only the option number.
-- Every choice set marks exactly one **Recommended** option from repository evidence, safety, and best practice.
+- Every choice set marks exactly one **Recommended** option from repository evidence, safety, and best practice; replying `0` (or `default`) selects it.
 - Open-ended input is used only when useful answers cannot be represented honestly as options.
 - One-at-a-time interviews announce their total first and label each prompt `Question X of Y`. If an answer changes the dependency tree, the skill announces the revised total and reason.
 
@@ -29,11 +29,11 @@ These phases are written to be handoff-friendly: assume a junior dev (or another
 1. `/cobb prd` → `/cobb design` (optional, UI/UX-heavy features) → `/cobb implement`
    Context: capture durable decisions inline as each step executes.
 2. `/cobb commit` (`commit` mode): atomic commits with user approval, followed automatically by `/cobb review` once all intended groups are committed and the worktree is clean.
-3. Post-review loop: fix numbered blockers, optionally implement numbered suggestions, commit those changes, and re-review automatically. `0` follows the recommended branch default.
-4. `/cobb commit finalise`: after a valid clean review, archive the completed PRD, update `tasks/context.md` if needed, refresh review after any tracking commit, then merge using the confirmed strategy and delete branches safely.
+3. Post-review loop: fix numbered blockers, optionally implement numbered suggestions, commit those changes, and re-review automatically. `0` selects the recommended reply.
+4. `/cobb commit finalise`: after a valid clean review, archive the completed PRD, update `tasks/context.md` if needed (the tracking-only closeout commit does not trigger re-review), then merge using the confirmed strategy and delete branches safely.
 5. `/cobb compact` (periodic): summarise older context entries to keep tracking files easy to scan.
 
-The default is **implement -> commit -> review -> finalise**. Atomic commits give review a stable branch diff and preserve focused history. Reviewing before commit would inspect a moving staged/unstaged worktree and then duplicate the review after commit. Finalise reruns review only when a tracking commit, base movement, or worktree change invalidates the exact review fingerprint.
+The default is **implement -> commit -> review -> finalise**. Atomic commits give review a stable branch diff and preserve focused history. Reviewing before commit would inspect a moving staged/unstaged worktree and then duplicate the review after commit. Finalise reruns review only when new code would enter the merge — base movement, target change, or code changes beyond the tracking-only closeout commit.
 
 ## Files the skill manages
 

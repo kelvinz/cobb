@@ -39,7 +39,7 @@ Shared guardrails from the cobb router apply (numbered short-reply options, buil
    - Otherwise use the local default branch (`main`, `master`, or `dev`) when exactly one exists.
    - If the comparison base cannot be resolved, return `Good to commit: No` with the exact commands/data needed to resolve it.
 2. Collect context:
-   - `git fetch --all --prune` to refresh remote state
+   - `git fetch --all --prune` to refresh remote state; if it fails (offline, unreachable remote), continue against local refs and record in the report that remote freshness is unverified
    - `git diff "<comparison-base>...HEAD"`
    - `git log "<comparison-base>..HEAD" --oneline`
    - `git merge-base --is-ancestor "<comparison-base>" HEAD`

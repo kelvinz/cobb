@@ -2,13 +2,12 @@
 
 Load this reference only for `commit finalise` or `finalise` mode.
 
-Finalise runs **after** the review phase. In the standard flow (`implement → commit → review → finalise`), `review` runs automatically once all atomic commits are clean and `references/commit-review.md` hands off here on a clean pass — so finalise starts right after a passing review. Finalise trusts that review; it does not re-review the code for its own closeout commit or for the merge/push/delete choices.
+Finalise runs **after** the review phase. In the standard flow (`implement → commit → review → finalise`), `review` runs automatically once all atomic commits are clean and `references/commit-review.md` hands off here on a clean pass — so finalise starts right after a passing review. Finalise trusts that review; the re-review guardrail below is the canonical rule for when a fresh review is required.
 
 ## Guardrails
 
 - Require a clean feature branch, never the default/base branch.
-- Trust the review the review phase already produced. The finalise closeout commit touches only `tasks/` bookkeeping, so it does not trigger re-review; neither do the merge/push/delete choices.
-- Re-review only when new code would actually enter the merge: no clean review exists for the current code, the confirmed target differs from the reviewed base, or the target advanced with commits that get synced in.
+- **Re-review rule (canonical).** Trust the review the review phase already produced; re-review only when new code would actually enter the merge — no clean review exists for the current code, the confirmed target differs from the reviewed base, or the target advanced with commits that get synced in. The closeout commit (`tasks/` bookkeeping only) and the merge/push/delete choices never trigger re-review.
 - Confirm the target, then collect merge strategy, push, local deletion, and remote deletion as one coded decision bundle.
 - Mark one evidence-based value **Recommended** for every field and show one **Recommended** complete bundle.
 - Treat explicit coded choices as confirmation; ask only for missing or conflicting fields.
@@ -32,25 +31,20 @@ Finalise runs **after** the review phase. In the standard flow (`implement → c
    - stage only those tracking changes
    - propose one `🧹 chore: finalise f-## <short-summary>` commit with the finalise body from `references/templates/commit-rules.md`
    - present numbered commit/edit/skip choices and mark the safe evidence-based choice **Recommended**
-   - this commit touches only tracking files, so it does not invalidate the review
+   - tracking-only, so it does not trigger re-review (see the canonical re-review guardrail)
    - skip the commit when no tracking change is needed and state why
 4. Collect the finalise bundle. Mark one value **Recommended** in every field and show why it fits repository policy and risk:
    - target: `1A` (resolved default, **Recommended**), `1B`, ...; include `1X` for open custom text
-   - strategy: `2A` auto (**Recommended**, resolves via `references/templates/finalise-policy.md`), `2B` merge-commit, `2C` linear-history, `2D` squash, `2E` rebase
+   - strategy: `2A` auto (**Recommended**, resolves via `references/templates/finalise-policy.md` and executes without a second strategy prompt), `2B` merge-commit, `2C` linear-history, `2D` squash, `2E` rebase
    - push: `3A` yes, `3B` no (**Recommended**)
    - delete local: `4A` yes (**Recommended**), `4B` no
    - delete remote: `5A` yes, `5B` no (**Recommended**)
    - `0`/`default` means the displayed **Recommended** complete bundle (here `1A 2A 3B 4A 5B`), not a hardcoded strategy
    - shift a field's recommendation when repository evidence (e.g. a `tasks/context.md` merge preference, an unmerged or shared local branch) clearly favors another value, and say why
-5. Sync HEAD with the confirmed target. This is normally a no-op; only if the target differs from the reviewed base or has advanced with new commits does unreviewed code enter the merge — rerun `review` against the target before merging in that case.
+5. Sync HEAD with the confirmed target. This is normally a no-op; if sync brings in new commits or the target differs from the reviewed base, apply the canonical re-review guardrail before merging.
 6. Resolve strategy using `references/templates/finalise-policy.md`.
-   - when the user chose `auto`, show the resolved strategy and prompt:
-     - `0` **Recommended:** confirm the policy-resolved strategy
-     - `1`: merge-commit
-     - `2`: linear-history
-     - `3`: squash
-     - `4`: rebase
-     - `5`: stop
+   - when the user chose `auto` (`2A`), state the resolved strategy and its policy rationale in one line, then proceed to merge without re-prompting — choosing auto already authorised the policy result
+   - prompt only when policy resolution is genuinely conflicting (e.g. contradictory `tasks/context.md` preferences): present numbered strategy choices (merge-commit / linear-history / squash / rebase / stop) and mark one **Recommended**
 7. Merge using the confirmed strategy.
 8. Push the target only when the bundle confirms push; otherwise state that remote update remains pending.
 9. Recheck branch-deletion safety, then apply only the confirmed local/remote deletions.
