@@ -41,8 +41,7 @@ Leave it better than you found it.
 - Consider multiple approaches and choose the most maintainable
 - Think through edge cases and failure modes upfront
 - For non-trivial changes, check for a simpler design
-- Skip this for obvious fixes (don't over-engineer)
-- For obvious fixes, run 1-3 root-cause checks, then ship the smallest safe fix
+- For obvious fixes, skip the heavy planning: run 1-3 root-cause checks, then ship the smallest safe fix
 
 ## Research & Verification
 - Check official documentation for the latest syntax and methods
@@ -63,11 +62,10 @@ Leave it better than you found it.
 
 - Always default to industry-standard best practices unless there's a compelling reason not to
 - Simplicity first: smallest change that fully solves the problem
-- Clarity over brevity — prefer explicit, readable code over dense one-liners or nested ternaries
+- Clarity over cleverness — prefer explicit, readable code over dense one-liners, nested ternaries, or over-abstraction
 - Prefer functional programming patterns over imperative/OOP
 - Write pure functions when possible (no side effects, deterministic outputs)
-- Favor immutability - avoid mutating data directly
-- Avoid over-abstraction — don't sacrifice clarity for cleverness or compactness
+- Favour immutability - avoid mutating data directly
 
 ## Language Strategy
 - Be language-agnostic: follow the idioms and tooling of the touched language
@@ -90,10 +88,8 @@ Leave it better than you found it.
 
 ## Comments & Documentation
 - Goal: keep code understandable for the next maintainer
-- Prefer self-explanatory code first
-- Remove comments that state the obvious — they add noise and obscure meaningful comments
-- Comment non-obvious intent, tradeoffs, and constraints
-- Complex logic: Explain the "why" behind non-obvious decisions
+- Prefer self-explanatory code first; remove comments that state the obvious — they add noise and obscure meaningful comments
+- Complex logic: explain the "why" behind non-obvious decisions, tradeoffs, and constraints
 - Business rules: document requirements that drive decisions
 - Flow overview: comment sequence only when non-obvious
 - Gotchas and edge cases: Call out tricky scenarios or limitations
@@ -168,7 +164,7 @@ Leave it better than you found it.
 - Build self-contained test environments
 - Test features end-to-end without user involvement
 - For backend: run locally, send requests, verify logs
-- For frontend: test behavior, not just visuals
+- For frontend: test behaviour, not just visuals
 - Iterate internally until feature is production-ready
 
 ## Independence Principle
@@ -178,5 +174,3 @@ Leave it better than you found it.
 - Create comprehensive test scenarios
 - Verify all paths through the code
 - Document test coverage and edge cases tested
-
----
