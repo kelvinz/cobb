@@ -22,11 +22,10 @@ When `Good to commit: Yes` and `S1..SN` exist:
 
 1. Show each suggestion's scope classification.
 2. Prompt:
+   - `0` **Recommended:** the recommended reply with reasoning — proceed without optional suggestions when all are genuinely optional, or the specific suggestion selection that materially reduces security, correctness, data-loss, or near-term operational risk
    - `1..N`: implement selected suggestions; accept multi-select replies
-   - `N+1`: implement all suggestions
-   - `N+2`: proceed to finalise without optional suggestions on a feature branch, or conclude review on the default branch
-   - `N+3`: stop without finalising
-   - mark one **Recommended reply** with reasoning (`0` selects it): `N+2` when suggestions are genuinely optional, or the numbered selection that materially reduces security, correctness, data-loss, or near-term operational risk
+   - then the remaining replies, numbered consecutively: implement all suggestions; proceed to finalise without optional suggestions on a feature branch (or conclude review on the default branch); stop without finalising
+   - list each reply once — omit any line whose action is already fully stated by `0`
 3. For an out-of-scope selection, route first to `prd` update mode and add requirements, acceptance criteria, implementation slices, and verification evidence.
 4. Require numbered confirmation of the expanded scope, then route to `implement` in the same session.
 5. Return to approved atomic commits and automatic re-review when clean.

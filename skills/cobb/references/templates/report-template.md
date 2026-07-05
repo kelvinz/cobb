@@ -39,11 +39,11 @@ Proposed context updates:
 
 Recommended next step:
 - Good to commit=No: use the numbered blocker workflow; finalise is unavailable.
-- Good to commit=Yes with suggestions: use the numbered suggestion workflow; `0` selects the marked Recommended reply.
-- Good to commit=Yes with no suggestions: offer finalise as the Recommended option (`0` selects it) on a feature branch; conclude a direct default-branch review without finalise.
+- Good to commit=Yes with suggestions: use the numbered suggestion workflow; the recommended reply renders as option `0`.
+- Good to commit=Yes with no suggestions: offer finalise as option `0` **Recommended** on a feature branch; conclude a direct default-branch review without finalise.
 
 Numbered next actions:
-- <render the applicable blocker/suggestion/clean-pass numeric menu and mark one evidence-based reply Recommended>
+- <render the applicable blocker/suggestion/clean-pass numeric menu with the evidence-based recommended reply as `0` and the alternatives as `1..N`>
 ```
 
 Number only actual findings. Do not emit placeholder IDs when a section is empty.

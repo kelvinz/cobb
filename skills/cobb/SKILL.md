@@ -56,7 +56,7 @@ Do not execute any phase. Instead:
 
 1. Read `tasks/` — list active PRDs (`f-##`, name, `Status`, `Priority`) and check git branch/commit state.
 2. Print the subcommand menu (the dispatch table above) so the user sees the options.
-3. Render the available phases as numbered reply options and mark exactly one as **Recommended** from repository state. Do not require the user to type a command name.
+3. Render the phase recommended from repository state as option `0` **Recommended** and the remaining phases as `1..N` (do not repeat the recommended phase in `1..N`). Do not require the user to type a command name.
 4. Recommend the single next phase based on state, for example:
    - no `tasks/context.md` or no PRDs → "start with `/cobb prd`"
    - a `Status: ready` PRD with no feature branch → "`/cobb implement <prd>`"
@@ -71,9 +71,8 @@ Do not execute any phase. Instead:
 ## Shared Guardrails (apply to every phase)
 
 - **Number every closed choice.** Whenever a response ends by asking the user to choose, confirm, approve, continue, stop, or select a next step, provide numbered reply options. Accept the number alone. Use open-ended input only when honest answers cannot be bounded without losing essential information.
-- **Recommend exactly one option.** Mark one numbered option **Recommended** using repository evidence, safety, best practice, and critical reasoning. Briefly explain why. The recommendation may be to stop, investigate, split, or defer; do not mechanically recommend proceeding.
+- **Option `0` is the recommendation.** In every numbered menu, render exactly one recommended choice as `0` **Recommended:** with a brief evidence-based reason (repository evidence, safety, best practice, critical reasoning), and render each alternative once as `1..N`. Never repeat the `0` option inside `1..N`. Accept `default` as an alias for `0`. The recommendation may be to stop, investigate, split, or defer; do not mechanically recommend proceeding. Wherever a phase reference says "mark one **Recommended**", it means render that choice as option `0`. Sole exception: commit finalise uses per-field codes such as `1A 2B`, where `0`/`default` selects the recommended complete bundle.
 - **Show questionnaire progress.** Before a one-question-at-a-time interview, explore enough context to build the question queue and state the total. Label every prompt `Question X of Y`. If a new answer creates or removes dependent questions, announce the revised total and why before continuing.
-- **`0` always means the default.** In every numbered menu, accept `0` (or `default`) as selecting the currently marked **Recommended** option. PRD interviews use `0` for the recommendation and `1..N` for alternatives. Commit finalise may use field codes such as `1A 2B` plus `0`/`default` for the recommended complete bundle.
 - **Context capture is built-in.** Update `tasks/context.md` inline whenever durable decisions, risks, or gotchas emerge, except in read-only `review`, which reports proposed entries for the next implement/finalise commit. Context updates include a README freshness check for affected areas. See `references/context.md` for what/where to record.
 - **Honour repo instructions.** Follow the repo's `AGENTS.md` (if present) for any files you touch; it is read once at activation (see Progressive Disclosure Contract).
 - **Handoff-friendly.** Assume a junior dev (or another AI) picks this up later. Plain language, explicit edge cases, no hidden assumptions.

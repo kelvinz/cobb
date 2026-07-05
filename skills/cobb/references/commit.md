@@ -16,7 +16,7 @@ For commit classification and bodies, load `references/templates/commit-rules.md
 
 - Require numbered user confirmation before every commit; a batch `approve all` reply confirms exactly the presented groups with their shown titles and bodies.
 - Show files/hunks, intent, tracking updates, title, and body before approval.
-- Mark exactly one commit action **Recommended** from diff quality. Recommend `split` or `edit`, not `commit`, when atomicity or message quality is weak.
+- Render exactly one commit action as option `0` **Recommended** from diff quality. Recommend `split` or `edit`, not `commit`, when atomicity or message quality is weak.
 - Keep commits atomic; if a title needs "and", split the change set.
 - Never mix unrelated intents or use `chore` for behavioural changes.
 - Determine type from the diff, not branch name, paths, or habit.
@@ -54,28 +54,25 @@ Use another emoji only when it is more precise. Keep the summary short, specific
    - full title and body
    - single group: show it and use the per-group actions in step 5
    - multiple groups: show the full plan (every group's proposal, in commit order), then choose the approval mode in step 4
-4. With multiple groups, prompt for the approval mode:
-   - `1`: approve all — commit every group sequentially as shown, with no further prompts
-   - `2`: go one group at a time using the per-group actions below
-   - `3`: edit a group's scope/message and re-present the plan
-   - `4`: split a group and re-present the plan
-   - `5`: stop and leave everything uncommitted
-   - mark exactly one **Recommended**: `1` only when every group is atomic with an accurate message; otherwise the action that fixes the weakest group
-5. Per-group actions (single group, or one-at-a-time mode):
-   - `1`: commit this group
-   - `2`: edit scope/message and repropose
-   - `3`: skip and leave uncommitted
-   - `4`: split into smaller groups and repropose
-   - mark exactly one **Recommended** with a short reason
+4. With multiple groups, prompt for the approval mode. Render the evidence-based choice as `0` **Recommended** — approve all only when every group is atomic with an accurate message, otherwise the action that fixes the weakest group — and the remaining actions once each as `1..N`:
+   - approve all — commit every group sequentially as shown, with no further prompts
+   - go one group at a time using the per-group actions below
+   - edit a group's scope/message and re-present the plan
+   - split a group and re-present the plan
+   - stop and leave everything uncommitted
+5. Per-group actions (single group, or one-at-a-time mode). Render the evidence-based action as `0` **Recommended** with a short reason and the remaining actions once each as `1..N`:
+   - commit this group
+   - edit scope/message and repropose
+   - skip and leave uncommitted
+   - split into smaller groups and repropose
 6. On approval, stage only the approved group, commit immediately, and report hash/title/summary. In approve-all mode, do this per group in the presented order; if staging drifts from the presented plan (missing files, conflicting hunks, new changes), stop the batch, report the drift, and fall back to one-at-a-time for the remaining groups.
 7. Repeat until no intended groups remain.
 8. Recheck the worktree:
    - if changes remain, do not review
-   - prompt:
-     - `1`: resume proposals for remaining groups
-     - `2`: defer them and stop; review has not run
-     - `3`: show remaining files/hunks for a manual keep/discard decision
-   - mark `1` **Recommended** when changes are expected intended work; mark `3` **Recommended** when they are unexpected, ambiguous, or potentially unrelated
+   - prompt, rendering the recommended action as `0` and the remaining actions once each as `1..N`:
+     - resume proposals for remaining groups — recommended when changes are expected intended work
+     - defer them and stop; review has not run
+     - show remaining files/hunks for a manual keep/discard decision — recommended when changes are unexpected, ambiguous, or potentially unrelated
    - never discard automatically
 9. When clean, run `review` automatically without another prompt:
    - on a feature branch, compare against the resolved default/base branch
@@ -97,6 +94,6 @@ Use only for an urgent fix committed directly to the default branch.
 
 ## Output
 
-For each proposal, provide atomic scope, summary, type rationale, PRD/context sync, title, body, and numbered actions with one **Recommended** choice.
+For each proposal, provide atomic scope, summary, type rationale, PRD/context sync, title, body, and numbered actions with the recommended action as `0`.
 
 After execution, report commit hash/title, remaining groups, tracking sync, and automatic review result. End with the shared status block and numbered next steps when a user decision remains.
