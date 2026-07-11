@@ -151,6 +151,7 @@ When asked to audit against web interface guidelines:
 3. Output findings in the exact format required by that guideline.
 4. Follow terse `file:line` formatting exactly when required.
 5. Do not skip applicable rules silently.
+6. If the fetch fails or the content does not look like interface guidelines, fall back to the Audit Workflow and Axes above and note in the output that the external guideline set was unavailable.
 
 ## UX Output Contracts
 
