@@ -40,6 +40,7 @@ Parse the first token of the args and route to the matching phase. Load **only**
 | `commit`                 | atomic commit    | `references/commit.md`          |
 | `commit finalise` / `finalise` | finalise branch | `references/finalise.md` |
 | `commit hotfix` / `hotfix` | hotfix commit  | `references/commit.md` (hotfix mode) |
+| `list` / `prd list`      | list PRDs        | `references/prd.md` (list mode) |
 | `context`                | maintain context.md | `references/context.md`      |
 | `compact`                | compact context.md | `references/compact.md`       |
 
