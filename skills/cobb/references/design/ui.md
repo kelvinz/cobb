@@ -110,7 +110,7 @@ Use these patterns as baseline state coverage for reusable components. These are
 
 1. `Button`
 States and semantics: `hover`, `disabled`, `focus-visible`, `aria-invalid`.
-Patterns: `disabled:pointer-events-none`, `disabled:opacity-sm`, `focus-visible:ring-2`.
+Patterns: `disabled:pointer-events-none`, `disabled:opacity-50` (or the project's token equivalent), `focus-visible:ring-2`.
 2. `Input`
 States and semantics: `placeholder`, `selection`, `disabled`, `focus-visible`, `aria-invalid`.
 Patterns: invalid border/ring via `aria-invalid:*` utilities.

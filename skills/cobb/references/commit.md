@@ -2,6 +2,8 @@
 
 Create approved atomic commits. Normal mode runs review automatically after the final clean group; finalise and hotfix use conditional workflows.
 
+Shared guardrails from the cobb router apply; the rules below are commit-specific.
+
 The default delivery order is `implement -> commit -> review -> finalise`.
 
 ## Mode Loading

@@ -2,6 +2,8 @@
 
 Route a design request to one primary mode and, only when necessary, one secondary mode.
 
+Shared guardrails from the cobb router apply; the rules below are design-specific.
+
 ## Workflow
 
 1. Infer the primary mode from the request and repository evidence.

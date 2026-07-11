@@ -2,7 +2,7 @@
 
 Review one change set and return a decision-led report.
 
-Shared guardrails from the cobb router apply (numbered short-reply options, built-in context capture, handoff-friendly, never claim untested checks passed, status block). The rules below are review-specific.
+Shared guardrails from the cobb router apply; the rules below are review-specific.
 
 ---
 

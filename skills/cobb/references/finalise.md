@@ -2,6 +2,8 @@
 
 Load this reference only for `commit finalise` or `finalise` mode.
 
+Shared guardrails from the cobb router apply; the rules below are finalise-specific.
+
 Finalise runs **after** the review phase. In the standard flow (`implement → commit → review → finalise`), `review` runs automatically once all atomic commits are clean and `references/commit-review.md` hands off here on a clean pass — so finalise starts right after a passing review. Finalise trusts that review; the re-review guardrail below is the canonical rule for when a fresh review is required.
 
 ## Guardrails

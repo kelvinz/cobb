@@ -95,33 +95,9 @@ Do not execute any phase. Instead:
 
 ## References
 
-Phase bodies (loaded on dispatch only):
+The Dispatch table above is the single routing source for phase files. Two shared references are loaded by phases rather than dispatch:
 
-- `references/prd.md` — create, update, or list PRDs.
-- `references/design.md` — design sub-router (ui / ux / motion / imagery); selects one child reference.
-- `references/implement.md` — implement a PRD and check off progress.
-- `references/tdd.md` — shared behavioural testing contract, loaded by PRD/implement only when applicable.
-- `references/review.md` — branch review with a go/no-go decision.
-- `references/commit.md` — atomic commit core and hotfix mode.
-- `references/commit-review.md` — post-commit review action tree; load only after a review result.
-- `references/finalise.md` — finalise/merge/cleanup mode; load only for finalise.
-- `references/context.md` — maintain `tasks/context.md` (inline or standalone).
-- `references/compact.md` — compact `tasks/context.md`.
+- `references/tdd.md` — behavioural testing contract; loaded by `prd`/`implement` when applicable.
+- `references/commit-review.md` — post-review action tree; loaded only after a review result.
 
-Conditional design references (load only after `design` routes):
-
-- `references/design/ui.md`
-- `references/design/ux.md`
-- `references/design/motion.md`
-- `references/design/imagery.md`
-- `references/design/ui-tokens.md` — only for Tailwind/token-system changes.
-- `references/design/ui-examples.md` — only when concrete snippets are needed.
-
-Templates and rubrics (loaded only when the active phase asks for them):
-
-- `references/templates/prd-template.md`
-- `references/templates/report-template.md`
-- `references/templates/context-template.md`
-- `references/templates/compact-templates.md`
-- `references/templates/commit-rules.md`
-- `references/templates/finalise-policy.md`
+Design child references (`references/design/*.md`) are selected inside `references/design.md`, and templates (`references/templates/*.md`) load only when the active phase explicitly asks for them — each phase file names its own.

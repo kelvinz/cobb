@@ -2,7 +2,7 @@
 
 Implement a feature from a PRD.
 
-Shared guardrails from the cobb router apply (numbered short-reply options, built-in context capture, handoff-friendly, never claim untested checks passed, status block). The rules below are implement-specific.
+Shared guardrails from the cobb router apply; the rules below are implement-specific.
 
 ---
 

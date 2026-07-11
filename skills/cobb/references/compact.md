@@ -2,7 +2,7 @@
 
 Keep `tasks/context.md` short and scannable by consolidating older entries into readable summaries.
 
-Shared guardrails from the cobb router apply. The rules below are compact-specific.
+Shared guardrails from the cobb router apply; the rules below are compact-specific.
 
 ---
 

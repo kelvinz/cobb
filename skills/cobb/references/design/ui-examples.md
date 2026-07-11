@@ -2,6 +2,7 @@
 
 Use this reference for concrete UI implementation examples.
 Keep `references/design/ui.md` as the rule source of truth and use these snippets as starting points.
+Duration and easing values in these configs mirror the canonical motion tokens in `references/design/motion.md`; change them there first and keep these examples in sync.
 
 ## Table of Contents
 

@@ -84,7 +84,7 @@ Use `--ease-out` for entries and immediate feedback. Use `--ease-in-out` for mov
 
 Use `--ease-spring` only for playful or direct-manipulation moments.
 
-When working alongside Tailwind/token-system UI work, load `references/design/ui-tokens.md`. Default mapping uses `sm: 150ms`, `md: 250ms`, `lg: 400ms` and matching easing tokens.
+When working alongside Tailwind/token-system UI work, load `references/design/ui-tokens.md`. Default mapping uses `sm: 150ms`, `md: 250ms`, `lg: 400ms` and matching easing tokens. This file is the canonical source for duration and easing values; the configs in `references/design/ui-examples.md` mirror them.
 
 ## Spring and Gesture Rules
 

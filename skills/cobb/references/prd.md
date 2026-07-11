@@ -2,7 +2,7 @@
 
 Create, update, or list implementation-ready PRDs. Each PRD must let a less-capable implementation agent execute the work without rediscovering product or technical decisions.
 
-Shared guardrails from the cobb router apply (numbered short-reply options, built-in context capture, handoff-friendly, status block). The rules below are PRD-specific.
+Shared guardrails from the cobb router apply; the rules below are PRD-specific.
 
 ---
 

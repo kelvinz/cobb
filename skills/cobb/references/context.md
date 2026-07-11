@@ -6,7 +6,7 @@ Explain where things are, what was decided, and what to watch before proceeding.
 
 This behaviour is embedded in file-writing phases (`prd`, `design`, `implement`, `commit`), not a mandatory standalone step in normal workflows. `review` is read-only: it proposes durable entries for a later implement/finalise commit instead of editing this file. When applied inline from another phase, follow this workflow as part of that phase. When invoked directly (`/cobb context`), use it for explicit backfill/repair/cleanup requests.
 
-Shared guardrails from the cobb router apply. The rules below are context-specific.
+Shared guardrails from the cobb router apply; the rules below are context-specific.
 
 ---
 
@@ -60,7 +60,7 @@ Avoid:
    - Use `references/templates/context-template.md` as the default file template when creating it.
 2. Add short entries (1–3 lines) in the most relevant section.
 3. Prepend new entries at the top of each section (newest-first order).
-4. Prefer referencing stable feature IDs (`f-##`) and avoid file paths (paths can change after archiving/compaction).
+4. Prefer referencing stable feature IDs (`f-##`) over PRD file paths (PRD paths change after archiving/compaction). Durable non-PRD links belong in `## Links (optional)`.
 5. If a link materially improves context, add or update entries in `## Links (optional)` using the links format.
 6. Check README freshness: if the change being recorded affects setup, commands, workflows, structure, or scope documented in `README.md` (repo root or a touched directory), update the affected sections in the same pass. Skip silently when nothing applies.
 7. If it's unclear what to record, ask `Question 1 of 1` with numbered short-reply options and mark the evidence-backed choice **Recommended**. Use an open-ended answer only when the content cannot be bounded usefully.
