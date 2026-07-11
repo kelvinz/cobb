@@ -37,6 +37,7 @@ When context is thin, state explicit assumptions and proceed.
 4. Keep navigation labels concrete and predictable.
 5. Define primary actions and secondary actions with clear separation.
 6. Define empty, error, and recovery paths as first-class flows.
+7. Answer wayfinding on every screen: where am I, where can I go, what will I find there, and how do I get out. Never trap the user.
 
 ## Content Hierarchy and Clarity Heuristics
 
@@ -45,6 +46,8 @@ When context is thin, state explicit assumptions and proceed.
 3. Make status, feedback, and next action explicit after each key action.
 4. Use consistent terminology and domain vocabulary across related surfaces.
 5. Keep microcopy specific, short, and consequence-aware.
+6. Place controls near what they affect and arrange them to mirror what they change; if a control needs a label to explain what it does, the mapping is weak.
+7. Cover four feedback kinds — status, completion, warning, and error — and validate inline rather than only on submit.
 
 ## Accessibility and Usability Checks
 

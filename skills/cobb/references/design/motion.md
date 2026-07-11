@@ -10,15 +10,17 @@ Use motion to communicate state, orientation, focus, and continuity.
 4. Timing Scale
 5. Easing Tokens
 6. Spring and Gesture Rules
-7. Dependency and State Rules
-8. Performance Rules
-9. Accessibility Rules
-10. Motion Spec Template
-11. High-Value Interaction Patterns
-12. Scroll Animation Rules
-13. Debugging Animations
-14. Common Failure Modes
-15. Quality Checks
+7. Interruption and Velocity Continuity
+8. Dependency and State Rules
+9. Performance Rules
+10. Accessibility Rules
+11. Motion Spec Template
+12. High-Value Interaction Patterns
+13. Scroll Animation Rules
+14. Debugging Animations
+15. Common Failure Modes
+16. Fix Order When Motion Feels Wrong
+17. Quality Checks
 
 ## Mode Contract
 
@@ -56,6 +58,8 @@ Motion should answer at least one of these:
 4. Preserve context during transitions.
 
 If none apply, remove the motion.
+
+Preserve spatial consistency: an element exits along the path it entered, and reversible transitions mirror their easing between the two directions so the return path matches the outbound path.
 
 ## Timing Scale
 
@@ -95,9 +99,27 @@ Use springs when fixed-duration timing is the wrong model:
 3. Direct-manipulation surfaces that should feel alive.
 4. Decorative pointer-following effects where lag improves feel.
 
-Keep bounce subtle (`0.1-0.3`) and avoid bounce in serious product workflows. For drag dismissal, consider both distance and velocity so a quick flick can dismiss without a long drag. Apply damping when users drag past natural boundaries instead of creating hard stops.
+Think in two designer parameters instead of raw physics: damping ratio (overshoot; `1.0` = no bounce) and response (settle speed). Default to critically damped (`1.0`) for most UI; add subtle bounce (`0.1-0.3`, damping around `0.8`) only when the gesture itself carried momentum — overshoot on a flicked card feels right, overshoot on a menu that merely faded in feels wrong. Avoid bounce in serious product workflows.
 
-For drag interactions, capture the pointer after drag start and ignore extra touch points until the gesture ends.
+For drag dismissal, consider both distance and velocity so a quick flick can dismiss without a long drag. Apply damping when users drag past natural boundaries instead of creating hard stops.
+
+For drag interactions:
+
+1. Give feedback on pointer-down, not on release, and keep it continuous (1:1 with the pointer) throughout the gesture, never only at the end.
+2. Respect the grab offset — track from where the user grabbed the element, not its center.
+3. Capture the pointer after drag start and ignore extra touch points until the gesture ends.
+
+## Interruption and Velocity Continuity
+
+For gesture-driven or rapidly retargeted motion:
+
+1. Start every retargeted animation from the current on-screen (presentation) value, never the logical target; read the live transform on interrupt so there is no visible jump.
+2. Carry velocity through retargets: when a gesture reverses, blend the current velocity into the new animation instead of hard-cutting it.
+3. On release, hand the gesture's exit velocity to the spring as its initial velocity so there is no seam between dragging and animating.
+4. Decide commit vs revert from the release velocity's direction, not from the current position.
+5. Choose flick targets by projecting momentum, then snapping to the target nearest the projection: `projected = current + (velocity / 1000) * d / (1 - d)` with deceleration `d ≈ 0.998`.
+6. Decompose 2D gestures into independent X and Y springs; a single spring on the combined distance desyncs when the axes carry different velocities.
+7. Rubber-band at boundaries instead of hard-stopping; a usable curve is `offset = (overshoot * dimension * c) / (dimension + c * |overshoot|)` with `c ≈ 0.55`.
 
 ## Dependency and State Rules
 
@@ -123,6 +145,7 @@ For drag interactions, capture the pointer after drag start and ignore extra tou
 8. Prefer percentage transforms for self-sized movement (`translateY(100%)`) instead of hardcoded pixel offsets when entering/exiting drawers, sheets, and toasts.
 9. Avoid updating inherited CSS variables every frame on containers with many children; update the animated element's transform directly.
 10. Use CSS or WAAPI for predetermined animations under load; use JavaScript animation libraries for dynamic, interruptible interactions.
+11. In Motion/Framer Motion, shorthand props (`x`, `y`, `scale`) animate on the main thread and drop frames under load; use the full `transform` string when motion must stay smooth while the page is busy.
 
 ## Accessibility Rules
 
@@ -186,6 +209,7 @@ Prioritize these patterns:
 11. Instant subsequent tooltips after one tooltip is already open.
 12. Staggered entrance for grouped content with short `30-80ms` offsets; never block interaction while staggering.
 13. Asymmetric deliberate actions: slow while confirming, fast on release/cancel.
+14. Clip-path choreography with `clip-path: inset()`: directional reveals, hold-to-confirm progress overlays, seamless tab colour transitions via a duplicated clipped layer, and comparison sliders — all hardware-accelerated without extra DOM.
 
 ## Scroll Animation Rules
 
@@ -206,6 +230,7 @@ Before shipping motion-heavy work:
 3. Check whether opacity, colour, blur, and transform are synchronised.
 4. Check transform origins for popovers, menus, drawers, and anchored surfaces.
 5. Test touch gestures on real hardware when drag, swipe, or pointer capture is involved.
+6. Re-review motion with fresh eyes the next day; imperfections invisible during development surface later.
 
 ## Common Failure Modes
 
@@ -219,6 +244,19 @@ Before shipping motion-heavy work:
 8. Same-speed enter and exit when the exit should feel faster.
 9. Hover animation on touch devices.
 10. Animation on high-frequency keyboard actions.
+
+## Fix Order When Motion Feels Wrong
+
+Prefer earlier fixes over later ones:
+
+1. Delete the animation (high-frequency, keyboard-triggered, or purposeless).
+2. Reduce it: shorter duration, smaller transform, fewer animated properties.
+3. Fix the easing (`ease-in` → `ease-out` or a strong custom curve).
+4. Fix origin and physicality (correct `transform-origin`; no `scale(0)` entries).
+5. Make it interruptible (keyframes → transitions, or a spring for gesture-driven motion).
+6. Move it to the GPU (`transform`/`opacity` only; full transform strings).
+7. Make deliberate/response timing asymmetric.
+8. Polish last: blur-masked crossfades, stagger, `@starting-style`.
 
 ## Quality Checks
 

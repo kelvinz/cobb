@@ -167,6 +167,10 @@ Revise before implementation if any line lacks clear rationale. Include this che
 6. Use cards only when the surface boundary communicates hierarchy, grouping, or actionability.
 7. Tint shadows to the background hue; avoid generic black shadows on light surfaces.
 8. Keep one page-level theme direction. Do not alternate unrelated light and dark sections unless the theme switch is the concept.
+9. When the design language supports translucency, build floating chrome (nav, toolbars, sheets) as `backdrop-filter` layers with content scrolling underneath; let material weight encode hierarchy and never stack two light translucent surfaces.
+10. Over translucent surfaces, keep text legible with higher contrast, slightly heavier weight, and a small tracking bump; keep saturated colour on solid layers, not the translucent foreground.
+11. Prefer a faded blur/gradient scroll edge over a hard `1px` divider where scrolling content meets floating chrome.
+12. When glass/blur surfaces enter or exit, animate blur and scale together so the material arrives, rather than using a plain opacity fade.
 
 ### Spacing, Radius, and Typography
 
@@ -178,6 +182,9 @@ Revise before implementation if any line lacks clear rationale. Include this che
 6. Use `text-wrap: balance` or `text-wrap: pretty` where supported for headings and short display copy.
 7. Do not use Inter, system UI, or generic serif fonts as a reflex. Use the project font stack when established; otherwise choose typefaces that fit the product's audience and constraints.
 8. Use serif display type only when the brief, brand, or content genuinely supports editorial, heritage, luxury, or publication cues.
+9. Track type by size, never with one `letter-spacing` for all sizes: slightly negative on large display text, near zero on body, slightly positive on very small text.
+10. Move line-height inversely to size: tight on large headings (around `1.05-1.2`), looser on body copy; tighten further only for dense operational UI.
+11. Scale layout with the user's text-size setting: use `rem`/`em` for spacing near text so a larger font preference does not break the layout.
 
 ### Color and Theme
 
@@ -271,6 +278,7 @@ Use this baseline for routine UI implementation without loading the full UX refe
 5. Feedback: validation, async status, empty states, and errors use clear text and semantic roles where useful.
 6. Contrast: text, icons, focus rings, and semantic states stay readable in default, hover, active, disabled, and error states.
 7. Motion safety: respect `prefers-reduced-motion` and provide non-motion feedback for critical state changes.
+8. Preference media: when translucency or low-contrast surfaces are used, honour `prefers-reduced-transparency` (raise background opacity, drop blur) and `prefers-contrast: more` (near-solid backgrounds with defined borders).
 
 ## Expression vs Clarity Scaling
 
