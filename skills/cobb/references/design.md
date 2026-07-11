@@ -18,7 +18,7 @@ Shared guardrails from the cobb router apply; the rules below are design-specifi
 
 Apply the first matching rule:
 
-1. `imagery`: non-interactive `.png`/`.pdf`, poster, cover, or editorial composition.
+1. `imagery`: non-interactive `.png`/`.pdf`/animated `.svg`, poster, cover, or editorial composition.
    - Load `references/design/imagery.md`.
 2. `ux`: information architecture, usability, accessibility, flow planning, or audits.
    - Load `references/design/ux.md`.

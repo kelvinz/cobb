@@ -1,13 +1,20 @@
 # Imagery Mode
 
-Use this mode for static visual artifacts such as posters, editorial covers, art sheets, and one-page compositions.
+Use this mode for non-interactive visual artifacts such as posters, editorial covers, art sheets, one-page compositions, and animated SVG compositions.
 
 ## Output Types
 
 Produce:
 
 1. A design philosophy `.md`.
-2. One `.png` or `.pdf` artifact unless multi-page output is requested.
+2. One `.png` or `.pdf` artifact unless multi-page output is requested; one `.svg` when the request is an animated composition.
+
+## Generation Mechanism
+
+1. Default: generate the artifact with an available image-generation tool or model (e.g. GPT image generation). Drive it with a prompt built from the philosophy, conceptual thread, palette, typography intent, and composition plan — not the raw user request.
+2. Animated SVG requests: author the SVG markup directly instead of using image generation; keep animation declarative (SMIL/CSS) and respect reduced-motion.
+3. For `.pdf` delivery, produce the raster image first, then convert or wrap it to PDF at the required DPI with a locally available tool.
+4. If no image-generation tool is available, deliver the philosophy plus an SVG or HTML source rendition of the composition and the exact conversion command, and state clearly that final rendering is pending.
 
 ## Delivery Contract
 
