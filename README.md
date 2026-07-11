@@ -7,8 +7,8 @@ A single skill for ongoing product development, split into phases you call as su
 ## Subcommands
 
 - `/cobb` — show the subcommand menu and recommend the next phase based on `tasks/` state (read-only; never runs a phase on its own).
-- `/cobb prd` — explore the codebase, interview one design decision at a time, and create implementation-ready PRDs (`tasks/f-##-*.md`) with status, priority, technical design, traceability, and TDD instructions.
-- `/cobb design` — optional design router for UI/UX direction, interaction/motion, and static imagery (`ui` / `ux` / `motion` / `imagery` modes). The mode references are detailed but still being refined and not yet battle-tested; treat their output as a strong starting point and review it before relying on it.
+- `/cobb prd` — explore the codebase, interview one design decision at a time, and create implementation-ready PRDs (`tasks/f-##-*.md`) with status, priority, technical design, traceability, and TDD instructions. Also `/cobb list` to summarise active PRDs.
+- `/cobb design` — optional design router for UI/UX direction, interaction/motion, and imagery, static or animated SVG (`ui` / `ux` / `motion` / `imagery` modes). The mode references are detailed but still being refined and not yet battle-tested; treat their output as a strong starting point and review it before relying on it.
 - `/cobb implement` — implement a ready PRD as vertical behavioural slices, using red-green-refactor where practical, and check off completed stories/tasks.
 - `/cobb review` — read-only branch review for correctness, security, tests, and scope, with numbered findings, a clear go/no-go decision, and an exact state fingerprint.
 - `/cobb commit` — propose atomic, user-approved commits (one at a time, or approve a multi-commit plan in one go), then run review automatically after the final clean group and route numbered fixes/suggestions. Also `/cobb commit finalise` (merge/branch cleanup) and `/cobb commit hotfix`.
