@@ -36,6 +36,7 @@ Leave it better than you found it.
 ## Before Writing Code
 - Deeply explore the problem space before implementation
 - Identify root causes, not just symptoms
+- Study established products and adopt proven patterns before inventing new ones
 - Document clear requirements and success criteria
 - Create a strategic implementation plan with milestones
 - Consider multiple approaches and choose the most maintainable
@@ -63,6 +64,11 @@ Leave it better than you found it.
 - Always default to industry-standard best practices unless there's a compelling reason not to
 - Simplicity first: smallest change that fully solves the problem
 - Clarity over cleverness — prefer explicit, readable code over dense one-liners, nested ternaries, or over-abstraction
+- Remove obsolete paths; preserve compatibility only when required
+- Prefer working end-to-end increments over unfinished architectural layers
+- Reuse existing dependencies before adding packages or custom code
+- Check dependency docs and types before assuming a capability is missing
+- Prefer maintained libraries over reimplementing common functionality
 - Prefer functional programming patterns over imperative/OOP
 - Write pure functions when possible (no side effects, deterministic outputs)
 - Favour immutability - avoid mutating data directly
