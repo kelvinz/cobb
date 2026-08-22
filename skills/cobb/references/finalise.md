@@ -10,6 +10,7 @@ Finalise runs **after** the review phase. In the standard flow (`implement → c
 
 - Require a clean feature branch, never the default/base branch.
 - **Re-review rule (canonical).** Trust the review the review phase already produced; re-review only when new code would actually enter the merge — no clean review exists for the current code, the confirmed target differs from the reviewed base, or the target advanced with commits that get synced in. The closeout commit (`tasks/` bookkeeping only) and the merge/push/delete choices never trigger re-review.
+  - Expect this to fire on a pushed branch. Review resolves the base upstream-first, so a post-commit pass on a pushed branch is scoped to `<remote>/<branch>..HEAD`, not to the merge target. The target then differs from the reviewed base and a fresh review is required. That re-review uses the confirmed target and terminates. An unpushed branch needs no re-review when its reviewed base is also the confirmed target.
 - Confirm the target, then collect merge strategy, push, local deletion, and remote deletion as one coded decision bundle.
 - Mark one evidence-based value **Recommended** for every field and show one **Recommended** complete bundle.
 - Treat explicit coded choices as confirmation; ask only for missing or conflicting fields.

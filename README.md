@@ -10,7 +10,7 @@ A single skill for ongoing product development, split into phases you call as su
 - `/cobb prd` — explore the codebase, interview one design decision at a time, and create implementation-ready PRDs (`tasks/f-##-*.md`) with status, priority, technical design, traceability, and TDD instructions. Also `/cobb list` to summarise active PRDs.
 - `/cobb design` — optional design router for UI/UX direction, interaction/motion, and imagery, static or animated SVG (`ui` / `ux` / `motion` / `imagery` modes). The mode references are detailed but still being refined and not yet battle-tested; treat their output as a strong starting point and review it before relying on it.
 - `/cobb implement` — implement a ready PRD as vertical behavioural slices, using red-green-refactor where practical, and check off completed stories/tasks.
-- `/cobb review` — read-only branch review for correctness, security, tests, and scope, with numbered findings, a clear go/no-go decision, and an exact state fingerprint.
+- `/cobb review` — read-only branch review for correctness, security, tests, and scope, with numbered findings, a clear go/no-go decision, and an exact state fingerprint. It uses an explicit base, the branch upstream, or one clear repository default. Pass `/cobb review <base-ref>` when the base is unclear or to review a fully pushed branch against its merge target.
 - `/cobb commit` — propose atomic, user-approved commits (one at a time, or approve a multi-commit plan in one go), then run review automatically after the final clean group and route numbered fixes/suggestions. Also `/cobb commit finalise` (merge/branch cleanup) and `/cobb commit hotfix`.
 - `/cobb context` — maintain `tasks/context.md` inline or via explicit backfill.
 - `/cobb compact` — compact `tasks/context.md` by summarising older entries when it gets noisy.
@@ -33,7 +33,7 @@ These phases are written to be handoff-friendly: assume a junior dev (or another
 4. `/cobb commit finalise`: after a valid clean review, archive the completed PRD, update `tasks/context.md` if needed (the tracking-only closeout commit does not trigger re-review), then merge using the confirmed strategy and delete branches safely.
 5. `/cobb compact` (periodic): summarise older context entries to keep tracking files easy to scan.
 
-The default is **implement -> commit -> review -> finalise**. Atomic commits give review a stable branch diff and preserve focused history. Reviewing before commit would inspect a moving staged/unstaged worktree and then duplicate the review after commit. Finalise reruns review only when new code would enter the merge — base movement, target change, or code changes beyond the tracking-only closeout commit.
+The default is **implement -> commit -> review -> finalise**. Atomic commits give review a stable branch diff and preserve focused history. Reviewing before commit would inspect a moving staged/unstaged worktree and then duplicate the review after commit. Finalise reruns review only when new code would enter the merge — base movement, target change, or code changes beyond the tracking-only closeout commit. On a pushed branch the automatic review is scoped to the unpushed delta, so finalise re-reviews against the merge target; that is expected, not a loop.
 
 ## Files the skill manages
 
