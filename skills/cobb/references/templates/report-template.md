@@ -10,8 +10,10 @@ Decision:
 
 Review fingerprint:
 - Branch: <current branch>
+- Branch kind: base | feature
 - HEAD: <full commit hash>
-- Comparison base: <branch> @ <full commit hash>
+- Comparison base: <branch> @ <full commit hash> (resolved from: argument | finalise-target | upstream | session-start | repo-convention | remote-head | local-fallback)
+- Effective merge base: <full commit hash>
 - Worktree: clean | dirty
 - Valid until: any commit, base movement, or worktree change
 
@@ -40,7 +42,7 @@ Proposed context updates:
 Recommended next step:
 - Good to commit=No: use the numbered blocker workflow; finalise is unavailable.
 - Good to commit=Yes with suggestions: use the numbered suggestion workflow; the recommended reply renders as option `0`.
-- Good to commit=Yes with no suggestions: offer finalise as option `0` **Recommended** on a feature branch; conclude a direct default-branch review without finalise.
+- Good to commit=Yes with no suggestions: offer finalise as option `0` **Recommended** on a feature branch; conclude a direct base-branch review without finalise.
 
 Numbered next actions:
 - <render the applicable blocker/suggestion/clean-pass numeric menu with the evidence-based recommended reply as `0` and the alternatives as `1..N`>

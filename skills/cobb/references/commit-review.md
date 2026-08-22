@@ -24,7 +24,7 @@ When `Good to commit: Yes` and `S1..SN` exist:
 2. Prompt:
    - `0` **Recommended:** the recommended reply with reasoning — proceed without optional suggestions when all are genuinely optional, or the specific suggestion selection that materially reduces security, correctness, data-loss, or near-term operational risk
    - `1..N`: implement selected suggestions; accept multi-select replies
-   - then the remaining replies, numbered consecutively: implement all suggestions; proceed to finalise without optional suggestions on a feature branch (or conclude review on the default branch); stop without finalising
+   - then the remaining replies, numbered consecutively: implement all suggestions; proceed to finalise without optional suggestions on a feature branch (or conclude review on a base branch); stop without finalising
    - list each reply once — omit any line whose action is already fully stated by `0`
 3. For an out-of-scope selection, route first to `prd` update mode and add requirements, acceptance criteria, implementation slices, and verification evidence.
 4. Require numbered confirmation of the expanded scope, then route to `implement` in the same session.
@@ -37,6 +37,8 @@ When `Good to commit: Yes` and suggestions are empty on a feature branch, prompt
 - `0` **Recommended:** enter finalise now
 - `1`: stop without finalising
 
+State the reviewed base alongside the offer. A clean pass proves the reviewed range is clean, not that the merge content is — when the reviewed base is the upstream rather than the merge target, finalise re-reviews against the target under its canonical rule.
+
 Entering finalise never bypasses merge, push, or deletion confirmations.
 
-On direct default-branch work, report the clean review as complete and do not offer finalise.
+On direct base-branch work, report the clean review as complete and do not offer finalise. If the commits must be published, state that pushing is a separate action which needs explicit approval.

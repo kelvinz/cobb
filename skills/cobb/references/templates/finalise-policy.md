@@ -17,7 +17,7 @@ Re-review conditions are defined canonically by the re-review guardrail in `refe
 Resolve the merge strategy using this priority (highest wins):
 
 1. User explicitly requests a strategy in the current session.
-2. Repo-level merge preference declared in `tasks/context.md`.
+2. Repo-level merge preference declared under Repo conventions in `tasks/context.md`.
 3. Default: **merge-commit** (`git merge --no-ff`) to preserve the approved atomic commits and an explicit feature boundary when the repository has no stronger policy.
 
 ## Policy-specific merge flows

@@ -31,6 +31,7 @@ Shared guardrails from the cobb router apply; the rules below are context-specif
 ## What to Record
 
 - Project gist (what it is, who it's for, success measures) → `## Project`
+- Repo conventions the skill reads back (default base, base branches beyond the defaults, merge preference) → `## Project`, on the `Repo conventions` line
 - Current state (what's done, what's next, what's blocked) → `## Current state`
 - Key decisions and durable design decisions (what we chose + why + tradeoffs) → `## Key decisions`
 - Completed work (feature IDs and notable outcomes) → `## Completed`

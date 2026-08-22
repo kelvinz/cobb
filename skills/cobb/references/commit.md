@@ -28,7 +28,7 @@ For commit classification and bodies, load `references/templates/commit-rules.md
 - Do not create trailing tracking-only catch-up commits outside finalise unless explicitly approved.
 - Run review automatically only after all intended groups are committed and the worktree is clean.
 - Review approval is valid only for its exact clean HEAD and comparison-base fingerprint.
-- On direct default-branch work, preserve the session-start HEAD and review `<session-start>..HEAD`; never compare the default branch to itself or offer finalise.
+- On direct base-branch work (any ref in the shared base-branch list — see `SKILL.md`), preserve the session-start HEAD and review `<session-start>..HEAD`; never compare the branch to itself or offer finalise.
 
 ## Message Rules
 
@@ -77,8 +77,9 @@ Use another emoji only when it is more precise. Keep the summary short, specific
      - show remaining files/hunks for a manual keep/discard decision — recommended when changes are unexpected, ambiguous, or potentially unrelated
    - never discard automatically
 9. When clean, run `review` automatically without another prompt:
-   - on a feature branch, compare against the resolved default/base branch
-   - on the default branch, compare the recorded session-start commit to HEAD and disable finalise
+   - on a feature branch, compare against an explicit base, its upstream, or one clear repository default; stop and require `/cobb review <base-ref>` when the base is unclear
+   - on a base branch (any ref in the shared base-branch list), compare against the upstream when one exists and sits behind HEAD, since that is what a push publishes; otherwise compare the recorded session-start commit to HEAD. Disable finalise either way.
+   - report the reviewed base back to the user; on a pushed branch the base is the upstream, so the pass covers the unpushed delta and finalise will re-review against the merge target
 10. Load `references/commit-review.md` and execute the branch matching the review result.
 
 ## Hotfix Mode

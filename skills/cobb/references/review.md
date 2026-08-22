@@ -12,7 +12,9 @@ Shared guardrails from the cobb router apply; the rules below are review-specifi
 - Be fully read-only. Do not modify code, PRDs, `tasks/context.md`, or any other file.
 - Do not commit, merge, push, or delete branches.
 - Do not ask the user which branch to check against.
-- Resolve the comparison base automatically from a caller-confirmed finalise target, a commit-mode session-start hash for direct default-branch work, or the repository default/base branch.
+- Resolve the comparison base from an explicit argument, a finalise target, the branch upstream, a commit-mode session start, or one clear repository default. If none is clear, return `Good to commit: No` and require `/cobb review <base-ref>`.
+- Pin HEAD and the comparison base to commit hashes before reviewing. Use those hashes for every history comparison.
+- The reviewed base is part of the result, not an implementation detail: report it, and expect finalise to re-review when the merge target differs from it.
 - Block approval if the current branch is behind the resolved comparison base; require sync + re-review.
 - Do not update PRD tracking files here.
 - Report proposed durable context updates, but do not apply them.
@@ -25,36 +27,47 @@ Shared guardrails from the cobb router apply; the rules below are review-specifi
 ## Inputs
 
 - current branch (resolved from `git branch --show-current`)
-- comparison base (a caller-confirmed finalise target, a commit-mode session-start hash for direct default-branch work, or the default/base branch; do not prompt for it)
+- optional explicit comparison base argument (`/cobb review <base-ref>`) — wins over automatic resolution without prompting
+- otherwise comparison base from a caller-confirmed finalise target, the branch upstream, a commit-mode session-start hash for direct base-branch work, or one clear repository default (do not prompt for it)
 - optional PRD path (if scope validation is needed)
 
 ---
 
 ## Workflow
 
-1. Resolve current branch and comparison base automatically.
-   - When invoked during finalise after the user confirms a target, use that target without prompting again.
-   - When commit mode supplies a session-start hash for direct default-branch work, use that immutable commit without prompting.
-   - Otherwise prefer the repository default branch resolved from `origin/HEAD`.
-   - Otherwise use the local default branch (`main`, `master`, or `dev`) when exactly one exists.
-   - If the comparison base cannot be resolved, return `Good to commit: No` with the exact commands/data needed to resolve it.
-2. Collect context:
-   - `git fetch --all --prune` to refresh remote state; if it fails (offline, unreachable remote), continue against local refs and record in the report that remote freshness is unverified
-   - `git diff "<comparison-base>...HEAD"`
-   - `git log "<comparison-base>..HEAD" --oneline`
-   - `git merge-base --is-ancestor "<comparison-base>" HEAD`
+1. Refresh remote state, then pin HEAD and the comparison base.
+   - Run `git fetch --all --prune` first (best-effort); if it fails (offline, unreachable remote), continue against local refs and record in the report that remote freshness is unverified.
+   - Resolve `HEAD_HASH=$(git rev-parse HEAD)` first. If HEAD is detached, return `Good to commit: No` and ask the user to check out or create a branch.
+   - Classify the current branch as `base` when its name is in the shared base-branch list. Otherwise classify it as `feature`.
+   - Resolve the base in this order:
+     1. explicit `/cobb review <base-ref>` argument
+     2. caller-confirmed finalise target
+     3. direct base-branch commit mode: use the upstream when it exists and differs from `HEAD_HASH`; otherwise use the session-start hash
+     4. current branch upstream, when it exists
+     5. repository default declared under Repo conventions in `tasks/context.md`
+     6. exactly one symbolic remote HEAD target across all remotes
+     7. exactly one local branch from the shared base-branch list when no remote default exists
+   - If a ref does not resolve to a commit, return `Good to commit: No` and name it.
+   - If several remote HEADs disagree, several local base branches remain possible, or no base exists, return `Good to commit: No`. Tell the user to rerun `/cobb review <base-ref>`. Do not guess from timestamps or nearby branch history.
+   - Pin `BASE_HASH=$(git rev-parse --verify "${BASE_REF}^{commit}")`. Record the base ref, source, hash, and branch kind.
+2. Collect context against the pinned hashes:
+   - `git diff "$BASE_HASH...$HEAD_HASH"`
+   - `git log "$BASE_HASH..$HEAD_HASH" --oneline`
+   - `git merge-base "$BASE_HASH" "$HEAD_HASH"` (record the effective three-dot merge base)
+   - `git merge-base --is-ancestor "$BASE_HASH" "$HEAD_HASH"`
    - `git diff --staged`
    - `git diff`
    - `git status --short`
-   - Resolve and record the exact `HEAD` and comparison-base commit hashes.
-3. Compare the change set against required behaviour:
-   - If `git merge-base --is-ancestor "<comparison-base>" HEAD` fails, return `Good to commit: No` and require sync before re-review.
+3. Validate the commit pair before reviewing content:
+   - If `HEAD_HASH == BASE_HASH`, the review range is empty. Return `Good to commit: No`. Direct base-branch work needs commit mode when a session-start hash is required. For a fully pushed feature branch, rerun `/cobb review <merge-target>` to review the full branch.
+   - If `git merge-base --is-ancestor "$BASE_HASH" "$HEAD_HASH"` fails, return `Good to commit: No` and require sync before re-review.
+4. Compare the change set against required behaviour:
    - correctness and edge cases
    - security risks and data handling
    - test depth and regression risk
    - scope control (especially if PRD path is provided)
      - Compare diff vs PRD 'In scope' and completed user stories; flag any diff not attributable to a PRD requirement.
-4. Classify findings:
+5. Classify findings:
    - blockers (must fix), numbered `B1`, `B2`, ...
    - suggestions (optional improvements), numbered `S1`, `S2`, ...
    - missing evidence (tests/checks not run, unclear behaviour), numbered `E1`, `E2`, ...
@@ -62,23 +75,25 @@ Shared guardrails from the cobb router apply; the rules below are review-specifi
      - Request a specific artifact: CI link, log, or command the user can run.
      - Treat evidence required by the PRD, repository policy, or changed risk surface as a blocker and cross-reference its `E#` from a `B#`.
      - Treat genuinely optional/manual evidence as a numbered suggestion and cross-reference its `E#` from an `S#`.
-5. Produce the report with a clear recommendation:
+6. Produce the report with a clear recommendation:
    - `Good to commit: Yes` only when there are zero blockers, including required-evidence blockers.
    - `Good to commit: No` otherwise.
    - if decision is `No`, include explicit numbered fix items; finalise remains unavailable
-6. Identify context-worthy review outcomes without editing files:
+7. Identify context-worthy review outcomes without editing files:
    - systemic risks likely to recur
    - key security or data-handling decisions
    - durable follow-up decisions that affect future work
    - list proposed context entries and cross-reference each to a `B#`, `S#`, or `Finalise` candidate
    - if no durable outcome exists, mark context as `none` with reason
-7. Emit the review fingerprint:
+8. Emit the review fingerprint:
+   - Re-verify before emitting: `git rev-parse HEAD` must still equal `HEAD_HASH`, and `git rev-parse "${BASE_REF}^{commit}"` must still equal `BASE_HASH`. If either moved, rerun from step 1. If the worktree is no longer clean, invalidate a finalise-valid pass.
    - current branch
+   - branch kind (`base` or `feature`)
    - reviewed HEAD hash
-   - reviewed comparison-base name and hash
+   - reviewed comparison-base name, resolution source (`argument`, `finalise-target`, `upstream`, `session-start`, `repo-convention`, `remote-head`, or `local-fallback`), and pinned hash
    - `git status --short` result (must be clean for a finalise-valid pass)
    - invalidate the approval after any commit, base movement, or worktree change
-8. Load `references/commit-review.md` and present its matching numbered action branch, whether review is standalone or commit-triggered. Remain read-only until the user selects an action; then route to `implement` or `finalise`.
+9. Load `references/commit-review.md` and present its matching numbered action branch, whether review is standalone or commit-triggered. Remain read-only until the user selects an action; then route to `implement` or `finalise`.
 
 ---
 
