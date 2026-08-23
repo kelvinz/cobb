@@ -1,18 +1,10 @@
 # commit
 
-Create approved atomic commits. Normal mode runs review automatically after the final clean group; finalise and hotfix use conditional workflows.
+Create approved atomic commits. Normal mode runs review automatically after the final clean group; the Dispatch table routes `finalise` to `references/finalise.md` and `hotfix` to Hotfix Mode below.
 
 Shared guardrails from the cobb router apply; the rules below are commit-specific.
 
-The default delivery order is `implement -> commit -> review -> finalise`.
-
-## Mode Loading
-
-- `commit`: use this file, then load `references/commit-review.md` only after review returns.
-- `finalise` / `commit finalise`: load `references/finalise.md`; do not load normal commit workflow sections unnecessarily.
-- `hotfix` / `commit hotfix`: use Hotfix Mode below.
-
-For commit classification and bodies, load `references/templates/commit-rules.md` before the first proposal or when classification is ambiguous.
+Load `references/templates/commit-rules.md` before the first proposal or when classification is ambiguous.
 
 ## Guardrails
 

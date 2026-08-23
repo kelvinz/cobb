@@ -8,7 +8,6 @@ Shared guardrails from the cobb router apply; the rules below are implement-spec
 
 ## Guardrails
 
-- Follow the repo's `AGENTS.md` instructions (if present) for any files you touch.
 - Do not change product scope while executing:
   - If the PRD is missing details or ambiguous, stop and use `/cobb prd` to refine the PRD first.
   - If implementation reveals the PRD is incorrect, pause and propose PRD edits via `/cobb prd`.
@@ -46,23 +45,22 @@ Shared guardrails from the cobb router apply; the rules below are implement-spec
      - If higher-priority PRDs with `Status: ready` exist above this feature (P0 > P1 > P2 > P3), ask the user to confirm working on this item now.
        - Number the choices and recommend the higher-priority ready PRD unless a documented dependency or urgency justifies continuing.
      - If a higher-priority PRD is still `Status: draft`, mention it but proceed (it's not ready yet).
-   - Create a new feature branch before making changes (unless you are already on an appropriate feature branch):
-    - Base it off the repository default branch (resolve via `origin/HEAD` or repo policy).
-    - Propose the branch name and base branch, then ask with numbered create/use-current/custom/stop choices; recommend the repository-conforming safe option.
-     - Name it based on the PRD Summary `Type` (or match repo conventions):
-       - `Type: fix` → `fix/f-##-<short-slug>`
-       - `Type: chore` → `chore/f-##-<short-slug>`
-       - default (`Type: feat`) → `feat/f-##-<short-slug>`
+    - Create a new feature branch before making changes (unless you are already on an appropriate feature branch):
+      - Base it off the repository default branch (resolve via `origin/HEAD` or repo policy).
+      - Propose the branch name and base branch, then ask with numbered create/use-current/custom/stop choices; recommend the repository-conforming safe option.
+      - Name it based on the PRD Summary `Type` (or match repo conventions):
+        - `Type: fix` → `fix/f-##-<short-slug>`
+        - `Type: chore` → `chore/f-##-<short-slug>`
+        - default (`Type: feat`) → `feat/f-##-<short-slug>`
    - If `tasks/context.md` exists, skim key decisions / notes / gotchas relevant to this area before coding.
    - Parse the PRD into an execution plan.
    - Require traceability from user stories and acceptance criteria to ordered implementation slices and evidence.
    - Include user stories, functional requirements, non-goals, technical design, risks, rollout, rollback, and testing notes.
    - For behavioural `feat` and `fix` work, read `references/tdd.md` and validate the PRD against it.
    - If the PRD lacks an executable TDD plan or justified exception, transition to `/cobb prd` instead of inventing scope during implementation.
-   - Decide whether `design` is needed:
-    - Trigger it when the PRD adds/changes UI surfaces, interaction/motion behaviour, or design-system patterns.
-    - Also require that no approved design direction is available.
-     - If `/cobb design` runs, treat its output as implementation constraints and keep PRD scope unchanged.
+    - Decide whether `design` is needed:
+      - Trigger it when the PRD adds/changes UI surfaces, interaction/motion behaviour, or design-system patterns, and no approved design direction is available.
+      - If `/cobb design` runs, treat its output as implementation constraints and keep PRD scope unchanged.
    - Verify dependencies:
      - Read this PRD's "Dependencies & Constraints" section for feature dependency IDs.
      - For each dependency ID, locate PRD files by feature ID in `tasks/` and `tasks/archive/`.
@@ -77,21 +75,10 @@ Shared guardrails from the cobb router apply; the rules below are implement-spec
 3. **Execute**
    - Implement the feature as specified.
    - Follow PRD implementation slices in dependency order.
-   - For behavioural work with a practical automated harness, execute one vertical TDD cycle at a time:
-     1. **RED:** add one behaviour-focused test through a public interface.
-     2. Run the focused test and confirm it fails for the expected reason; a syntax/configuration failure does not prove the intended behaviour.
-     3. **GREEN:** add the smallest production change that satisfies that behaviour.
-     4. Run the focused test and relevant nearby tests until green.
-     5. **REFACTOR:** while green, improve only touched-scope duplication or design problems, rerunning tests after each step.
-   - Do not write all tests first and all production code second.
-   - Prefer integration-style behaviour tests. Use focused unit tests for complex pure logic.
-   - Mock only system boundaries; prefer real controlled dependencies when practical.
-   - Keep each completed slice's test, implementation, scoped refactor, PRD updates, and context update together as one future atomic commit group.
+   - For behavioural work with a practical automated harness, execute one vertical RED/GREEN/REFACTOR cycle at a time per `references/tdd.md`, keeping each completed slice together as one future atomic commit group.
    - For UI/UX work, implement against approved design output (states, tokens, layout rules).
-   - Avoid ad-hoc style drift.
-   - Add/update tests as appropriate.
-   - Run the project's normal checks (typecheck/lint/tests/build) per `AGENTS.md` or project conventions.
-   - For an approved TDD exception, execute its repeatable manual verification and preserve the evidence; do not silently substitute "not tested".
+   - Run the project's normal checks (typecheck/lint/tests/build) per repo conventions.
+   - For an approved TDD exception, execute its repeatable manual verification and preserve the evidence.
 
 4. **Verify**
    - Verify acceptance criteria and edge cases from the PRD.

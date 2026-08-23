@@ -284,8 +284,10 @@ Use `None` when all questions are resolved. A PRD with a high-risk or irreversib
 
 ## Readiness Checklist
 
-- [ ] Summary includes unique `Feature ID`, `Type`, `Status`, `Priority`, dependencies, outcome, and success signal.
+- [ ] Summary includes a unique `Feature ID` (checked against existing PRDs in `tasks/` and `tasks/archive/`), `Type`, `Status`, `Priority`, dependencies, outcome, and success signal.
 - [ ] Scope represents one independently verifiable outcome; child PRDs and dependencies cover independent work.
+- [ ] Dependencies reference valid feature IDs.
+- [ ] Acceptance criteria are concrete and verifiable.
 - [ ] Every major design branch is specified or marked non-applicable with a reason.
 - [ ] No high-risk or irreversible question remains unresolved or provisional.
 - [ ] Existing architecture, files, symbols, versions, and commands were verified rather than guessed.
@@ -297,4 +299,5 @@ Use `None` when all questions are resolved. A PRD with a high-risk or irreversib
 - [ ] Automated and manual commands, fixtures, expected failures, and completion evidence are explicit.
 - [ ] Material decisions include rationale and relevant rejected alternatives.
 - [ ] Existing checklist state and settled decisions were preserved during updates.
+- [ ] PRD is consistent with `tasks/context.md`, or `tasks/context.md` was updated in this run.
 - [ ] `Status: ready` appears only when every item above passes or has a documented non-blocking exception.

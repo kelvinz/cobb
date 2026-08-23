@@ -12,7 +12,7 @@ Shared guardrails from the cobb router apply; the rules below are review-specifi
 - Be fully read-only. Do not modify code, PRDs, `tasks/context.md`, or any other file.
 - Do not commit, merge, push, or delete branches.
 - Do not ask the user which branch to check against.
-- Resolve the comparison base from an explicit argument, a finalise target, the branch upstream, a commit-mode session start, or one clear repository default. If none is clear, return `Good to commit: No` and require `/cobb review <base-ref>`.
+- Resolve the comparison base strictly by the resolution ladder in Workflow step 1; never guess. If no rung resolves clearly, return `Good to commit: No` and require `/cobb review <base-ref>`.
 - Pin HEAD and the comparison base to commit hashes before reviewing. Use those hashes for every history comparison.
 - The reviewed base is part of the result, not an implementation detail: report it, and expect finalise to re-review when the merge target differs from it.
 - Block approval if the current branch is behind the resolved comparison base; require sync + re-review.
@@ -28,7 +28,7 @@ Shared guardrails from the cobb router apply; the rules below are review-specifi
 
 - current branch (resolved from `git branch --show-current`)
 - optional explicit comparison base argument (`/cobb review <base-ref>`) — wins over automatic resolution without prompting
-- otherwise comparison base from a caller-confirmed finalise target, the branch upstream, a commit-mode session-start hash for direct base-branch work, or one clear repository default (do not prompt for it)
+- otherwise the comparison base resolved by the Workflow step-1 ladder (never prompted for)
 - optional PRD path (if scope validation is needed)
 
 ---

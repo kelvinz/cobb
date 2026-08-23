@@ -2,27 +2,6 @@
 
 Use this mode to design or refine interactive interfaces and component systems.
 
-## Table of Contents
-
-1. Output Contract
-2. Reference Loading Rules
-3. Project Constraint Detection
-4. Official Design System Fit
-5. Subject-Specific Design Pass
-6. Project Component Library
-7. Styling and Token Loading
-8. Shadcn State Pattern Extraction
-9. Intent and Anti-Default Checklist
-10. Per-Component Checkpoint
-11. Visual Rules
-12. Microinteraction Details
-13. Landing and Marketing Guardrails
-14. Interaction and Data State Coverage
-15. Compact Accessibility Baseline
-16. Expression vs Clarity Scaling
-17. Anti-Patterns
-18. Quality Checks
-
 ## Output Contract
 
 Deliver all of the following for UI work:
@@ -40,12 +19,10 @@ Deliver all of the following for UI work:
 
 Start with this file only.
 
-1. Do not read `references/design/ux.md` by default.
-2. Load `references/design/ux.md` only when UX is a selected secondary mode, the request asks for accessibility/flow/audit depth, or this file's compact accessibility baseline is not enough.
-3. Load `references/design/ui-examples.md` only when concrete Tailwind config or component snippets are needed.
-4. Load `references/design/motion.md` only when motion is a selected secondary mode or the request explicitly asks for transition implementation details.
-5. Load `references/design/ui-tokens.md` only when creating or materially changing a Tailwind/token system.
-6. Keep routine UI implementation self-contained in this file.
+1. Load `references/design/ux.md` only when UX is a selected secondary mode, the request asks for accessibility/flow/audit depth, or this file's compact accessibility baseline is not enough.
+2. Load `references/design/motion.md` only when motion is a selected secondary mode or the request explicitly asks for transition implementation details.
+3. Load `references/design/ui-tokens.md` and `references/design/ui-examples.md` only under the canonical load conditions in `references/design.md`.
+4. Keep routine UI implementation self-contained in this file.
 
 ## Project Constraint Detection
 
@@ -101,8 +78,6 @@ Before writing code, define a compact design plan tied to the actual product ins
 2. Keep component-local styling local; keep global files for tokens, base defaults, themes, and unavoidable third-party/browser overrides.
 3. Extract reusable primitives only when repetition or a stable shared contract justifies them.
 4. Do not introduce Tailwind, a component library, or a second token system into an established alternative without explicit scope.
-5. When Tailwind or token-system design is in scope, load `references/design/ui-tokens.md`.
-6. Load `references/design/ui-examples.md` only when concrete implementation snippets improve delivery.
 
 ## Shadcn State Pattern Extraction
 

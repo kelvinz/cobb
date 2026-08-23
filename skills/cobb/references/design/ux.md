@@ -2,21 +2,6 @@
 
 Use this mode to shape task flows, information architecture, usability, accessibility, and audit quality.
 
-## Table of Contents
-
-1. UX Discovery Inputs
-2. Task Flow and Information Architecture
-3. Content Hierarchy and Clarity Heuristics
-4. Accessibility and Usability Checks
-5. Accessibility Option Set for UI Components
-6. Audit Workflow and Axes
-7. Redesign Fix Priority
-8. Severity Scale
-9. Findings Format
-10. Polish Review Table
-11. Guideline-Driven Audit Procedure
-12. UX Output Contracts
-
 ## UX Discovery Inputs
 
 Collect these inputs before proposing changes:

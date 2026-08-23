@@ -1,6 +1,6 @@
 ---
 name: cobb
-description: "Product-development workflow toolkit. Subcommands: prd, design, implement, review, commit (incl. finalise and hotfix modes), context, compact. Use to create/update/list PRDs, design UI/UX/motion/imagery, implement a PRD in code, review a branch for correctness/security/scope, create atomic commits and finalise a branch, maintain tasks/context.md, and compact it. Triggers: cobb, write prd, plan feature, create spec, list prds, design ui, improve ux, add transitions, implement prd, build feature from prd, review branch, readiness check, commit changes, split commits, finalise branch, hotfix, urgent fix to main, update context, decision log, compact context."
+description: "Product-development workflow toolkit routing subcommands: prd (write/update/list implementation-ready specs), design (UI/UX/motion/imagery direction), implement (build a ready PRD in code), review (branch correctness/security/tests/scope), commit (atomic commits, incl. finalise and hotfix modes), context (maintain tasks/context.md), compact (summarise it). Triggers: cobb, write prd, plan feature, list prds, design ui, improve ux, add transitions, implement prd, review branch, commit changes, finalise branch, hotfix, update context, compact context."
 ---
 
 # cobb
@@ -18,11 +18,10 @@ Default delivery order: `implement -> commit -> review -> finalise`. Review the 
 This file is navigation, not the full operating manual. On activation:
 
 1. If `AGENTS.md` exists in the repo root and has not already been read in this context, read it first — it carries repo-wide instructions and points to `SOUL.md` (voice) and `MEMORY.md` (lessons). Read it once per session, not per phase.
-2. Do not preload every file listed in References.
-3. Load only the selected phase reference from Dispatch.
-4. For nested routers, load the router first, then only the selected child reference.
-5. Load templates, examples, and secondary references only when the selected reference explicitly requires them for the current task.
-6. For multi-phase requests, complete one phase at a time and load the next phase reference only when that phase begins.
+2. Load only the selected phase reference from Dispatch.
+3. For nested routers, load the router first, then only the selected child reference.
+4. Load templates, examples, and secondary references only when the selected reference explicitly requires them for the current task.
+5. For multi-phase requests, complete one phase at a time and load the next phase reference only when that phase begins.
 
 ---
 
@@ -41,7 +40,7 @@ Parse the first token of the args and route to the matching phase. Load **only**
 | `commit finalise` / `finalise` | finalise branch | `references/finalise.md` |
 | `commit hotfix` / `hotfix` | hotfix commit  | `references/commit.md` (hotfix mode) |
 | `list` / `prd list`      | list PRDs        | `references/prd.md` (list mode) |
-| `context`                | maintain context.md | `references/context.md`      |
+| `context`                | maintain context.md | `references/context-log.md`  |
 | `compact`                | compact context.md | `references/compact.md`       |
 
 ### Routing rules
@@ -74,9 +73,8 @@ Do not execute any phase. Instead:
 - **Number every closed choice.** Whenever a response ends by asking the user to choose, confirm, approve, continue, stop, or select a next step, provide numbered reply options. Accept the number alone. Use open-ended input only when honest answers cannot be bounded without losing essential information.
 - **Option `0` is the recommendation.** In every numbered menu, render exactly one recommended choice as `0` **Recommended:** with a brief evidence-based reason (repository evidence, safety, best practice, critical reasoning), and render each alternative once as `1..N`. Never repeat the `0` option inside `1..N`. Accept `default` as an alias for `0`. The recommendation may be to stop, investigate, split, or defer; do not mechanically recommend proceeding. Wherever a phase reference says "mark one **Recommended**", it means render that choice as option `0`. Sole exception: commit finalise uses per-field codes such as `1A 2B`, where `0`/`default` selects the recommended complete bundle.
 - **Show questionnaire progress.** Before a one-question-at-a-time interview, explore enough context to build the question queue and state the total. Label every prompt `Question X of Y`. If a new answer creates or removes dependent questions, announce the revised total and why before continuing.
-- **Context capture is built-in.** Update `tasks/context.md` inline whenever durable decisions, risks, or gotchas emerge, except in read-only `review`, which reports proposed entries for the next implement/finalise commit. Context updates include a README freshness check for affected areas. See `references/context.md` for what/where to record.
+- **Context capture is built-in.** Update `tasks/context.md` inline whenever durable decisions, risks, or gotchas emerge, except in read-only `review`, which reports proposed entries for the next implement/finalise commit. Context updates include a README freshness check for affected areas. See `references/context-log.md` for what/where to record.
 - **Base branches.** The base-branch list is `main`, `master`, `dev`, `develop`, `trunk`, plus names declared under Repo conventions in `tasks/context.md`. Every phase that resolves a comparison base or merge target uses this list.
-- **Honour repo instructions.** Follow the repo's `AGENTS.md` (if present) for any files you touch; it is read once at activation (see Progressive Disclosure Contract).
 - **Handoff-friendly.** Assume a junior dev (or another AI) picks this up later. Plain language, explicit edge cases, no hidden assumptions.
 - **Never claim untested success.** Do not say tests/checks/builds passed unless you actually ran them; if you didn't run it, say so.
 - **Status block.** End every standalone phase reply with:

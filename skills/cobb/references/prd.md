@@ -14,17 +14,9 @@ Shared guardrails from the cobb router apply; the rules below are PRD-specific.
 - Fully understand an oversized idea, then propose a dependency-ordered PRD breakdown before writing files.
 - For new PRDs, interview exhaustively until every material branch of the design tree is resolved.
 - For updates, audit completeness and interview only implementation-critical gaps.
-- Ask one question at a time. Do not batch questions.
-- After exploration, state the planned total and label every prompt `Question X of Y`.
-- If an answer changes the dependency tree, announce the revised total and reason before the next question.
-- Explore the codebase instead of asking questions it can answer. Consult authoritative, version-relevant documentation when external APIs, libraries, or standards constrain the design.
-- For each user question, provide a recommended answer with reasoning.
-- Use `0` for the recommendation, `1..N` for alternatives, and a final numbered custom-answer option.
 - Maintain the full dependency tree internally. Show a short resolved/current/remaining summary only when moving to a major branch.
 - If an earlier answer changes, invalidate and revisit only downstream decisions that depend on it.
-- Use plain language, explicit edge cases, and verifiable acceptance criteria.
 - Do not use Markdown tables (use checklists + bullets).
-- If durable decisions are made, update `tasks/context.md` in this step (do not defer to a separate pass).
 - Do not preserve the interview transcript. Preserve material decisions, rationale, trade-offs, and rejected alternatives.
 
 ---
@@ -90,7 +82,7 @@ Shared guardrails from the cobb router apply; the rules below are PRD-specific.
    - For behavioural `feat` and `fix` work, read `references/tdd.md` and include its complete PRD testing contract.
    - For UI/UX-heavy features, include expected design inputs and state whether `design` should run before `implement`.
 10. **Run the readiness gate:**
-   - Audit the written PRD against the Quality Checklist and template traceability rules.
+   - Audit the written PRD against the Readiness Checklist in `references/templates/prd-template.md`.
    - Downgrade to `draft` if any blocking detail remains, even if the user previously expected `ready`.
 11. **Update context:**
    - Update project gist in `tasks/context.md` if this is the first PRD or project scope changed.
@@ -105,13 +97,12 @@ Shared guardrails from the cobb router apply; the rules below are PRD-specific.
 2. For each file, extract from the Summary section: Feature ID, name, Type, Status, Priority.
 3. Display sorted by priority (P0 first), then by feature ID.
 4. Suggest the highest-priority `Status: ready` PRD as the next candidate for `/cobb implement`.
-5. No file modifications in list mode.
 
 ---
 
 ## Interview Protocol
 
-Ask as many high-value questions as needed for shared understanding, but exactly one per turn. Derive and announce the initial total after codebase exploration; do not invent a total before dependencies are understood.
+Ask as many high-value questions as needed for shared understanding, but exactly one per turn.
 
 Focus on ambiguity around:
 
@@ -187,25 +178,3 @@ Use `references/templates/prd-template.md` as the default PRD template and check
   - If `Status: draft`, recommend refining to `ready` and provide numbered continue/stop choices.
   - If `Status: ready`, recommend `design` or `implement` from the PRD's needs and provide numbered choices.
 - End with the shared status block (Files changed / Key decisions / Next step).
-
----
-
-## Quality Checklist
-
-Before saving:
-
-- [ ] PRD Summary includes `Feature ID`, `Type`, `Status`, and `Priority`.
-- [ ] Feature ID is unique and stable (checked against existing PRDs in `tasks/` and `tasks/archive/`).
-- [ ] If updating an existing PRD, existing story/task checkboxes were preserved (not reset).
-- [ ] If a PRD already existed, it was updated in place (no duplicates).
-- [ ] Each feature has a user-visible outcome and explicit scope boundaries (goals + non-goals).
-- [ ] Dependencies reference valid feature IDs.
-- [ ] Acceptance criteria are concrete and verifiable.
-- [ ] Every major design-tree concern was addressed or marked non-applicable with a reason.
-- [ ] Technical guidance names verified files/symbols/contracts and does not guess repository structure.
-- [ ] Difficult logic includes usable pseudocode or code where it reduces implementation ambiguity.
-- [ ] Stable IDs trace stories and criteria through implementation slices and verification evidence.
-- [ ] Behavioural work includes the complete `references/tdd.md` contract or a justified exception.
-- [ ] No high-risk or irreversible decision remains provisional.
-- [ ] `Status: ready` is used only when all implementation blockers are resolved.
-- [ ] PRD is consistent with `tasks/context.md` (or `tasks/context.md` was updated in this run).

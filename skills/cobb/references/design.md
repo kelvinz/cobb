@@ -33,10 +33,10 @@ Secondary-mode rules:
 - Add `motion` to `ui` or `ux` only when motion is explicitly in scope.
 - Keep `imagery` standalone unless the user asks for an interactive adaptation.
 
-Conditional UI references:
+Conditional UI references (canonical load conditions — other files defer here):
 
 - Load `references/design/ui-tokens.md` only when creating or materially changing a Tailwind/token system.
-- Load `references/design/ui-examples.md` only when concrete token or component snippets are needed.
+- Load `references/design/ui-examples.md` only when concrete token, config, or component snippets are needed.
 
 Do not load secondary or conditional references speculatively.
 

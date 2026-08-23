@@ -2,26 +2,6 @@
 
 Use motion to communicate state, orientation, focus, and continuity.
 
-## Table of Contents
-
-1. Mode Contract
-2. Frequency Gate
-3. Purpose Rules
-4. Timing Scale
-5. Easing Tokens
-6. Spring and Gesture Rules
-7. Interruption and Velocity Continuity
-8. Dependency and State Rules
-9. Performance Rules
-10. Accessibility Rules
-11. Motion Spec Template
-12. High-Value Interaction Patterns
-13. Scroll Animation Rules
-14. Debugging Animations
-15. Common Failure Modes
-16. Fix Order When Motion Feels Wrong
-17. Quality Checks
-
 ## Mode Contract
 
 When `motion` is primary:

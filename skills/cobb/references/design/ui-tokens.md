@@ -51,4 +51,4 @@ Practical three-tier Tailwind defaults:
 - Ensure every interactive state remains distinguishable and accessible.
 - Keep motion tiers consistent with the motion reference.
 
-Load `references/design/ui-examples.md` only when concrete 3/5/7-tier config or component examples are needed.
+Concrete tier configs and component examples live in `references/design/ui-examples.md`; load it under the canonical load conditions in `references/design.md`.
