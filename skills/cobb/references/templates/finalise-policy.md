@@ -5,7 +5,7 @@ Use this when `commit` runs in `finalise` mode.
 ## Preconditions
 
 - feature branch is not default/base
-- the review phase already returned `Good to commit: Yes` for the feature code against the target base, before finalise began
+- the completed review-repair loop returned `Good to commit: Yes` for the current feature code against the target base
 - the only change since that review is the finalise closeout commit (`tasks/` tracking files only)
 - target branch is user-confirmed
 - finalise decision bundle is collected (merge strategy, push/delete choices); push defaults to no

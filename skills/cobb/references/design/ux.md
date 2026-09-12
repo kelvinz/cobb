@@ -1,6 +1,6 @@
 # UX Mode
 
-Use this mode to shape task flows, information architecture, usability, accessibility, and audit quality.
+Use this mode to shape task flows, information architecture, usability, accessibility, and audit quality. Follow the Delivery contract in `references/design.md` before applying changes.
 
 ## UX Discovery Inputs
 
@@ -34,15 +34,6 @@ When context is thin, state explicit assumptions and proceed.
 6. Place controls near what they affect and arrange them to mirror what they change; if a control needs a label to explain what it does, the mapping is weak.
 7. Cover four feedback kinds — status, completion, warning, and error — and validate inline rather than only on submit.
 
-## Accessibility and Usability Checks
-
-1. Verify keyboard-only reachability for all interactive controls.
-2. Verify visible focus and logical tab order.
-3. Verify contrast and semantic color usage.
-4. Verify labels, instructions, and error messaging clarity.
-5. Verify that reduced-motion preference preserves task completion.
-6. Verify responsive behavior preserves comprehension and actionability.
-
 ## Accessibility Option Set for UI Components
 
 Use this section as the deeper accessibility reference for `ui` mode; the compact baseline in `references/design/ui.md` covers routine UI work, and this fuller set applies when more UX/accessibility depth is needed.
@@ -54,6 +45,7 @@ Use this section as the deeper accessibility reference for `ui` mode; the compac
 5. Feedback: announce validation and async status with clear text and semantic roles where needed.
 6. Contrast: maintain readable text/icon contrast for default, hover, active, focus, and disabled states.
 7. Motion safety: provide reduced-motion-safe behavior for transitions and feedback animations.
+8. Responsiveness: preserve comprehension and actionability across viewport and text sizes.
 
 ## Audit Workflow and Axes
 
@@ -71,11 +63,11 @@ Use this workflow when auditing existing UI code or built interfaces.
 10. Evaluate microcopy and content clarity (labels, errors, empty states, instructions).
 11. Evaluate implementation risks and maintainability.
 
-For redesigns, run `scan -> diagnose -> fix`:
+For redesigns, run `scan -> diagnose`; apply `fix` only for implementation delivery after preflight:
 
 1. `scan`: identify framework, styling method, component primitives, routes, and current design patterns.
 2. `diagnose`: list generic patterns, weak hierarchy, missing states, accessibility failures, and implementation risks before changing files.
-3. `fix`: apply focused upgrades inside the existing stack. Do not rewrite from scratch unless the current structure blocks the requested outcome.
+3. `fix` (implementation only): apply focused upgrades inside the existing stack. Direction and audit delivery describe these upgrades without changing application code. Rewrite from scratch only when the existing structure blocks the requested outcome.
 
 ## Redesign Fix Priority
 

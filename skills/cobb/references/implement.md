@@ -4,6 +4,8 @@ Implement a feature from a PRD.
 
 Shared guardrails from the cobb router apply; the rules below are implement-specific.
 
+When called by `references/commit-review.md`, use Review-Repair Mode at the end of this file.
+
 ---
 
 ## Guardrails
@@ -12,23 +14,19 @@ Shared guardrails from the cobb router apply; the rules below are implement-spec
   - If the PRD is missing details or ambiguous, stop and use `/cobb prd` to refine the PRD first.
   - If implementation reveals the PRD is incorrect, pause and propose PRD edits via `/cobb prd`.
   - Do not silently deviate.
-  - If the feature has no PRD in `tasks/`, stop and use `/cobb prd` first.
+  - Outside review-repair mode, if the feature has no PRD in `tasks/`, stop and use `/cobb prd` first.
   - If you discover out-of-scope requirements or bugs during execution, do not expand scope.
   - Create a new PRD via `/cobb prd` instead.
-- Exception for review-selected scope expansion:
-  - First transition to `/cobb prd` in update mode.
-  - Add the selected suggestion's requirements, acceptance criteria, implementation slice, and verification evidence.
-  - Require focused scope confirmation, then resume implementation on the same branch.
+- For a review finding that requires scope expansion, return to the repair loop for the unresolved decision and PRD confirmation before changing that scope.
 - Treat a confirmed `Status: ready` PRD as approval of its interfaces, behaviour priorities, and TDD plan.
 - Do not ask for a second implementation-plan or testing-plan approval unless execution reveals a material ambiguity or scope change.
-- Do not reset any existing PRD checklist items when updating an existing PRD.
+- Follow Progress Updates in `references/templates/prd-template.md`; read it when requirements or prior verification evidence change.
 - When implementation yields durable decisions/gotchas, update `tasks/context.md` in this step.
 - Use `design` as an optional companion for UI/UX-heavy work:
   - If visual direction, interaction states, or design-token choices are unclear, run `/cobb design` before coding that area.
   - If approved design artifacts already exist, proceed directly with implementation.
 - Require user confirmation before creating or switching git branches.
-- For each bounded preflight decision, provide numbered options and mark exactly one **Recommended** from repository state. This includes PRD selection, priority overrides, branch creation/switching, dependency overrides, design hand-offs, and review-driven scope expansion.
-- Do not commit, merge, push, or delete branches; delegate these to `/cobb commit`.
+- Do not commit, merge, push, or delete branches; return review repairs to the calling loop and delegate normal delivery to `/cobb commit`.
 
 ---
 
@@ -60,7 +58,7 @@ Shared guardrails from the cobb router apply; the rules below are implement-spec
    - If the PRD lacks an executable TDD plan or justified exception, transition to `/cobb prd` instead of inventing scope during implementation.
     - Decide whether `design` is needed:
       - Trigger it when the PRD adds/changes UI surfaces, interaction/motion behaviour, or design-system patterns, and no approved design direction is available.
-      - If `/cobb design` runs, treat its output as implementation constraints and keep PRD scope unchanged.
+      - Call `/cobb design` for `direction` only at this stage. Treat its output as implementation constraints and keep PRD scope unchanged; this handoff leaves application code untouched.
    - Verify dependencies:
      - Read this PRD's "Dependencies & Constraints" section for feature dependency IDs.
      - For each dependency ID, locate PRD files by feature ID in `tasks/` and `tasks/archive/`.
@@ -89,7 +87,6 @@ Shared guardrails from the cobb router apply; the rules below are implement-spec
 5. **Update checklist progress (in-place)**
    - Check off completed user stories/tasks and acceptance criteria in the PRD as implementation progresses.
    - If the PRD lacks checklist items for implementation progress, add a small checklist section and use it.
-   - Do not reset existing checked items.
 
 6. **Update context inline when needed**
    - Update `tasks/context.md` when implementation produces durable information:
@@ -101,8 +98,14 @@ Shared guardrails from the cobb router apply; the rules below are implement-spec
    - Summarise what was changed and what remains.
    - Next steps:
      - If unresolved UI/UX direction remains, run `/cobb design` and continue `/cobb implement`.
-     - Run `/cobb commit` in `commit` mode; it will run `/cobb review` automatically after all intended groups are committed and the worktree is clean.
-     - Once review has passed, run `/cobb commit` in `finalise` mode to archive the PRD and merge; it trusts the completed review rather than re-running one.
+     - Run `/cobb commit` in `commit` mode; it runs review and automatic repairs after all intended groups are committed and the worktree is clean.
+     - When the PRD is fully checked and the repair loop has passed, run `/cobb commit finalise` to archive the PRD and merge.
+
+---
+
+## Review-Repair Mode
+
+When called by `references/commit-review.md`, keep the current branch and approved scope. Use Execute, Verify, and the tracking-update steps above, then return the verified changes to that loop. Skip PRD selection, priority/branch prompts, and the normal commit handoff. If no PRD exists for the reviewed work, repair only its established behaviour and use repository tests; a PRD is required only for a material scope change. The repair loop owns decisions and commit folding.
 
 ---
 
@@ -117,4 +120,3 @@ Shared guardrails from the cobb router apply; the rules below are implement-spec
   - Which checklist items were completed
   - Any follow-ups or open issues
   - RED/GREEN/REFACTOR evidence per completed behavioural slice, or the approved exception evidence
-- End with the shared status block. If follow-up work requires a user choice, number the options and mark exactly one **Recommended**.

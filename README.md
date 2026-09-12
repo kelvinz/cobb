@@ -8,12 +8,14 @@ A single skill for ongoing product development, split into phases you call as su
 
 - `/cobb` — show the subcommand menu and recommend the next phase based on `tasks/` state (read-only; never runs a phase on its own).
 - `/cobb prd` — explore the codebase, interview one design decision at a time, and create implementation-ready PRDs (`tasks/f-##-*.md`) with status, priority, technical design, traceability, and TDD instructions. Also `/cobb list` to summarise active PRDs.
-- `/cobb design` — optional design router for UI/UX direction, interaction/motion, and imagery, static or animated SVG (`ui` / `ux` / `motion` / `imagery` modes). The mode references are detailed but still being refined and not yet battle-tested; treat their output as a strong starting point and review it before relying on it.
+- `/cobb design` — choose UI, UX, motion, or imagery. Planning produces design direction; audits stay read-only. Explicit requests for working code run implement's preflight first (PRD, ready scope, branch). Requested imagery exports are produced directly. Design guidance is still being refined and has not been fully tested through agent runs.
 - `/cobb implement` — implement a ready PRD as vertical behavioural slices, using red-green-refactor where practical, and check off completed stories/tasks.
 - `/cobb review` — read-only branch review for correctness, security, tests, and scope, with numbered findings, a clear go/no-go decision, and an exact state fingerprint. It uses an explicit base, the branch upstream, or one clear repository default. Pass `/cobb review <base-ref>` when the base is unclear or to review a fully pushed branch against its merge target.
-- `/cobb commit` — propose atomic, user-approved commits (one at a time, or approve a multi-commit plan in one go), then run review automatically after the final clean group and route numbered fixes/suggestions. Also `/cobb commit finalise` (merge/branch cleanup) and `/cobb commit hotfix`.
+- `/cobb commit` — propose atomic, user-approved commits (one at a time, or approve a multi-commit plan in one go), then automatically review, repair clear findings, and fold repairs into the appropriate unpublished commits. Also `/cobb commit finalise` (merge/branch cleanup) and `/cobb commit hotfix`.
 - `/cobb context` — maintain `tasks/context.md` inline or via explicit backfill.
 - `/cobb compact` — compact `tasks/context.md` by summarising older entries when it gets noisy.
+
+`cobb` is user-invoked only: it runs when you type `/cobb`, never on its own. Commands match the longest complete prefix: `commit finalise`, `commit hotfix`, and `prd list` take precedence over `commit` and `prd`. An explicit design mode also wins over inferred intent.
 
 These phases are written to be handoff-friendly: assume a junior dev (or another AI) may pick up the project later.
 
@@ -29,11 +31,15 @@ These phases are written to be handoff-friendly: assume a junior dev (or another
 1. `/cobb prd` → `/cobb design` (optional, UI/UX-heavy features) → `/cobb implement`
    Context: capture durable decisions inline as each step executes.
 2. `/cobb commit` (`commit` mode): atomic commits with user approval, followed automatically by `/cobb review` once all intended groups are committed and the worktree is clean.
-3. Post-review loop: fix numbered blockers, optionally implement numbered suggestions, commit those changes, and re-review automatically. `0` selects the recommended reply.
-4. `/cobb commit finalise`: after a valid clean review, archive the completed PRD, update `tasks/context.md` if needed (the tracking-only closeout commit does not trigger re-review), then merge using the confirmed strategy and delete branches safely.
+3. Post-review loop: automatically fix blockers and suggestions, run checks, fold each repair into its original unpublished commit where safe, and review again, for at most three passes. Pause only for a real decision, unavailable required evidence, or an unsafe history change. The session ends here; repeat steps 1 to 3 until the PRD is fully checked.
+4. `/cobb commit finalise`: run it yourself once the PRD is fully checked and the last repair loop passed; it refuses an unfinished PRD unless you confirm a partial merge. Confirm the closeout commit, archive the completed PRD, and update `tasks/context.md` if needed. Then merge and clean up branches using the confirmed choices.
 5. `/cobb compact` (periodic): summarise older context entries to keep tracking files easy to scan.
 
-The default is **implement -> commit -> review -> finalise**. Atomic commits give review a stable branch diff and preserve focused history. Reviewing before commit would inspect a moving staged/unstaged worktree and then duplicate the review after commit. Finalise reruns review only when new code would enter the merge — base movement, target change, or code changes beyond the tracking-only closeout commit. On a pushed branch the automatic review is scoped to the unpushed delta, so finalise re-reviews against the merge target; that is expected, not a loop.
+The default is **implement -> commit -> review/repair -> finalise**. Review checks stable commits; each repair or history rewrite ends with another review. Finalise also re-reviews when the target changes or advances, but not for its tracking-only closeout commit. On a pushed branch the automatic review covers the unpushed changes, so finalise re-reviews against the merge target.
+
+Routine review repairs need no extra approval. Automatic folding is limited to private, unpublished feature-branch history; if that cannot be established, the skill asks for a safe alternative such as new atomic fix commits. Standalone `/cobb review` stays read-only. Initial commits and finalise's closeout, merge, push, and deletion choices still need approval.
+
+Hotfix mode prepares and stages one approved change, including tests and tracking notes, then reviews that exact staged snapshot before committing. The same repair loop runs on the staged change, restaging repairs instead of folding commits. The default branch may be fully up to date with its upstream; the pending change is what gets reviewed. The final commit must match the reviewed parent and staged tree.
 
 ## Files the skill manages
 
@@ -42,10 +48,12 @@ The default is **implement -> commit -> review -> finalise**. Atomic commits giv
   - Self-contained, codebase-grounded spec with `Status:` (draft | ready), `Priority:` (P0–P3), and `Type:` (feat | fix | chore).
   - Maps stable story and acceptance-criterion IDs to ordered implementation slices and verification evidence.
   - Includes a TDD contract for behavioural work or a justified, repeatable exception.
+  - Readiness is recalculated after updates. Completed items stay checked only while their requirements and evidence remain valid; affected items reopen without losing unaffected progress.
   - During finalise, completed PRDs move to `tasks/archive/` (same filename, no rename).
 
 - `tasks/context.md`
-  - Project state, key decisions, milestones, and gotchas — written for handoff.
+  - Shared work state, agreed decisions, milestones, and technical constraints.
+  - Agent preferences and self-improvement notes follow `AGENTS.md`'s memory policy instead; task files are not an alternative memory store.
 
 - `tasks/archive/`
   - Archived completed PRDs, moved during `commit` finalise.
@@ -57,7 +65,8 @@ skills/cobb/
   SKILL.md                    # router: dispatch table, shared guardrails, bare-/cobb behaviour
   references/
     prd.md  design.md  implement.md  tdd.md  review.md  commit.md
-    commit-review.md  finalise.md  context-log.md  compact.md
-    design/                   # ui / ux / motion / imagery plus conditional UI token references
+    review-hotfix.md  commit-review.md  finalise.md  context-log.md  compact.md
+    design/                   # ui / ux / motion / imagery; conditional tokens, examples,
+                              # shadcn states, marketing rules, and official design systems
     templates/                # PRD, report, context, compact, commit, finalise templates
 ```

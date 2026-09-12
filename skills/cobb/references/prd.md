@@ -4,8 +4,6 @@ Create, update, or list implementation-ready PRDs. Each PRD must let a less-capa
 
 Shared guardrails from the cobb router apply; the rules below are PRD-specific.
 
----
-
 ## Guardrails
 
 - Do not implement code.
@@ -50,8 +48,7 @@ Shared guardrails from the cobb router apply; the rules below are PRD-specific.
    - Cover product outcome, users, scope, flows, states, data, APIs, permissions, security/privacy, accessibility, performance, reliability, observability, migrations, rollout/rollback, and verification.
    - Mark a branch non-applicable only with a short reason.
    - Resolve prerequisite decisions before dependent decisions.
-   - Build the initial question queue, state its total, and track progress as `Question X of Y`.
-   - Ask one question at a time using the `0`-recommended numeric format.
+   - Build the question queue and ask one question at a time using the shared interview format.
    - If the user cannot decide, apply a labelled provisional recommendation only when the choice is reversible and low-risk.
    - Keep high-risk or irreversible unresolved choices open and leave the PRD in `draft`.
 6. **Split oversized ideas when needed:**
@@ -62,10 +59,7 @@ Shared guardrails from the cobb router apply; the rules below are PRD-specific.
    - Create all approved child PRDs by repeating the path, write, readiness, and context steps for each; do not hide independent work inside one oversized PRD.
 7. **Confirm shared understanding:**
    - Present a concise scope, decisions, assumptions, PRD breakdown, and unresolved-items summary.
-   - Require numbered user confirmation before writing or materially rewriting PRDs:
-     - `0` **Recommended:** write the confirmed PRD set
-     - `1`: revise a specific decision
-     - `2`: stop without writing
+   - Require confirmation before writing or materially rewriting PRDs: write the confirmed PRD set, revise a specific decision, or stop without writing.
 8. **Determine PRD file path:**
    - Look for an existing active PRD matching the feature ID in `tasks/` (`tasks/f-##-*.md`).
    - If found, use it (update in place).
@@ -80,7 +74,7 @@ Shared guardrails from the cobb router apply; the rules below are PRD-specific.
    - Include production-ready snippets or pseudocode for difficult logic, but leave routine syntax to the implementer.
    - Map stable requirement and acceptance-criterion IDs to ordered vertical implementation slices and verification evidence.
    - For behavioural `feat` and `fix` work, read `references/tdd.md` and include its complete PRD testing contract.
-   - For UI/UX-heavy features, include expected design inputs and state whether `design` should run before `implement`.
+   - For UI/UX-heavy features, state whether design direction is needed before implementation and name the expected design inputs.
 10. **Run the readiness gate:**
    - Audit the written PRD against the Readiness Checklist in `references/templates/prd-template.md`.
    - Downgrade to `draft` if any blocking detail remains, even if the user previously expected `ready`.
@@ -102,20 +96,7 @@ Shared guardrails from the cobb router apply; the rules below are PRD-specific.
 
 ## Interview Protocol
 
-Ask as many high-value questions as needed for shared understanding, but exactly one per turn.
-
-Focus on ambiguity around:
-
-- target user + primary use case
-- the problem + desired outcome
-- constraints (platforms, timeline, integrations)
-- success metrics / how we know it worked
-- scope boundaries (what's explicitly in vs out)
-- whether this is `Type: feat` vs `fix` vs `chore`
-- priority (P0 / P1 / P2 / P3)
-- dependencies between features (by ID)
-
-Do not ask about repository facts that can be discovered locally. Do not ask the user to choose between technically invalid or unsafe options.
+Resolve the design-tree gaps from the workflow, including feature type, priority, and dependencies. Find repository facts locally; ask the user only about unresolved choices with valid, safe alternatives.
 
 ### Question format
 
@@ -149,12 +130,9 @@ Question 3 of 11: What outcome should this change optimise for?
 
 ## Update Rules (When a PRD Exists)
 
-- If a PRD already exists at that path, update it in place.
-- Do not create a duplicate PRD unless the user asks.
-- Do not reset existing checklist items inside the PRD.
-- Preserve existing `Status:` and `Priority:` unless the user explicitly asks to change them.
-- Keep feature IDs stable; IDs must be globally unique across `tasks/` and `tasks/archive/`.
-- When adding a new feature, use the next ID as `(max existing f-##) + 1` (never reuse old IDs).
+- Update the existing PRD in place, retaining its feature ID.
+- Preserve `Priority:` unless the user asks to change it.
+- Apply Progress Updates and the Readiness Checklist in `references/templates/prd-template.md` to checklist state and `Status:`. Report any reopened items or status change and why.
 
 ---
 
@@ -162,8 +140,8 @@ Question 3 of 11: What outcome should this change optimise for?
 
 Use `references/templates/prd-template.md` as the default PRD template and checklist.
 
-- Read it before drafting a new PRD.
-- For updates to an existing PRD, audit the whole document for implementation-critical gaps, edit the affected sections, and preserve existing checkbox state and settled decisions.
+- Read it before creating or updating a PRD.
+- For updates, audit the whole document for implementation-critical gaps and edit the affected sections under its progress rules.
 - Keep acceptance criteria concrete and verifiable; examples are in the reference file.
 
 ---
@@ -175,6 +153,5 @@ Use `references/templates/prd-template.md` as the default PRD template and check
 - Update `tasks/context.md` when durable decisions or project scope changes warrant it.
 - For UI/UX-heavy PRDs, recommend `/cobb design` (optional) before `/cobb implement`.
 - Suggest the next action:
-  - If `Status: draft`, recommend refining to `ready` and provide numbered continue/stop choices.
-  - If `Status: ready`, recommend `design` or `implement` from the PRD's needs and provide numbered choices.
-- End with the shared status block (Files changed / Key decisions / Next step).
+  - If `Status: draft`, recommend resolving its named blockers.
+  - If `Status: ready`, recommend design direction or implementation from the PRD's needs.

@@ -8,12 +8,12 @@ Use this short choice prompt before edits:
 Proposed compact plan:
 - Context detailed entries to keep: <recommended-count> (consolidate: <older-count>)
 
-Reply with:
-- `0` **Recommended:** use the proposed plan; it preserves recent operational detail while compacting older history
-- `1 <n>`: keep a custom number (for example: `1 20`)
-- `2`: keep fewer detailed entries
-- `3`: keep more detailed entries
-- `4`: stop without editing
+Choices (shared numbered format; the proposed plan is the recommendation):
+- use the proposed plan
+- keep a custom number, given as `<option> <n>` (for example: `1 20`)
+- keep fewer detailed entries
+- keep more detailed entries
+- stop without editing
 ```
 
 ## Historical Summary Pattern

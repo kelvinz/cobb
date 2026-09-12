@@ -1,6 +1,6 @@
 # commit
 
-Create approved atomic commits. Normal mode runs review automatically after the final clean group; the Dispatch table routes `finalise` to `references/finalise.md` and `hotfix` to Hotfix Mode below.
+Create approved atomic commits. Normal mode runs review and automatic repairs after the final clean group; the Dispatch table routes `finalise` to `references/finalise.md` and `hotfix` to Hotfix Mode below.
 
 Shared guardrails from the cobb router apply; the rules below are commit-specific.
 
@@ -8,9 +8,9 @@ Load `references/templates/commit-rules.md` before the first proposal or when cl
 
 ## Guardrails
 
-- Require numbered user confirmation before every commit; a batch `approve all` reply confirms exactly the presented groups with their shown titles and bodies.
-- Show files/hunks, intent, tracking updates, title, and body before approval.
-- Render exactly one commit action as option `0` **Recommended** from diff quality. Recommend `split` or `edit`, not `commit`, when atomicity or message quality is weak.
+- Require numbered user confirmation for initial commit groups; a batch `approve all` reply confirms the presented groups' intents, titles, and bodies. That approval also authorises routine review repairs and safe folding into those commits under `references/commit-review.md`, so a folded commit may contain more than the hunks shown at approval.
+- Show files/hunks, intent, tracking updates, title, and body before initial approval or an approval required by a changed scope/history plan.
+- Recommend splitting or editing when a group's scope or message is weak.
 - Keep commits atomic; if a title needs "and", split the change set.
 - Never mix unrelated intents or use `chore` for behavioural changes.
 - Determine type from the diff, not branch name, paths, or habit.
@@ -18,9 +18,9 @@ Load `references/templates/commit-rules.md` before the first proposal or when cl
 - Never push in normal mode.
 - Couple completed PRD checklist and durable context updates to the atomic change that produced them.
 - Do not create trailing tracking-only catch-up commits outside finalise unless explicitly approved.
-- Run review automatically only after all intended groups are committed and the worktree is clean.
-- Review approval is valid only for its exact clean HEAD and comparison-base fingerprint.
-- On direct base-branch work (any ref in the shared base-branch list — see `SKILL.md`), preserve the session-start HEAD and review `<session-start>..HEAD`; never compare the branch to itself or offer finalise.
+- In normal mode, run review after all intended groups are committed and the worktree is clean. Hotfix mode uses the staged-review sequence below.
+- Review approval is tied to the exact recorded state for that review mode.
+- In normal mode on a base branch (see the shared list in `SKILL.md`), preserve the session-start HEAD and review `<session-start>..HEAD`; never compare the branch to itself or offer finalise.
 
 ## Message Rules
 
@@ -36,7 +36,7 @@ Use another emoji only when it is more precise. Keep the summary short, specific
 
 ## Normal Commit Workflow
 
-1. Record the session-start HEAD, then inspect `git status --short`, staged diff, and unstaged diff. Identify the active PRD when applicable.
+1. Record the session-start HEAD, then inspect `git status --short`, staged diff, and unstaged diff. Identify the active PRD when applicable. Retain the original session-start hash when returning from review repairs.
 2. Partition changes into atomic groups. Map each group to:
    - completed PRD checklist/story items, or `none` with reason
    - durable context outcomes, or `none` with reason
@@ -48,13 +48,13 @@ Use another emoji only when it is more precise. Keep the summary short, specific
    - full title and body
    - single group: show it and use the per-group actions in step 5
    - multiple groups: show the full plan (every group's proposal, in commit order), then choose the approval mode in step 4
-4. With multiple groups, prompt for the approval mode. Render the evidence-based choice as `0` **Recommended** — approve all only when every group is atomic with an accurate message, otherwise the action that fixes the weakest group — and the remaining actions once each as `1..N`:
+4. With multiple groups, offer these approval modes. Recommend approve-all only when every group is atomic with an accurate message; otherwise recommend fixing the weakest group:
    - approve all — commit every group sequentially as shown, with no further prompts
    - go one group at a time using the per-group actions below
    - edit a group's scope/message and re-present the plan
    - split a group and re-present the plan
    - stop and leave everything uncommitted
-5. Per-group actions (single group, or one-at-a-time mode). Render the evidence-based action as `0` **Recommended** with a short reason and the remaining actions once each as `1..N`:
+5. Offer these per-group actions for a single group or one-at-a-time mode:
    - commit this group
    - edit scope/message and repropose
    - skip and leave uncommitted
@@ -63,32 +63,31 @@ Use another emoji only when it is more precise. Keep the summary short, specific
 7. Repeat until no intended groups remain.
 8. Recheck the worktree:
    - if changes remain, do not review
-   - prompt, rendering the recommended action as `0` and the remaining actions once each as `1..N`:
+   - offer:
      - resume proposals for remaining groups — recommended when changes are expected intended work
      - defer them and stop; review has not run
      - show remaining files/hunks for a manual keep/discard decision — recommended when changes are unexpected, ambiguous, or potentially unrelated
    - never discard automatically
-9. When clean, run `review` automatically without another prompt:
+9. When clean, run `review` with caller `commit` automatically without another prompt:
    - on a feature branch, compare against an explicit base, its upstream, or one clear repository default; stop and require `/cobb review <base-ref>` when the base is unclear
    - on a base branch (any ref in the shared base-branch list), compare against the upstream when one exists and sits behind HEAD, since that is what a push publishes; otherwise compare the recorded session-start commit to HEAD. Disable finalise either way.
    - report the reviewed base back to the user; on a pushed branch the base is the upstream, so the pass covers the unpushed delta and finalise will re-review against the merge target
-10. Load `references/commit-review.md` and execute the branch matching the review result.
+10. Load `references/commit-review.md` and run the automatic repair loop. When already inside that loop, return the review report to it instead of starting another loop.
 
 ## Hotfix Mode
 
 Use only for an urgent fix committed directly to the default branch.
 
-1. Verify HEAD is the default branch.
-2. Run `review` before committing; post-commit branch comparison cannot review a default-branch hotfix meaningfully.
-3. Require `Good to commit: Yes` for the exact staged/unstaged hotfix state.
-4. Follow Normal Commit Workflow steps 1-7.
-   - use `fix` unless the change is genuinely non-behavioural
-   - PRD sync is usually `none` with reason
-5. Record the failure, urgency, rationale, and follow-up in `tasks/context.md` within the hotfix commit.
-6. Do not run normal post-commit review or finalise; the hotfix is already on the default branch.
+1. Resolve the repository default and verify it is the checked-out branch; stop if that choice is unclear.
+2. Prepare one complete hotfix group, including tests and the failure, urgency, rationale, and follow-up in `tasks/context.md`. Use `fix` unless the change is non-behavioural; PRD sync may be `none` with a reason.
+3. Use Normal Commit Workflow steps 1–5 for proposal and approval only. Then stage exactly that group. Leave unrelated work untouched; ask for an isolation or defer decision if the worktree cannot match the staged change.
+4. Run `review` with caller `hotfix`; it loads `references/review-hotfix.md` and reviews the staged snapshot. Then load `references/commit-review.md` and run its repair loop as caller `hotfix`: repairs are restaged, not folded.
+5. When that loop completes, repeat the snapshot checks from `references/review-hotfix.md` immediately before committing with the approved message.
+6. Apply that reference's Commit Check after committing. If it fails, review the actual committed change against its parent before claiming success; do not amend or discard it automatically.
+7. Report the hash and verification result. The verified staged review replaces normal post-commit review; do not enter finalise or push automatically.
 
 ## Output
 
-For each proposal, provide atomic scope, summary, type rationale, PRD/context sync, title, body, and numbered actions with the recommended action as `0`.
+For each proposal, provide atomic scope, summary, type rationale, PRD/context sync, title, body, and available actions.
 
-After execution, report commit hash/title, remaining groups, tracking sync, and automatic review result. End with the shared status block and numbered next steps when a user decision remains.
+After execution, report the final commit hashes/titles, repairs folded into them, remaining groups, tracking sync, and final review result.

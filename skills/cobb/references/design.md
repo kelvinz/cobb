@@ -6,17 +6,17 @@ Shared guardrails from the cobb router apply; the rules below are design-specifi
 
 ## Workflow
 
-1. Infer the primary mode from the request and repository evidence.
-2. Add one secondary mode only when it is essential to the requested outcome.
-3. If routing is genuinely ambiguous, present numbered mode choices and mark one **Recommended** with a short reason.
-4. Complete the routing brief. Explore the repository before asking for discoverable inputs.
-5. If several user questions remain, build the queue first and label them `Question X of Y`; ask one at a time.
-6. Load only the selected mode reference and conditional child references named below.
-7. Deliver the primary mode contract completely, then add only the necessary secondary-mode deltas.
+1. Honour a recognised first mode argument (`ui`, `ux`, `motion`, or `imagery`) and remove only that word from the mode's input. Otherwise infer the mode from the request and repository evidence.
+2. Add one secondary mode only when essential to the requested outcome.
+3. If routing remains ambiguous, ask which mode to use.
+4. Complete the routing brief, including Delivery. Find discoverable inputs in the repository; ask about remaining choices one at a time.
+5. Complete preflight (see Delivery) before editing application files.
+6. Load only the selected mode reference and conditional child references below.
+7. Deliver the primary contract completely, then add only necessary secondary-mode details.
 
 ## Mode Selection
 
-Apply the first matching rule:
+Use the reference for an explicit mode. Only when no explicit mode was supplied, apply the first matching rule:
 
 1. `imagery`: non-interactive `.png`/`.pdf`/animated `.svg`, poster, cover, or editorial composition.
    - Load `references/design/imagery.md`.
@@ -37,8 +37,18 @@ Conditional UI references (canonical load conditions — other files defer here)
 
 - Load `references/design/ui-tokens.md` only when creating or materially changing a Tailwind/token system.
 - Load `references/design/ui-examples.md` only when concrete token, config, or component snippets are needed.
+- Load `references/design/ui-shadcn.md` only when creating or changing shadcn/ui components.
+- Load `references/design/ui-marketing.md` only for landing pages, portfolios, or marketing surfaces.
+- Load `references/design/ui-systems.md` only when the brief maps to an official product ecosystem and a design-system choice is needed.
 
-Do not load secondary or conditional references speculatively.
+## Delivery
+
+- **Direction:** default for design planning and handoffs before implementation. Deliver specifications and design documents; keep application code unchanged.
+- **Audit:** return findings and proposed changes read-only, unless implementation is explicitly requested.
+- **Implementation:** use only when the user or calling implementation workflow explicitly requests working code. First complete **preflight**: the Identify the PRD and Preflight steps in `references/implement.md`, including ready scope and branch confirmation. Reuse valid checks already completed by the caller; do not restart its optional design handoff. For an authorised review repair, use that file's Review-Repair Mode instead.
+- **Artifact:** create requested non-interactive imagery exports under imagery mode. This permits the requested artifact files, not unrelated application changes.
+
+The delivery kind takes precedence over a child reference's examples or code suggestions. A pre-implementation design handoff always uses `direction`.
 
 ## Complexity And Calibration
 
@@ -69,7 +79,8 @@ Complete before solution design:
 ```text
 Primary mode:
 Secondary mode (optional):
-Request type (new design | refinement | audit | artifact):
+Delivery (direction | audit | implementation | artifact):
+New design or refinement:
 Human and audience:
 Primary task:
 Constraints:
@@ -79,7 +90,7 @@ Required artifacts:
 Success criteria:
 ```
 
-If the brief needs user choices, number them, mark one **Recommended**, and show `Question X of Y` for a sequence. Use explicit assumptions for low-risk reversible gaps instead of unnecessary questions.
+Use explicit assumptions for low-risk reversible gaps instead of unnecessary questions.
 
 ## Global Requirements
 
@@ -89,7 +100,3 @@ If the brief needs user choices, number them, mark one **Recommended**, and show
 4. Cover required interaction, data, empty, loading, error, and recovery states.
 5. Tie decisions to the request, repository conventions, and constraints.
 6. Tolerate longer copy, dynamic data, and localisation.
-
-## Output
-
-End with the shared status block. If a user decision remains, provide numbered options and mark exactly one **Recommended**.

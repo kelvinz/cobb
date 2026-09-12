@@ -6,7 +6,7 @@ Use motion to communicate state, orientation, focus, and continuity.
 
 When `motion` is primary:
 
-1. Ship working code or precise implementation spec.
+1. Follow Delivery in `references/design.md`: provide a motion spec for direction, findings for an audit, or working code only after preflight.
 2. Define timing scale and easing token usage.
 3. Define reduced-motion behavior for all critical interactions.
 4. Document performance-sensitive implementation choices.

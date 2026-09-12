@@ -1,31 +1,28 @@
 # review
 
-Review one change set and return a decision-led report.
+Inspect one change set without changing it. Standalone review returns a report; normal commit and finalise use that report in the automatic repair loop.
 
 Shared guardrails from the cobb router apply; the rules below are review-specific.
-
----
 
 ## Guardrails
 
 - Review changes made on the currently checked-out branch.
-- Be fully read-only. Do not modify code, PRDs, `tasks/context.md`, or any other file.
+- Keep source files, task records, and staging choices unchanged. Git metadata refreshes/snapshots and isolated test outputs are allowed. Run checks that would edit tracked files in a disposable copy, or report the missing evidence.
 - Do not commit, merge, push, or delete branches.
 - Do not ask the user which branch to check against.
-- Resolve the comparison base strictly by the resolution ladder in Workflow step 1; never guess. If no rung resolves clearly, return `Good to commit: No` and require `/cobb review <base-ref>`.
-- Pin HEAD and the comparison base to commit hashes before reviewing. Use those hashes for every history comparison.
+- For branch review, resolve the comparison base by the ladder in Workflow step 1. If it is unclear, return `Good to commit: No` and require `/cobb review <base-ref>`.
+- Pin the reviewed revisions before inspecting content. Use those hashes for every comparison.
 - The reviewed base is part of the result, not an implementation detail: report it, and expect finalise to re-review when the merge target differs from it.
 - Block approval if the current branch is behind the resolved comparison base; require sync + re-review.
-- Do not update PRD tracking files here.
 - Report proposed durable context updates, but do not apply them.
-- Do not invent test results; run checks or call out missing evidence.
-- Number every blocker and suggestion in standalone and commit-triggered reports.
-- A pass is valid only for the exact reviewed HEAD, comparison-base commit, and clean-worktree state.
+- Number every blocker and suggestion in standalone and called reports.
+- A pass is valid only for the recorded review state: the branch fingerprint below, or the staged-hotfix snapshot in `references/review-hotfix.md`.
 
 ---
 
 ## Inputs
 
+- caller: `standalone` (default), `commit`, `finalise`, or `hotfix`; return to that caller after inspection
 - current branch (resolved from `git branch --show-current`)
 - optional explicit comparison base argument (`/cobb review <base-ref>`) — wins over automatic resolution without prompting
 - otherwise the comparison base resolved by the Workflow step-1 ladder (never prompted for)
@@ -39,7 +36,8 @@ Shared guardrails from the cobb router apply; the rules below are review-specifi
    - Run `git fetch --all --prune` first (best-effort); if it fails (offline, unreachable remote), continue against local refs and record in the report that remote freshness is unverified.
    - Resolve `HEAD_HASH=$(git rev-parse HEAD)` first. If HEAD is detached, return `Good to commit: No` and ask the user to check out or create a branch.
    - Classify the current branch as `base` when its name is in the shared base-branch list. Otherwise classify it as `feature`.
-   - Resolve the base in this order:
+   - For caller `hotfix`, load `references/review-hotfix.md`, complete its staged-review workflow, and return to the caller. Skip the remaining branch-only workflow below, including the empty-history-range test.
+   - Resolve the base for other callers in this order:
      1. explicit `/cobb review <base-ref>` argument
      2. caller-confirmed finalise target
      3. direct base-branch commit mode: use the upstream when it exists and differs from `HEAD_HASH`; otherwise use the session-start hash
@@ -61,25 +59,26 @@ Shared guardrails from the cobb router apply; the rules below are review-specifi
 3. Validate the commit pair before reviewing content:
    - If `HEAD_HASH == BASE_HASH`, the review range is empty. Return `Good to commit: No`. Direct base-branch work needs commit mode when a session-start hash is required. For a fully pushed feature branch, rerun `/cobb review <merge-target>` to review the full branch.
    - If `git merge-base --is-ancestor "$BASE_HASH" "$HEAD_HASH"` fails, return `Good to commit: No` and require sync before re-review.
-4. Compare the change set against required behaviour:
+4. **Compare** the change set against required behaviour:
    - correctness and edge cases
    - security risks and data handling
    - test depth and regression risk
    - scope control (especially if PRD path is provided)
      - Compare diff vs PRD 'In scope' and completed user stories; flag any diff not attributable to a PRD requirement.
-5. Classify findings:
+5. **Classify** findings:
    - blockers (must fix), numbered `B1`, `B2`, ...
-   - suggestions (optional improvements), numbered `S1`, `S2`, ...
+   - suggestions (non-blocking improvements), numbered `S1`, `S2`, ...
    - missing evidence (tests/checks not run, unclear behaviour), numbered `E1`, `E2`, ...
      - If unable to run checks (CI-only, permissions), mark as "Missing evidence".
      - Request a specific artifact: CI link, log, or command the user can run.
      - Treat evidence required by the PRD, repository policy, or changed risk surface as a blocker and cross-reference its `E#` from a `B#`.
      - Treat genuinely optional/manual evidence as a numbered suggestion and cross-reference its `E#` from an `S#`.
-6. Produce the report with a clear recommendation:
+   - For each finding, state the evidence, concrete repair, and whether a user decision is needed. Identify the actual unresolved choice; routine corrections and clear in-scope improvements do not need selection or approval.
+6. **Decide** with a clear recommendation:
    - `Good to commit: Yes` only when there are zero blockers, including required-evidence blockers.
    - `Good to commit: No` otherwise.
    - if decision is `No`, include explicit numbered fix items; finalise remains unavailable
-7. Identify context-worthy review outcomes without editing files:
+7. **Propose context** entries without editing files:
    - systemic risks likely to recur
    - key security or data-handling decisions
    - durable follow-up decisions that affect future work
@@ -93,7 +92,7 @@ Shared guardrails from the cobb router apply; the rules below are review-specifi
    - reviewed comparison-base name, resolution source (`argument`, `finalise-target`, `upstream`, `session-start`, `repo-convention`, `remote-head`, or `local-fallback`), and pinned hash
    - `git status --short` result (must be clean for a finalise-valid pass)
    - invalidate the approval after any commit, base movement, or worktree change
-9. Load `references/commit-review.md` and present its matching numbered action branch, whether review is standalone or commit-triggered. Remain read-only until the user selects an action; then route to `implement` or `finalise`.
+9. Return the report to the caller. Called reviews continue through `references/commit-review.md`. Standalone review ends read-only with the report and recommended next action.
 
 ---
 
@@ -120,7 +119,7 @@ Shared guardrails from the cobb router apply; the rules below are review-specifi
 
 ## References
 
-- `references/templates/report-template.md`: standard report structure for review outputs.
+- Read `references/templates/report-template.md` when producing the report; use its fields for the selected review mode.
 
 ---
 
@@ -128,5 +127,4 @@ Shared guardrails from the cobb router apply; the rules below are review-specifi
 
 - Return the review report with explicit proposed context updates and review fingerprint.
 - Keep the decision explicit and unambiguous.
-- Return control to `references/commit-review.md` instead of printing a generic next command.
-- End with the shared status block (Files changed / Key decisions / Next step).
+- For a called review, return control and the report to its caller without starting another phase or repair loop.

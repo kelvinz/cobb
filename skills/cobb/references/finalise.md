@@ -4,12 +4,12 @@ Load this reference only for `commit finalise` or `finalise` mode.
 
 Shared guardrails from the cobb router apply; the rules below are finalise-specific.
 
-Finalise runs **after** the review phase. In the standard flow (`implement → commit → review → finalise`), `review` runs automatically once all atomic commits are clean and `references/commit-review.md` hands off here on a clean pass — so finalise starts right after a passing review. Finalise trusts that review; the re-review guardrail below is the canonical rule for when a fresh review is required.
+Finalise follows the completed automatic review-repair loop in `references/commit-review.md`. When finalise itself needs a review, pass caller `finalise` and route the report through that loop, then resume the pending step rather than restarting finalise.
 
 ## Guardrails
 
 - Require a clean feature branch, never the default/base branch.
-- **Re-review rule (canonical).** Trust the review the review phase already produced; re-review only when new code would actually enter the merge — no clean review exists for the current code, the confirmed target differs from the reviewed base, or the target advanced with commits that get synced in. The closeout commit (`tasks/` bookkeeping only) and the merge/push/delete choices never trigger re-review.
+- **Re-review rule (canonical).** Require a fresh review after code repairs or history rewrites, when no valid review exists, when the confirmed target differs from the reviewed base, or when the target advances and its commits get synced in. The tracking-only closeout commit and the merge/push/delete choices alone never trigger re-review.
   - Expect this to fire on a pushed branch. Review resolves the base upstream-first, so a post-commit pass on a pushed branch is scoped to `<remote>/<branch>..HEAD`, not to the merge target. The target then differs from the reviewed base and a fresh review is required. That re-review uses the confirmed target and terminates. An unpushed branch needs no re-review when its reviewed base is also the confirmed target.
 - Confirm the target, then collect merge strategy, push, local deletion, and remote deletion as one coded decision bundle.
 - Mark one evidence-based value **Recommended** for every field and show one **Recommended** complete bundle.
@@ -23,11 +23,12 @@ Finalise runs **after** the review phase. In the standard flow (`implement → c
 
 ## Workflow
 
-1. Verify the worktree is clean, HEAD is a feature branch, and a clean review already covers the current code. The review phase normally provides this; run `review` once here only if none exists, route the result through `references/commit-review.md`, and continue only on a clean pass.
-2. Resolve the active PRD:
+1. Verify the worktree is clean and HEAD is a feature branch. Use the completed review-repair result when the canonical rule allows it. Otherwise run `review` with caller `finalise` and complete `references/commit-review.md` before continuing here. An existing report with unresolved findings also needs that repair loop.
+2. Resolve the active PRD and confirm it is complete:
    - prefer the PRD matching the branch feature ID
    - if several candidates exist, number them and recommend the strongest ID/name match
    - request an open-ended path only when repository discovery cannot produce candidates
+   - require every story, acceptance criterion, and task to be checked; when items remain open, stop, list them, and recommend `/cobb implement`, unless the user explicitly confirms merging the partial feature
 3. Mark the PRD done and archive it (closeout tracking commit):
    - move `tasks/f-##-<slug>.md` to the same filename under `tasks/archive/` when not already archived
    - update `tasks/context.md` completed/current-state sections and applicable review-proposed `Finalise` entries
@@ -44,7 +45,7 @@ Finalise runs **after** the review phase. In the standard flow (`implement → c
    - delete remote: `5A` yes, `5B` no (**Recommended**)
    - `0`/`default` means the displayed **Recommended** complete bundle (here `1A 2A 3B 4A 5B`), not a hardcoded strategy
    - shift a field's recommendation when repository evidence (e.g. a `tasks/context.md` merge preference, an unmerged or shared local branch) clearly favors another value, and say why
-5. Sync HEAD with the confirmed target. This is normally a no-op; if sync brings in new commits or the target differs from the reviewed base, apply the canonical re-review guardrail before merging.
+5. Sync HEAD with the confirmed target. If the canonical re-review rule applies, review against that target with caller `finalise`, complete the repair loop, and resume here with its new review record. Preserve the confirmed bundle and completed closeout work; do not create another archive/closeout commit.
 6. Resolve strategy using `references/templates/finalise-policy.md`.
    - when the user chose `auto` (`2A`), state the resolved strategy and its policy rationale in one line, then proceed to merge without re-prompting — choosing auto already authorised the policy result
    - prompt only when policy resolution is genuinely conflicting (e.g. contradictory `tasks/context.md` preferences): present numbered strategy choices (merge-commit / linear-history / squash / rebase / stop) and mark one **Recommended**
@@ -54,4 +55,4 @@ Finalise runs **after** the review phase. In the standard flow (`implement → c
 
 ## Output
 
-Report the closeout commit, the review the merge relied on, merge result, push result, and branch cleanup. If any action remains, provide numbered next-step choices and mark one **Recommended**.
+Report the closeout commit, the review the merge relied on, merge result, push result, and branch cleanup.

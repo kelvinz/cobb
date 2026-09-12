@@ -4,6 +4,7 @@
 
 - [Template](#template)
 - [Writing Rules](#writing-rules)
+- [Progress Updates](#progress-updates)
 - [Acceptance Criteria Example](#acceptance-criteria-example)
 - [Readiness Checklist](#readiness-checklist)
 
@@ -275,7 +276,12 @@ Use `None` when all questions are resolved. A PRD with a high-risk or irreversib
 - Name verified repository paths and symbols. Do not invent line numbers or structures.
 - Include exact contracts or reusable snippets for difficult logic, not full routine production files.
 - Preserve material decision rationale, not the interview transcript.
-- Keep existing checked items checked when updating a PRD.
+
+### Progress Updates
+
+Keep stable IDs and preserve checked items whose requirements, dependencies, and verification evidence remain valid. Reopen items whose requirements changed or whose evidence is no longer valid, along with affected dependent stories/slices. Record why they were reopened; leave unaffected completion intact.
+
+Checklist progress records completed work. `Status` records whether the PRD is ready to implement, not whether implementation is finished. Recalculate it after every update using the Readiness Checklist below; an old `ready` value does not override a newly discovered blocker.
 
 ## Acceptance Criteria Example
 
@@ -298,6 +304,6 @@ Use `None` when all questions are resolved. A PRD with a high-risk or irreversib
 - [ ] Security, privacy, permissions, performance, reliability, observability, accessibility, migration, rollout, and rollback are addressed.
 - [ ] Automated and manual commands, fixtures, expected failures, and completion evidence are explicit.
 - [ ] Material decisions include rationale and relevant rejected alternatives.
-- [ ] Existing checklist state and settled decisions were preserved during updates.
+- [ ] Checked items still have valid evidence; affected items were reopened under Progress Updates, and unaffected completion and settled decisions were preserved.
 - [ ] PRD is consistent with `tasks/context.md`, or `tasks/context.md` was updated in this run.
 - [ ] `Status: ready` appears only when every item above passes or has a documented non-blocking exception.
