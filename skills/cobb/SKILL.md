@@ -70,17 +70,17 @@ Do not execute any phase. Instead:
 
 ## Shared Guardrails (apply to every phase)
 
-- **Choices (all phases and follow-up prompts).** Before sending any menu, question with options, confirmation, or next-action choice, check that it starts with exactly one `0 — Recommended: <action> — <brief reason>`. Number each distinct alternative once as `1..N`; use this format even for yes/no decisions and finalise. Choose the recommendation from repository evidence and safety; recommend stopping or investigating when proceeding is unsafe or evidence is missing. Accept the number alone, or `default` for `0`, and wait for the user's choice wherever approval is required. A default is a displayed recommendation, not permission to act on silence. Use open input only when fixed options would lose essential information.
+- **Choices (all phases and follow-up prompts).** For every menu, question with options, confirmation, or next-action choice, put all context, explanations, and status information before the options. End the message with one uninterrupted choice block: exactly one `0 — Recommended: <action> — <brief reason>`, immediately followed by each distinct alternative once as `1..N`. Before sending, check that all options appear together in this final block, with no other content between them or after them. Use this format even for yes/no decisions and finalise. Choose the recommendation from repository evidence and safety; recommend stopping or investigating when proceeding is unsafe or evidence is missing. Accept the number alone, or `default` for `0`, and wait for the user's choice wherever approval is required. A default is a displayed recommendation, not permission to act on silence. Use open input only when fixed options would lose essential information.
 - **Show questionnaire progress.** Before a one-question-at-a-time interview, explore enough context to build the question queue and state the total. Label every prompt `Question X of Y`. If a new answer creates or removes dependent questions, announce the revised total and why before continuing.
 - **Task context.** Before recording or proposing task-state updates, read `references/context-log.md` for the boundary between task records and agent memory, entry placement, and README checks. File-writing phases update context inline; review only proposes entries.
 - **Base branches.** The base-branch list is `main`, `master`, `dev`, `develop`, `trunk`, plus names declared under Repo conventions in `tasks/context.md`. Every phase that resolves a comparison base or merge target uses this list.
 - **Handoff-friendly.** Assume a junior dev (or another AI) picks this up later. Plain language, explicit edge cases, no hidden assumptions.
 - **Never claim untested success.** Do not say tests/checks/builds passed unless you actually ran them; if you didn't run it, say so.
-- **Status block.** End every standalone phase reply with:
+- **Status block.** Put this summary at the end of every standalone phase reply, before any final choice block:
   - **Files changed**: created/updated files
   - **Key decisions**: assumptions or choices made (if any)
   - **Next step**: recommended next phase or action
-  - If the next step requires a user decision, follow it immediately with the choice.
+  - If the next step requires a user decision, follow the shared Choices rule.
 
 ---
 
