@@ -11,15 +11,14 @@ Finalise follows the completed automatic review-repair loop in `references/commi
 - Require a clean feature branch, never the default/base branch.
 - **Re-review rule (canonical).** Require a fresh review after code repairs or history rewrites, when no valid review exists, when the confirmed target differs from the reviewed base, or when the target advances and its commits get synced in. The tracking-only closeout commit and the merge/push/delete choices alone never trigger re-review.
   - Expect this to fire on a pushed branch. Review resolves the base upstream-first, so a post-commit pass on a pushed branch is scoped to `<remote>/<branch>..HEAD`, not to the merge target. The target then differs from the reviewed base and a fresh review is required. That re-review uses the confirmed target and terminates. An unpushed branch needs no re-review when its reviewed base is also the confirmed target.
-- Confirm the target, then collect merge strategy, push, local deletion, and remote deletion as one coded decision bundle.
-- Mark one evidence-based value **Recommended** for every field and show one **Recommended** complete bundle.
-- Treat explicit coded choices as confirmation; ask only for missing or conflicting fields.
+- Collect target, merge strategy, push, local deletion, and remote deletion as one decision bundle using the router's shared Choices rule.
+- Treat selection of a fully displayed bundle as confirmation of its fields; ask only for missing or conflicting fields.
 - Never assume `main`; resolve repository defaults and policy.
-- Default push to **no** (`3B`); never present pushing to remote as the recommended default.
+- Default push to **no**; never present pushing to remote as the recommended default.
 - Keep closeout tracking in one approved pre-merge commit; do not use it to catch up missed atomic updates without explicit approval.
 - Sync with the confirmed target before merge.
 - Never delete the target, default, or currently checked-out branch.
-- Require explicit coded confirmation for push and each deletion.
+- Require explicit confirmation for push and each deletion, either through the displayed bundle or a field choice.
 
 ## Workflow
 
@@ -37,17 +36,15 @@ Finalise follows the completed automatic review-repair loop in `references/commi
    - present numbered commit/edit/skip choices and mark the safe evidence-based choice **Recommended**
    - tracking-only, so it does not trigger re-review (see the canonical re-review guardrail)
    - skip the commit when no tracking change is needed and state why
-4. Collect the finalise bundle. Mark one value **Recommended** in every field and show why it fits repository policy and risk:
-   - target: `1A` (resolved default, **Recommended**), `1B`, ...; include `1X` for open custom text
-   - strategy: `2A` auto (**Recommended**, resolves via `references/templates/finalise-policy.md` and executes without a second strategy prompt), `2B` merge-commit, `2C` linear-history, `2D` squash, `2E` rebase
-   - push: `3A` yes, `3B` no (**Recommended**)
-   - delete local: `4A` yes (**Recommended**), `4B` no
-   - delete remote: `5A` yes, `5B` no (**Recommended**)
-   - `0`/`default` means the displayed **Recommended** complete bundle (here `1A 2A 3B 4A 5B`), not a hardcoded strategy
-   - shift a field's recommendation when repository evidence (e.g. a `tasks/context.md` merge preference, an unmerged or shared local branch) clearly favors another value, and say why
+4. Collect the finalise bundle using the shared Choices rule:
+   - propose all five fields explicitly: resolved target branch, strategy `auto`, push no, delete local yes when safe, delete remote no
+   - adjust the proposal to repository policy and safety, and give a brief reason; `auto` resolves via `references/templates/finalise-policy.md`
+   - offer approve displayed bundle / change fields / stop; recommend approval only when every field is resolved and safe
+   - for changes, ask about each selected field using the shared Choices rule: discovered targets/custom target; auto/merge-commit/linear-history/squash/rebase; yes/no for push and each deletion
+   - show the revised complete bundle and request approval before continuing
 5. Sync HEAD with the confirmed target. If the canonical re-review rule applies, review against that target with caller `finalise`, complete the repair loop, and resume here with its new review record. Preserve the confirmed bundle and completed closeout work; do not create another archive/closeout commit.
 6. Resolve strategy using `references/templates/finalise-policy.md`.
-   - when the user chose `auto` (`2A`), state the resolved strategy and its policy rationale in one line, then proceed to merge without re-prompting — choosing auto already authorised the policy result
+   - when the user chose `auto`, state the resolved strategy and its policy rationale in one line, then proceed to merge without re-prompting — choosing auto already authorised the policy result
    - prompt only when policy resolution is genuinely conflicting (e.g. contradictory `tasks/context.md` preferences): present numbered strategy choices (merge-commit / linear-history / squash / rebase / stop) and mark one **Recommended**
 7. Merge using the confirmed strategy.
 8. Push the target only when the bundle confirms push; otherwise state that remote update remains pending.

@@ -22,7 +22,7 @@ These phases are written to be handoff-friendly: assume a junior dev (or another
 ## Interaction contract
 
 - Every bounded user choice is numbered so a reply can be only the option number.
-- Every choice set marks exactly one **Recommended** option from repository evidence, safety, and best practice; replying `0` (or `default`) selects it.
+- Every choice set starts with `0 — Recommended` and a brief reason, including confirmations and finalise. Other options use `1..N`. Replying `0` (or `default`) selects the recommendation; silence does not approve it.
 - Open-ended input is used only when useful answers cannot be represented honestly as options.
 - One-at-a-time interviews announce their total first and label each prompt `Question X of Y`. If an answer changes the dependency tree, the skill announces the revised total and reason.
 
