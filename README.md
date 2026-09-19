@@ -43,6 +43,10 @@ Routine review repairs need no extra approval. Automatic folding is limited to p
 
 Hotfix mode prepares and stages one approved change, including tests and tracking notes, then reviews that exact staged snapshot before committing. The same repair loop runs on the staged change, restaging repairs instead of folding commits. The default branch may be fully up to date with its upstream; the pending change is what gets reviewed. The final commit must match the reviewed parent and staged tree.
 
+### Session boundaries
+
+Each phase can run in a fresh chat session or the same one. A fresh session is safe between `prd` (or `design`) and `implement`, because the PRD is the handoff document. Stay in one session from `commit` through review, repairs, and finalise: the repair loop depends on the session-start hash and the review record. Compact or clear only at a phase boundary, never mid-phase.
+
 ## Files the skill manages
 
 - `tasks/f-##-<slug>.md`
