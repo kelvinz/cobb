@@ -14,6 +14,7 @@ Load `references/templates/commit-rules.md` before the first proposal or when cl
 - Keep commits atomic; if a title needs "and", split the change set.
 - One intent per commit; a behavioural change is `feat` or `fix`, never `chore`.
 - Determine type from the diff, not branch name, paths, or habit.
+- Fix commits state the confirmed cause in the body (see the body template).
 - Add AI attribution or `Co-authored-by` only when explicitly requested.
 - Normal mode leaves the remote untouched; push belongs to finalise.
 - Couple completed PRD checklist and durable context updates to the atomic change that produced them.

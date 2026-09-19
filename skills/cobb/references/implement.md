@@ -16,6 +16,7 @@ When called by `references/commit-review.md`, use Review-Repair Mode at the end 
   - Every deviation is stated and routed through `/cobb prd`.
   - Outside review-repair mode, if the feature has no PRD in `tasks/`, stop and use `/cobb prd` first.
   - Out-of-scope requirements or bugs discovered during execution become a new PRD via `/cobb prd`; the current scope stays fixed.
+  - For a fix PRD whose RED test fails to reproduce the bug, the cause is not yet known: load `references/diagnose.md` with caller `implement` and run it, then update the fix PRD via `/cobb prd` from its report (root cause, reproduction, regression seam) and resume the slice.
 - For a review finding that requires scope expansion, return to the repair loop for the unresolved decision and PRD confirmation before changing that scope.
 - Treat a confirmed `Status: ready` PRD as approval of its interfaces, behaviour priorities, and TDD plan.
 - Ask for a second implementation-plan or testing-plan approval only when execution reveals a material ambiguity or scope change.

@@ -40,6 +40,7 @@ For `Type: fix`, include:
 - **Reproduction**: exact steps, inputs, environment, and frequency
 - **Root cause**: confirmed cause, or bounded hypotheses and how to distinguish them
 - **Regression surface**: related paths that must remain unchanged
+- **Diagnosis source**: `/cobb diagnose` report (loop command and minimal repro) | direct
 
 ## 2. Goals and Non-Goals
 

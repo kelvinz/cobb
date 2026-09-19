@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 A single skill for ongoing product development. Route a request to the right phase, then execute that phase under the shared guardrails below.
 
-The full flow is: `prd` → `design` (optional, UI/UX-heavy work) → `implement` → `commit` → automatic review, repair, and commit folding until resolved → `finalise` → `compact` (periodic). `context` is captured inline throughout, not as a separate step.
+The full flow is: `prd` → `design` (optional, UI/UX-heavy work) → `implement` → `commit` → automatic review, repair, and commit folding until resolved → `finalise` → `compact` (periodic). `context` is captured inline throughout, not as a separate step. `prd` runs `diagnose` automatically for a fix whose cause is unknown, and `implement` runs it when a RED test fails to reproduce the bug; `/cobb diagnose` also works on its own.
 
 Normal delivery reviews stable commits. Hotfix mode instead reviews the exact staged change before committing.
 
@@ -37,6 +37,7 @@ Match the longest explicit command prefix, using whole words. Load only its phas
 | `commit hotfix` / `hotfix` | hotfix commit | `references/commit.md` (hotfix mode) |
 | `prd list` / `list` | list PRDs | `references/prd.md` (list mode) |
 | `prd` | create/update PRD | `references/prd.md` |
+| `diagnose` | find a bug's cause | `references/diagnose.md` |
 | `design` | select design mode | `references/design.md` |
 | `implement` | implement a PRD | `references/implement.md` |
 | `review` | branch review | `references/review.md` |
@@ -59,6 +60,7 @@ Stay read-only and show the menu:
 3. Offer the phases as a numbered choice, recommending the one repository state indicates, so the user can reply with a number instead of a command name.
 4. Recommend the single next phase based on state, for example:
    - no `tasks/context.md` or no PRDs → "start with `/cobb prd`"
+   - a reported bug with no fix PRD → "`/cobb prd` (it runs diagnose first when the cause is unknown)"
    - a `Status: ready` PRD with no feature branch → "`/cobb implement <prd>`"
    - feature branch ahead of base with uncommitted changes → "`/cobb commit` (review and repairs run after the final clean commit group)"
    - feature branch committed, repair loop complete, PRD fully checked → "`/cobb commit finalise`"
@@ -94,9 +96,10 @@ Stay read-only and show the menu:
 
 ## References
 
-The Dispatch table above is the single routing source for phase files. Two shared references are loaded by phases rather than dispatch:
+The Dispatch table above is the single routing source for phase files. These shared references are loaded by phases rather than dispatch:
 
 - `references/tdd.md` — behavioural testing contract; loaded by `prd`/`implement` when applicable.
 - `references/commit-review.md` — automatic repair and commit-folding loop; loaded by normal `commit`, `finalise`, or `hotfix` after a review result.
+- `references/diagnose.md` — also loaded by `prd` (unknown cause) and `implement` (RED test fails to reproduce), besides its own dispatch row.
 
 Design child references (`references/design/*.md`) are selected inside `references/design.md`, and templates (`references/templates/*.md`) load only when the active phase explicitly asks for them — each phase file names its own.

@@ -24,7 +24,7 @@ Work one behaviour at a time:
 
 Work vertically: one test, one implementation, repeat. Production code covers only the behaviour of the current cycle.
 
-For a bug, first reproduce the regression with a failing test whenever a practical automated harness exists.
+For a bug, first reproduce the regression with a failing test whenever a practical automated harness exists. When the PRD came from a Diagnosis Report, the minimal repro is that test and the regression seam is where it lives. If the RED test fails to reproduce the bug, the cause is not yet known: `implement` runs `references/diagnose.md` and updates the PRD before continuing.
 
 ## PRD Requirements
 

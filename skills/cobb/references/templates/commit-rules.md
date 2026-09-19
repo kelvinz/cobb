@@ -40,6 +40,9 @@ Summary:
 Why:
 - ...
 
+Cause (fix commits only):
+- <the confirmed hypothesis, so the next debugger learns>
+
 Context:
 - ...
 

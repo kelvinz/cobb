@@ -33,6 +33,7 @@ Shared guardrails from the cobb router apply; the rules below are PRD-specific.
    - **New project** (no `tasks/context.md` or empty): ask project-definition questions, initialise `tasks/context.md` with project gist, then write the first PRD.
    - **New PRD** (project exists): proceed to PRD creation.
    - **Update existing PRD**: locate the existing PRD file and edit in place.
+   - **Fix with an unknown cause**: when the bug's root cause is neither confirmed nor reducible to bounded hypotheses, load `references/diagnose.md` with caller `prd` and run it now, without a separate prompt. Its Diagnosis Report supplies the Reproduction, Root cause, Regression surface, and first RED slice. Continue here with that report.
 2. **Read context:**
    - If `tasks/context.md` exists, skim project gist, key decisions, and notes/gotchas.
    - Avoid conflicts with prior decisions.
