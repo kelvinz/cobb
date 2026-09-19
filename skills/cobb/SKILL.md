@@ -1,6 +1,6 @@
 ---
 name: cobb
-description: "Product-development workflow: prd, design, implement, review, commit, finalise, hotfix, context, compact."
+description: "Product-development workflow: prd, diagnose, design, implement, review, commit, finalise, hotfix, context, compact."
 disable-model-invocation: true
 ---
 
