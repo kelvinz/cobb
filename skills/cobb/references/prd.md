@@ -47,10 +47,11 @@ Shared guardrails from the cobb router apply; the rules below are PRD-specific.
    - Resolve answerable questions from evidence and record the evidence-backed recommendation.
    - Use authoritative documentation for unstable or unfamiliar external contracts; record the relevant version, link, and resulting constraint in the PRD.
 5. **Build and walk the design tree:**
-   - Cover product outcome, users, scope, flows, states, data, APIs, permissions, security/privacy, accessibility, performance, reliability, observability, migrations, rollout/rollback, and verification.
+   - Cover product outcome, users, scope, flows, states, data, APIs, permissions, security/privacy, accessibility, performance, reliability, observability, migrations, rollout/rollback, seams under test, and verification.
    - Mark a branch non-applicable only with a short reason.
    - Resolve prerequisite decisions before dependent decisions.
    - Build the question tree and ask it in frontier rounds using the shared interview format (see Interview Protocol).
+   - Treat the test seams as a decision the user confirms: name the public interfaces the tests will cross, prefer existing seams over new ones, place any new seam as high as it can go, and keep the count small (one is the ideal). Record the confirmed seams in section 9 of the PRD.
    - When a design question needs a runnable answer (a state model that is hard to reason about on paper, or a UI that must be seen), build a throwaway prototype outside the product code, fold the verdict into a `D-###` entry with the snippet trimmed to the decision, and keep the prototype out of the PRD.
    - If the user cannot decide, apply a labelled provisional recommendation only when the choice is reversible and low-risk.
    - Keep high-risk or irreversible unresolved choices open and leave the PRD in `draft`.
@@ -74,6 +75,7 @@ Shared guardrails from the cobb router apply; the rules below are PRD-specific.
    - `Priority:` uses P0 (critical), P1 (high), P2 (medium), P3 (low).
    - Ensure implementation progress is trackable via checklist items.
    - Ground the technical design in actual files, symbols, interfaces, schemas, and repository commands.
+   - For a `chore` that restructures code, read the Behaviour-Preserving Changes contract in `references/tdd.md` and fill the behaviour pin, equivalence proof, and reader-load target.
    - Include production-ready snippets or pseudocode for difficult logic, but leave routine syntax to the implementer.
    - Map stable requirement and acceptance-criterion IDs to ordered vertical implementation slices and verification evidence.
    - For behavioural `feat` and `fix` work, read `references/tdd.md` and include its complete PRD testing contract.

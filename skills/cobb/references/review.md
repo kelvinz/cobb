@@ -111,6 +111,9 @@ Shared guardrails from the cobb router apply; the rules below are review-specifi
 - Tests and verification:
   - happy path + key failure paths
   - regression coverage in touched areas
+  - tests cross confirmed seams and take expected values from an independent source (no tautological assertions, no mocks of project-owned collaborators)
+  - each test would fail if every imported function returned `undefined` (see the five shapes in `references/tdd.md`)
+  - verification reached the matching surface, not only tests; each check is graded `VERIFIED`, `NOT VERIFIED`, or `INCONCLUSIVE`, and inconclusive counts as missing evidence
   - manual verification steps when automation is missing
 - Maintainability:
   - naming clarity and control-flow simplicity, using the project language

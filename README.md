@@ -7,10 +7,10 @@ A single skill for ongoing product development, split into phases you call as su
 ## Subcommands
 
 - `/cobb` — show the subcommand menu and recommend the next phase based on `tasks/` state (read-only; never runs a phase on its own).
-- `/cobb prd` — explore the codebase, interview in rounds until every design decision is resolved, and create implementation-ready PRDs (`tasks/f-##-*.md`) with status, priority, technical design, traceability, and TDD instructions. Also `/cobb list` to summarise active PRDs.
+- `/cobb prd` — explore the codebase, interview in rounds until every design decision is resolved, and create implementation-ready PRDs (`tasks/f-##-*.md`) with status, priority, technical design, confirmed test seams, traceability, and TDD instructions. Also `/cobb list` to summarise active PRDs.
 - `/cobb diagnose` — find the cause of a bug whose cause is unknown: build a loop that goes red on the bug, minimise the repro, test ranked hypotheses, and return a diagnosis report. `prd` runs it automatically for a fix with an unknown cause, and `implement` runs it when a RED test fails to reproduce the bug; call it directly only when you want the cause before any PRD exists. Read-only on the repo; commits nothing.
 - `/cobb design` — choose UI, UX, motion, or imagery. Planning produces design direction; audits stay read-only. Explicit requests for working code run implement's preflight first (PRD, ready scope, branch). Requested imagery exports are produced directly. Design guidance is still being refined and has not been fully tested through agent runs.
-- `/cobb implement` — implement a ready PRD as vertical behavioural slices, using red-green-refactor where practical, and check off completed stories/tasks.
+- `/cobb implement` — implement a ready PRD as vertical behavioural slices, using red-green-refactor where practical, verify each acceptance criterion on the real surface (graded verified, not verified, or inconclusive), and check off completed stories/tasks. Restructuring chores pin current behaviour first and prove it unchanged.
 - `/cobb review` — read-only branch review for correctness, security, tests, and scope, with numbered findings, a clear go/no-go decision, and an exact state fingerprint. It uses an explicit base, the branch upstream, or one clear repository default. Pass `/cobb review <base-ref>` when the base is unclear or to review a fully pushed branch against its merge target.
 - `/cobb commit` — propose atomic, user-approved commits (one at a time, or approve a multi-commit plan in one go), then automatically review, repair clear findings, and fold repairs into the appropriate unpublished commits. Also `/cobb commit finalise` (merge/branch cleanup) and `/cobb commit hotfix`.
 - `/cobb context` — maintain `tasks/context.md` (project language, decisions, state) inline or via explicit backfill.
@@ -54,6 +54,7 @@ Hotfix mode prepares and stages one approved change, including tests and trackin
 
 - `tasks/context.md`
   - Shared work state, project language (one canonical term per concept, with synonyms to avoid), agreed decisions, milestones, and technical constraints. Every phase names symbols, tests, and messages from the language section.
+  - The optional verification recipe (launch, drive, capture evidence, tear down) tells `implement` and `review` how to verify on the real surface.
   - Agent preferences and self-improvement notes follow `AGENTS.md`'s memory policy instead; task files are not an alternative memory store.
 
 - `tasks/archive/`

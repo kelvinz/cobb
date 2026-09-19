@@ -77,7 +77,7 @@ Stay read-only and show the menu:
 - **Task context.** Before recording or proposing task-state updates, read `references/context-log.md` for the boundary between task records and agent memory, entry placement, and README checks. File-writing phases update context inline; review only proposes entries.
 - **Base branches.** The base-branch list is `main`, `master`, `dev`, `develop`, `trunk`, plus names declared under Repo conventions in `tasks/context.md`. Every phase that resolves a comparison base or merge target uses this list.
 - **Handoff-friendly.** Assume a junior dev (or another AI) picks this up later. Plain language, explicit edge cases, no hidden assumptions.
-- **Never claim untested success.** Do not say tests/checks/builds passed unless you actually ran them; if you didn't run it, say so.
+- **Never claim untested success.** Say tests, checks, or builds passed only when you ran them. Proof is the real artifact, not a proxy: a green build or a passing unit test shows the branch behaves, not that the feature works. Grade each verification `VERIFIED`, `NOT VERIFIED`, or `INCONCLUSIVE`; inconclusive is never a pass. Every claim carries its evidence or its label in the same sentence: measured, inferred, or guess.
 - **Status block.** Put this summary at the end of every standalone phase reply, before any final choice block:
   - **Files changed**: created/updated files
   - **Key decisions**: assumptions or choices made (if any)
@@ -98,7 +98,7 @@ Stay read-only and show the menu:
 
 The Dispatch table above is the single routing source for phase files. These shared references are loaded by phases rather than dispatch:
 
-- `references/tdd.md` — behavioural testing contract; loaded by `prd`/`implement` when applicable.
+- `references/tdd.md` — behavioural testing contract and behaviour-preserving change contract; loaded by `prd`/`implement` when applicable.
 - `references/commit-review.md` — automatic repair and commit-folding loop; loaded by normal `commit`, `finalise`, or `hotfix` after a review result.
 - `references/diagnose.md` — also loaded by `prd` (unknown cause) and `implement` (RED test fails to reproduce), besides its own dispatch row.
 

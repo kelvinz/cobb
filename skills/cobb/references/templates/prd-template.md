@@ -42,6 +42,12 @@ For `Type: fix`, include:
 - **Regression surface**: related paths that must remain unchanged
 - **Diagnosis source**: `/cobb diagnose` report (loop command and minimal repro) | direct
 
+For a `Type: chore` that restructures code, include:
+
+- **Behaviour pin**: the characterisation test, snapshot, or equivalence harness captured before structure moves, and the command that runs it
+- **Equivalence proof**: how old-versus-new behaviour is compared on the real artifact
+- **Reader-load target**: the layers or hidden state the reshape removes; the change is reverted if it removes neither
+
 ## 2. Goals and Non-Goals
 
 ### Goals
@@ -190,6 +196,7 @@ This section is the approved TDD contract for behavioural `feat` and `fix` work;
 
 ### Test strategy
 
+- Seams under test (confirmed in interview): `<interface>` — why this seam, existing | new
 - Public interfaces under test: ...
 - Integration tests: ...
 - Focused unit tests for complex pure logic: ...
@@ -301,6 +308,8 @@ Checklist progress records completed work. `Status` records whether the PRD is r
 - [ ] Difficult contracts and algorithms include usable types, examples, pseudocode, or snippets.
 - [ ] Every story and acceptance criterion has stable traceability to an ordered implementation slice and evidence.
 - [ ] Behavioural work has vertical RED/GREEN/REFACTOR instructions conforming to `references/tdd.md`.
+- [ ] Seams under test are named, user-confirmed, and as few and as high as the behaviour allows.
+- [ ] A behaviour-preserving `chore` names its behaviour pin, equivalence proof, and reader-load target.
 - [ ] Mocks are limited to system boundaries; exceptions are explained.
 - [ ] Security, privacy, permissions, performance, reliability, observability, accessibility, migration, rollout, and rollback are addressed.
 - [ ] Automated and manual commands, fixtures, expected failures, and completion evidence are explicit.

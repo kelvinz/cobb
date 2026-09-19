@@ -17,6 +17,7 @@ When called by `references/commit-review.md`, use Review-Repair Mode at the end 
   - Outside review-repair mode, if the feature has no PRD in `tasks/`, stop and use `/cobb prd` first.
   - Out-of-scope requirements or bugs discovered during execution become a new PRD via `/cobb prd`; the current scope stays fixed.
   - For a fix PRD whose RED test fails to reproduce the bug, the cause is not yet known: load `references/diagnose.md` with caller `implement` and run it, then update the fix PRD via `/cobb prd` from its report (root cause, reproduction, regression seam) and resume the slice.
+- For fix work, every shipped line traces to the confirmed cause. A change that "might help" is a hypothesis, not a fix, and code motivated by a refuted hypothesis is reverted. A guard that silences a crash is a symptom fix. Fix the pattern, not the instance: search for siblings of the same shape and cover them in the same slice or a new PRD.
 - For a review finding that requires scope expansion, return to the repair loop for the unresolved decision and PRD confirmation before changing that scope.
 - Treat a confirmed `Status: ready` PRD as approval of its interfaces, behaviour priorities, and TDD plan.
 - Ask for a second implementation-plan or testing-plan approval only when execution reveals a material ambiguity or scope change.
@@ -56,6 +57,7 @@ When called by `references/commit-review.md`, use Review-Repair Mode at the end 
    - Require traceability from user stories and acceptance criteria to ordered implementation slices and evidence.
    - Include user stories, functional requirements, non-goals, technical design, risks, rollout, rollback, and testing notes.
    - For behavioural `feat` and `fix` work, read `references/tdd.md` and validate the PRD against it.
+   - For a `chore` that restructures code, read the Behaviour-Preserving Changes contract in `references/tdd.md` and require the PRD's behaviour pin, equivalence proof, and reader-load target.
    - If the PRD lacks an executable TDD plan or justified exception, transition to `/cobb prd` instead of inventing scope during implementation.
     - Decide whether `design` is needed:
       - Trigger it when the PRD adds/changes UI surfaces, interaction/motion behaviour, or design-system patterns, and no approved design direction is available.
@@ -74,16 +76,20 @@ When called by `references/commit-review.md`, use Review-Repair Mode at the end 
 3. **Execute**
    - Implement the feature as specified.
    - Follow PRD implementation slices in dependency order.
+   - Write tests only at the seams the PRD confirmed: section 9 for behavioural work, or the behaviour pin for a restructuring `chore`.
    - For behavioural work with a practical automated harness, execute one vertical RED/GREEN/REFACTOR cycle at a time per `references/tdd.md`, keeping each completed slice together as one future atomic commit group.
+   - For a behaviour-preserving `chore`, capture the pin before any structure moves, keep it green through each step, prove equivalence on the real artifact, and revert the reshape if reader load did not fall.
    - For UI/UX work, implement against approved design output (states, tokens, layout rules).
    - Run the project's normal checks (typecheck/lint/tests/build) per repo conventions.
    - For an approved TDD exception, execute its repeatable manual verification and preserve the evidence.
 
 4. **Verify**
    - Verify acceptance criteria and edge cases from the PRD.
+   - Verify on the matching surface, using the verification recipe under Repo conventions in `tasks/context.md` when one exists: a CLI change runs the real command, a UI change walks the changed flow in the running app, a parser or migration replays a saved input, a storage change reads back the written value, a performance change reports one primary number as before and after. Tests show branch behaviour; the surface shows the feature works.
    - Perform any manual QA steps listed in the PRD.
+   - Grade each check `VERIFIED`, `NOT VERIFIED`, or `INCONCLUSIVE`. Inconclusive or wrong-surface is flagged, never counted as a pass.
    - Record evidence against the stable acceptance-criterion and slice IDs.
-   - Confirm tests exercise observable behaviour rather than private methods, internal call order, or project-owned collaborator mocks.
+   - Confirm tests exercise observable behaviour through confirmed seams, take expected values from an independent source, keep project-owned collaborators real, and would fail if every imported function returned `undefined`.
 
 5. **Update checklist progress (in-place)**
    - Check off completed user stories/tasks and acceptance criteria in the PRD as implementation progresses.
