@@ -59,6 +59,6 @@ Finish only when the worktree matches the reviewed state, the latest review retu
 Report the repaired findings, any dismissed/deferred items, old-to-new commit hashes, checks run, and the final reviewed base and HEAD.
 
 - **Called by normal commit on a feature branch:** end here. Recommend `/cobb commit finalise` when every story, acceptance criterion, and task in the active PRD is checked; otherwise list the open items and recommend `/cobb implement`. Finalise runs only when the user calls it.
-- **Called by finalise:** return the new review record to the pending finalise step. Keep any confirmed decision bundle and completed closeout work; do not restart finalise or archive the PRD again.
+- **Called by finalise:** return the new review record to the pending finalise step. Keep any confirmed decision bundle and completed closeout work; finalise resumes at its pending step.
 - **Called by normal commit on a base branch:** conclude the review without offering finalise. Publishing remains a separate, explicitly approved action.
 - **Called by hotfix:** return to its pre-commit snapshot checks with the index holding the reviewed tree.

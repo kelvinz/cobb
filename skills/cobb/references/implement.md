@@ -10,23 +10,22 @@ When called by `references/commit-review.md`, use Review-Repair Mode at the end 
 
 ## Guardrails
 
-- Do not change product scope while executing:
+- Keep product scope exactly as the PRD states while executing:
   - If the PRD is missing details or ambiguous, stop and use `/cobb prd` to refine the PRD first.
   - If implementation reveals the PRD is incorrect, pause and propose PRD edits via `/cobb prd`.
-  - Do not silently deviate.
+  - Every deviation is stated and routed through `/cobb prd`.
   - Outside review-repair mode, if the feature has no PRD in `tasks/`, stop and use `/cobb prd` first.
-  - If you discover out-of-scope requirements or bugs during execution, do not expand scope.
-  - Create a new PRD via `/cobb prd` instead.
+  - Out-of-scope requirements or bugs discovered during execution become a new PRD via `/cobb prd`; the current scope stays fixed.
 - For a review finding that requires scope expansion, return to the repair loop for the unresolved decision and PRD confirmation before changing that scope.
 - Treat a confirmed `Status: ready` PRD as approval of its interfaces, behaviour priorities, and TDD plan.
-- Do not ask for a second implementation-plan or testing-plan approval unless execution reveals a material ambiguity or scope change.
+- Ask for a second implementation-plan or testing-plan approval only when execution reveals a material ambiguity or scope change.
 - Follow Progress Updates in `references/templates/prd-template.md`; read it when requirements or prior verification evidence change.
 - When implementation yields durable decisions/gotchas, update `tasks/context.md` in this step.
 - Use `design` as an optional companion for UI/UX-heavy work:
   - If visual direction, interaction states, or design-token choices are unclear, run `/cobb design` before coding that area.
   - If approved design artifacts already exist, proceed directly with implementation.
 - Require user confirmation before creating or switching git branches.
-- Do not commit, merge, push, or delete branches; return review repairs to the calling loop and delegate normal delivery to `/cobb commit`.
+- Leave commits, merges, pushes, and branch deletions to `/cobb commit`; return review repairs to the calling loop.
 
 ---
 

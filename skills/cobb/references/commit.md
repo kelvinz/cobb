@@ -12,12 +12,12 @@ Load `references/templates/commit-rules.md` before the first proposal or when cl
 - Show files/hunks, intent, tracking updates, title, and body before initial approval or an approval required by a changed scope/history plan.
 - Recommend splitting or editing when a group's scope or message is weak.
 - Keep commits atomic; if a title needs "and", split the change set.
-- Never mix unrelated intents or use `chore` for behavioural changes.
+- One intent per commit; a behavioural change is `feat` or `fix`, never `chore`.
 - Determine type from the diff, not branch name, paths, or habit.
-- Never add AI attribution or `Co-authored-by` unless explicitly requested.
-- Never push in normal mode.
+- Add AI attribution or `Co-authored-by` only when explicitly requested.
+- Normal mode leaves the remote untouched; push belongs to finalise.
 - Couple completed PRD checklist and durable context updates to the atomic change that produced them.
-- Do not create trailing tracking-only catch-up commits outside finalise unless explicitly approved.
+- Tracking-only catch-up commits outside finalise need explicit approval.
 - In normal mode, run review after all intended groups are committed and the worktree is clean. Hotfix mode uses the staged-review sequence below.
 - Review approval is tied to the exact recorded state for that review mode.
 - In normal mode on a base branch (see the shared list in `SKILL.md`), preserve the session-start HEAD and review `<session-start>..HEAD`; never compare the branch to itself or offer finalise.
@@ -62,12 +62,12 @@ Use another emoji only when it is more precise. Keep the summary short, specific
 6. On approval, stage only the approved group, commit immediately, and report hash/title/summary. In approve-all mode, do this per group in the presented order; if staging drifts from the presented plan (missing files, conflicting hunks, new changes), stop the batch, report the drift, and fall back to one-at-a-time for the remaining groups.
 7. Repeat until no intended groups remain.
 8. Recheck the worktree:
-   - if changes remain, do not review
+   - review runs only on a clean worktree; while changes remain:
    - offer:
      - resume proposals for remaining groups — recommended when changes are expected intended work
      - defer them and stop; review has not run
      - show remaining files/hunks for a manual keep/discard decision — recommended when changes are unexpected, ambiguous, or potentially unrelated
-   - never discard automatically
+   - the user decides what happens to every remaining change
 9. When clean, run `review` with caller `commit` automatically without another prompt:
    - on a feature branch, compare against an explicit base, its upstream, or one clear repository default; stop and require `/cobb review <base-ref>` when the base is unclear
    - on a base branch (any ref in the shared base-branch list), compare against the upstream when one exists and sits behind HEAD, since that is what a push publishes; otherwise compare the recorded session-start commit to HEAD. Disable finalise either way.
@@ -83,8 +83,8 @@ Use only for an urgent fix committed directly to the default branch.
 3. Use Normal Commit Workflow steps 1–5 for proposal and approval only. Then stage exactly that group. Leave unrelated work untouched; ask for an isolation or defer decision if the worktree cannot match the staged change.
 4. Run `review` with caller `hotfix`; it loads `references/review-hotfix.md` and reviews the staged snapshot. Then load `references/commit-review.md` and run its repair loop as caller `hotfix`: repairs are restaged, not folded.
 5. When that loop completes, repeat the snapshot checks from `references/review-hotfix.md` immediately before committing with the approved message.
-6. Apply that reference's Commit Check after committing. If it fails, review the actual committed change against its parent before claiming success; do not amend or discard it automatically.
-7. Report the hash and verification result. The verified staged review replaces normal post-commit review; do not enter finalise or push automatically.
+6. Apply that reference's Commit Check after committing. If it fails, review the actual committed change against its parent before claiming success; the commit stays as it is until the user decides.
+7. Report the hash and verification result. The verified staged review replaces normal post-commit review; finalise and push remain separate, explicitly requested actions.
 
 ## Output
 

@@ -8,9 +8,8 @@ Shared guardrails from the cobb router apply; the rules below are compact-specif
 
 ## Guardrails
 
-- Do not change product scope or implementation code.
-- Do not move or rename PRDs here; completed PRDs are archived during `/cobb commit` finalise.
-- Do not create separate context archive files.
+- Edit only `tasks/context.md`; product scope, implementation code, and PRD files stay unchanged (completed PRDs are archived during `/cobb commit` finalise).
+- Consolidate in place; the file has no separate archive.
 - Ask for explicit confirmation before applying consolidation edits.
 - Always propose retention/consolidation counts first; let the user choose the final numbers.
 - Base the recommended retention plan on document length, recency, and handoff value.

@@ -18,7 +18,7 @@ Choose `type` in this order (first match wins):
 
 ## Classification rules
 
-- Use PRD `Type:` as a hint, but do not override the real diff intent.
+- Use PRD `Type:` as a hint; the real diff intent decides.
 - If a commit changes behaviour and internal maintenance together, split and classify each commit separately.
 - If uncertain between `feat` and `fix`, prefer `fix` when correcting expected behaviour; otherwise use `feat`.
 - If still ambiguous after reviewing diff + context, offer the candidate classifications as a choice and wait before committing.

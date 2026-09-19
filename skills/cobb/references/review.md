@@ -8,13 +8,13 @@ Shared guardrails from the cobb router apply; the rules below are review-specifi
 
 - Review changes made on the currently checked-out branch.
 - Keep source files, task records, and staging choices unchanged. Git metadata refreshes/snapshots and isolated test outputs are allowed. Run checks that would edit tracked files in a disposable copy, or report the missing evidence.
-- Do not commit, merge, push, or delete branches.
-- Do not ask the user which branch to check against.
+- Leave commits, merges, pushes, and branch deletions to the calling phase.
+- Resolve the comparison base from the ladder alone; the user is never asked which branch to check against.
 - For branch review, resolve the comparison base by the ladder in Workflow step 1. If it is unclear, return `Good to commit: No` and require `/cobb review <base-ref>`.
 - Pin the reviewed revisions before inspecting content. Use those hashes for every comparison.
 - The reviewed base is part of the result, not an implementation detail: report it, and expect finalise to re-review when the merge target differs from it.
 - Block approval if the current branch is behind the resolved comparison base; require sync + re-review.
-- Report proposed durable context updates, but do not apply them.
+- Report proposed durable context updates for the caller to apply.
 - Number every blocker and suggestion in standalone and called reports.
 - A pass is valid only for the recorded review state: the branch fingerprint below, or the staged-hotfix snapshot in `references/review-hotfix.md`.
 
@@ -46,7 +46,7 @@ Shared guardrails from the cobb router apply; the rules below are review-specifi
      6. exactly one symbolic remote HEAD target across all remotes
      7. exactly one local branch from the shared base-branch list when no remote default exists
    - If a ref does not resolve to a commit, return `Good to commit: No` and name it.
-   - If several remote HEADs disagree, several local base branches remain possible, or no base exists, return `Good to commit: No`. Tell the user to rerun `/cobb review <base-ref>`. Do not guess from timestamps or nearby branch history.
+   - If several remote HEADs disagree, several local base branches remain possible, or no base exists, return `Good to commit: No`. Tell the user to rerun `/cobb review <base-ref>`; an explicit ref is the only acceptable resolution here.
    - Pin `BASE_HASH=$(git rev-parse --verify "${BASE_REF}^{commit}")`. Record the base ref, source, hash, and branch kind.
 2. Collect context against the pinned hashes:
    - `git diff "$BASE_HASH...$HEAD_HASH"`

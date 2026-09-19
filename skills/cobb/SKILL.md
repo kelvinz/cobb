@@ -52,7 +52,7 @@ Match the longest explicit command prefix, using whole words. Load only its phas
 
 ### Bare `/cobb` (no subcommand)
 
-Do not execute any phase. Instead:
+Stay read-only and show the menu:
 
 1. Read `tasks/` — list active PRDs (`f-##`, name, `Status`, `Priority`) and check git branch/commit state.
 2. Print the subcommand menu (the dispatch table above) so the user sees the options.

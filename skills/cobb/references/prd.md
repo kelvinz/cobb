@@ -6,7 +6,7 @@ Shared guardrails from the cobb router apply; the rules below are PRD-specific.
 
 ## Guardrails
 
-- Do not implement code.
+- Write PRDs only; implementation belongs to `implement`.
 - Keep features PRD-sized by independently verifiable user outcome and dependency boundary.
 - Allow a coherent cross-layer vertical slice when the outcome requires UI, API, and data changes together.
 - Fully understand an oversized idea, then propose a dependency-ordered PRD breakdown before writing files.
@@ -14,8 +14,8 @@ Shared guardrails from the cobb router apply; the rules below are PRD-specific.
 - For updates, audit completeness and interview only implementation-critical gaps.
 - Maintain the full dependency tree internally. Show a short resolved/current/remaining summary only when moving to a major branch.
 - If an earlier answer changes, invalidate and revisit only downstream decisions that depend on it.
-- Do not use Markdown tables (use checklists + bullets).
-- Do not preserve the interview transcript. Preserve material decisions, rationale, trade-offs, and rejected alternatives.
+- Use checklists and bullets for structure; Markdown tables are reserved for the router.
+- Preserve material decisions, rationale, trade-offs, and rejected alternatives; the interview transcript itself stays out of the PRD.
 
 ---
 
@@ -37,7 +37,7 @@ Shared guardrails from the cobb router apply; the rules below are PRD-specific.
    - Avoid conflicts with prior decisions.
 3. **Assign feature ID:**
    - Scan existing PRD files in `tasks/` and `tasks/archive/` for the highest `f-##` number.
-   - Establish `(max existing f-##) + 1` as the next available ID, but do not assign all new IDs until any multi-PRD breakdown is confirmed.
+   - Establish `(max existing f-##) + 1` as the next available ID, and assign the remaining IDs once any multi-PRD breakdown is confirmed.
    - A single new PRD gets the next available ID.
    - For updates, preserve the existing ID.
 4. **Explore before interviewing:**
@@ -56,7 +56,7 @@ Shared guardrails from the cobb router apply; the rules below are PRD-specific.
    - Resolve shared decisions once, then interview only child-specific gaps.
    - Present the numbered breakdown and dependency order for confirmation.
    - Assign consecutive new feature IDs in dependency order after confirmation.
-   - Create all approved child PRDs by repeating the path, write, readiness, and context steps for each; do not hide independent work inside one oversized PRD.
+   - Create all approved child PRDs by repeating the path, write, readiness, and context steps for each; independent work gets its own PRD.
 7. **Confirm shared understanding:**
    - Present a concise scope, decisions, assumptions, PRD breakdown, and unresolved-items summary.
    - Require confirmation before writing or materially rewriting PRDs: write the confirmed PRD set, revise a specific decision, or stop without writing.

@@ -271,9 +271,9 @@ Use `None` when all questions are resolved. A PRD with a high-risk or irreversib
 
 ## Writing Rules
 
-- Use stable IDs consistently; do not renumber existing IDs during updates.
+- Use stable IDs consistently; existing IDs keep their numbers across updates.
 - Map every acceptance criterion to at least one implementation slice and verification item.
-- Name verified repository paths and symbols. Do not invent line numbers or structures.
+- Name verified repository paths and symbols; line numbers stay out because they go stale.
 - Include exact contracts or reusable snippets for difficult logic, not full routine production files.
 - Preserve material decision rationale, not the interview transcript.
 

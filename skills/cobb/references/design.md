@@ -45,7 +45,7 @@ Conditional UI references (canonical load conditions — other files defer here)
 
 - **Direction:** default for design planning and handoffs before implementation. Deliver specifications and design documents; keep application code unchanged.
 - **Audit:** return findings and proposed changes read-only, unless implementation is explicitly requested.
-- **Implementation:** use only when the user or calling implementation workflow explicitly requests working code. First complete **preflight**: the Identify the PRD and Preflight steps in `references/implement.md`, including ready scope and branch confirmation. Reuse valid checks already completed by the caller; do not restart its optional design handoff. For an authorised review repair, use that file's Review-Repair Mode instead.
+- **Implementation:** use only when the user or calling implementation workflow explicitly requests working code. First complete **preflight**: the Identify the PRD and Preflight steps in `references/implement.md`, including ready scope and branch confirmation. Reuse valid checks already completed by the caller, including its optional design handoff. For an authorised review repair, use that file's Review-Repair Mode instead.
 - **Artifact:** create requested non-interactive imagery exports under imagery mode. This permits the requested artifact files, not unrelated application changes.
 
 The delivery kind takes precedence over a child reference's examples or code suggestions. A pre-implementation design handoff always uses `direction`.

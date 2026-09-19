@@ -4,12 +4,12 @@ Use this reference for behavioural `feat` and `fix` work during `prd` and `imple
 
 ## Core Rules
 
-- Test observable behaviour through public interfaces, not private methods or internal call patterns.
+- Test observable behaviour through public interfaces; private methods and internal call patterns stay untested.
 - Prefer integration-style tests that exercise real code paths.
 - Use focused unit tests for complex pure logic when they give clearer failure localisation.
 - Mock only system boundaries such as external APIs, time, randomness, and occasionally databases or filesystems.
 - Prefer real controlled dependencies, such as a test database, when they are practical and deterministic.
-- Do not mock project-owned collaborators merely to expose their implementation structure.
+- Keep project-owned collaborators real; a mock of one only pins the implementation structure.
 - Use dependency injection or narrow SDK-style adapters at boundaries when testability requires it.
 
 ## Vertical Cycle
@@ -21,7 +21,7 @@ Work one behaviour at a time:
 3. **REFACTOR:** while green, remove duplication or improve design only within the touched scope; rerun tests after each refactor.
 4. Repeat for the next prioritised behaviour.
 
-Do not write all tests first and all implementation second. Do not add speculative production code for future cycles.
+Work vertically: one test, one implementation, repeat. Production code covers only the behaviour of the current cycle.
 
 For a bug, first reproduce the regression with a failing test whenever a practical automated harness exists.
 
@@ -76,4 +76,4 @@ Keep a completed behavioural slice together as one atomic group:
 - PRD checklist updates
 - durable context update, if any
 
-Do not split RED and GREEN into separate commits. A deliberately failing regression test may be shown during implementation, but the committed group must be green unless the user explicitly approves a diagnostic-only commit.
+RED and GREEN land together in one commit. A deliberately failing regression test may be shown during implementation, but the committed group must be green unless the user explicitly approves a diagnostic-only commit.
