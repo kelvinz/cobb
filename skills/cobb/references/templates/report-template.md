@@ -35,6 +35,10 @@ Missing evidence:
 - E1: <required or optional evidence, exact command/artifact, and B#/S# cross-reference>
 - None
 
+Dismissed (considered, not findings):
+- <candidate, which lens raised it, and the one-line reason: no reachable path | preference only | consistent with repository convention | out of scope>
+- None
+
 Security notes:
 - ...
 

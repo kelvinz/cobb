@@ -11,7 +11,7 @@ A single skill for ongoing product development, split into phases you call as su
 - `/cobb diagnose` — find the cause of a bug whose cause is unknown: build a loop that goes red on the bug, minimise the repro, test ranked hypotheses, and return a diagnosis report. `prd` runs it automatically for a fix with an unknown cause, and `implement` runs it when a RED test fails to reproduce the bug; call it directly only when you want the cause before any PRD exists. Read-only on the repo; commits nothing.
 - `/cobb design` — choose UI, UX, motion, or imagery. Planning produces design direction; audits stay read-only. Explicit requests for working code run implement's preflight first (PRD, ready scope, branch). Requested imagery exports are produced directly. Design guidance is still being refined and has not been fully tested through agent runs.
 - `/cobb implement` — implement a ready PRD as vertical behavioural slices, using red-green-refactor where practical, verify each acceptance criterion on the real surface (graded verified, not verified, or inconclusive), and check off completed stories/tasks. Restructuring chores pin current behaviour first and prove it unchanged.
-- `/cobb review` — read-only branch review for correctness, security, tests, and scope, with numbered findings, a clear go/no-go decision, and an exact state fingerprint. It uses an explicit base, the branch upstream, or one clear repository default. Pass `/cobb review <base-ref>` when the base is unclear or to review a fully pushed branch against its merge target.
+- `/cobb review` — read-only branch review for correctness, security, tests, spec fidelity against the PRD, root cause versus symptom, and design and code-smell baselines, with numbered findings, dismissed candidates with reasons, a clear go/no-go decision, and an exact state fingerprint. It uses an explicit base, the branch upstream, or one clear repository default. Pass `/cobb review <base-ref>` when the base is unclear or to review a fully pushed branch against its merge target.
 - `/cobb commit` — propose atomic, user-approved commits (one at a time, or approve a multi-commit plan in one go), then automatically review, repair clear findings, and fold repairs into the appropriate unpublished commits. Also `/cobb commit finalise` (merge/branch cleanup) and `/cobb commit hotfix`.
 - `/cobb context` — maintain `tasks/context.md` (project language, decisions, state) inline or via explicit backfill.
 - `/cobb compact` — compact `tasks/context.md` by summarising older entries when it gets noisy.
@@ -67,7 +67,7 @@ skills/cobb/
   SKILL.md                    # router: dispatch table, shared guardrails, bare-/cobb behaviour
   references/
     prd.md  diagnose.md  design.md  implement.md  tdd.md  review.md  commit.md
-    review-hotfix.md  design-principles.md  commit-review.md
+    review-hotfix.md  review-smells.md  design-principles.md  commit-review.md
     finalise.md  context-log.md  compact.md
     design/                   # ui / ux / motion / imagery; conditional tokens, examples,
                               # shadcn states, marketing rules, and official design systems

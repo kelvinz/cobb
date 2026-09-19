@@ -63,9 +63,13 @@ Shared guardrails from the cobb router apply; the rules below are review-specifi
    - correctness and edge cases
    - security risks and data handling
    - test depth and regression risk
-   - scope control (especially if PRD path is provided)
-     - Compare diff vs PRD 'In scope' and completed user stories; flag any diff not attributable to a PRD requirement.
+   - spec fidelity, when a PRD is available; quote the PRD line for each finding:
+     - requirements or acceptance criteria the PRD asks for that are missing or partial
+     - behaviour in the diff that no PRD requirement asked for (scope creep)
+     - requirements that look implemented but whose implementation looks wrong
+   - standards: repository coding standards where documented, plus the smell baseline in `references/review-smells.md` and the principles in `references/design-principles.md` when the diff changes logic beyond configuration, documentation, or generated output
    - naming: symbols, tests, and messages use the `## Language` section of `tasks/context.md`
+   - Redact secrets from any command output or artifact quoted in the report.
 5. **Classify** findings:
    - blockers (must fix), numbered `B1`, `B2`, ...
    - suggestions (non-blocking improvements), numbered `S1`, `S2`, ...
@@ -75,6 +79,7 @@ Shared guardrails from the cobb router apply; the rules below are review-specifi
      - Treat evidence required by the PRD, repository policy, or changed risk surface as a blocker and cross-reference its `E#` from a `B#`.
      - Treat genuinely optional/manual evidence as a numbered suggestion and cross-reference its `E#` from an `S#`.
    - For each finding, state the evidence, concrete repair, and whether a user decision is needed. Identify the actual unresolved choice; routine corrections and clear in-scope improvements do not need selection or approval.
+   - A finding needs a reachable execution path (a `file:line` and the call chain that reaches it) or a run that shows it; a hypothetical ("what if this is null") with no reachable path is dismissed. Trace the call site before flagging. A preference ("I would have done it differently") with no concrete problem is not a finding. A security finding shows the input path to the sink. List each dismissed candidate with a one-line reason under Dismissed so the user can override; a review whose candidates are all nits is reporting that the code is fine.
 6. **Decide** with a clear recommendation:
    - `Good to commit: Yes` only when there are zero blockers, including required-evidence blockers.
    - `Good to commit: No` otherwise.
@@ -103,6 +108,20 @@ Shared guardrails from the cobb router apply; the rules below are review-specifi
   - empty/null/error paths
   - boundary values and state transitions
   - ordering/concurrency/time assumptions (if applicable)
+  - idempotency: what happens if the operation runs twice, or the previous run crashed halfway
+  - shared mutable state: is access separated or serialised structurally, or by convention
+- Root cause versus symptom (read callers, callees, and types beyond the diff):
+  - guard clauses that mask an invariant violation; retries that hide a broken contract; casts that silence a modelling error
+  - a fix in one module that belongs in another module's contract
+  - an instruction or comment ("do not call this twice") where a type, lint, or runtime check would make the wrong thing impossible
+- Structure (`references/design-principles.md`):
+  - validation at the boundary once, trusted types inside
+  - the data shape matches the access pattern; new branches on an existing if-else chain or a second boolean kept in sync are a modelling gap
+  - bolted-on versus integrated: would the code look like this if the requirement had been known from the start
+  - legacy dual paths: a new API beside the old one with no external consumer
+- Complexity budget:
+  - abstractions with one call site, parameters for cases that do not exist, dead code, obsolete compatibility paths
+  - simple code is not penalised for lacking abstraction; duplication beats a premature abstraction
 - Security:
   - authn/authz behaviour
   - input validation and output encoding
@@ -117,6 +136,7 @@ Shared guardrails from the cobb router apply; the rules below are review-specifi
   - manual verification steps when automation is missing
 - Maintainability:
   - naming clarity and control-flow simplicity, using the project language
+  - smell baseline matches (`references/review-smells.md`), reported as suggestions
   - comments/docs for non-obvious decisions only
 
 ---
@@ -124,6 +144,7 @@ Shared guardrails from the cobb router apply; the rules below are review-specifi
 ## References
 
 - Read `references/templates/report-template.md` when producing the report; use its fields for the selected review mode.
+- Read `references/review-smells.md` and `references/design-principles.md` in step 4 when the diff changes logic.
 
 ---
 
