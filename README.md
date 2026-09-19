@@ -7,7 +7,7 @@ A single skill for ongoing product development, split into phases you call as su
 ## Subcommands
 
 - `/cobb` — show the subcommand menu and recommend the next phase based on `tasks/` state (read-only; never runs a phase on its own).
-- `/cobb prd` — explore the codebase, interview one design decision at a time, and create implementation-ready PRDs (`tasks/f-##-*.md`) with status, priority, technical design, traceability, and TDD instructions. Also `/cobb list` to summarise active PRDs.
+- `/cobb prd` — explore the codebase, interview in rounds until every design decision is resolved, and create implementation-ready PRDs (`tasks/f-##-*.md`) with status, priority, technical design, traceability, and TDD instructions. Also `/cobb list` to summarise active PRDs.
 - `/cobb design` — choose UI, UX, motion, or imagery. Planning produces design direction; audits stay read-only. Explicit requests for working code run implement's preflight first (PRD, ready scope, branch). Requested imagery exports are produced directly. Design guidance is still being refined and has not been fully tested through agent runs.
 - `/cobb implement` — implement a ready PRD as vertical behavioural slices, using red-green-refactor where practical, and check off completed stories/tasks.
 - `/cobb review` — read-only branch review for correctness, security, tests, and scope, with numbered findings, a clear go/no-go decision, and an exact state fingerprint. It uses an explicit base, the branch upstream, or one clear repository default. Pass `/cobb review <base-ref>` when the base is unclear or to review a fully pushed branch against its merge target.
@@ -22,9 +22,9 @@ These phases are written to be handoff-friendly: assume a junior dev (or another
 ## Interaction contract
 
 - Every bounded user choice is numbered so a reply can be only the option number.
-- All options appear together in one uninterrupted block at the end of the message, after context and status information. The block starts with `0 — Recommended` and a brief reason, immediately followed by alternatives `1..N`, including confirmations and finalise. Replying `0` (or `default`) selects the recommendation; silence does not approve it.
+- All options appear together in one uninterrupted block at the end of the message, after context and status information. The block starts with `0 — Recommended` and a brief reason, immediately followed by alternatives `1..N`, including confirmations and finalise. Replying `0` (or `default`) selects the recommendation; silence does not approve it. An interview round is the one exception: the block holds every question of the round, each with its own `0 — Recommended`.
 - Open-ended input is used only when useful answers cannot be represented honestly as options.
-- One-at-a-time interviews announce their total first and label each prompt `Question X of Y`. If an answer changes the dependency tree, the skill announces the revised total and reason.
+- Interviews run in rounds. Each round asks every question whose prerequisites are settled, numbered `Question X of Y` with its own recommendation, so a reply can be `3:0 4:1 5:2`. Questions that depend on an open answer wait for the next round. Facts are looked up, not asked. If an answer changes the dependency tree, the skill announces the revised total and reason.
 
 ## Recommended workflow: idea → merged
 

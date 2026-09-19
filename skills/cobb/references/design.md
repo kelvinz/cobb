@@ -9,7 +9,7 @@ Shared guardrails from the cobb router apply; the rules below are design-specifi
 1. Honour a recognised first mode argument (`ui`, `ux`, `motion`, or `imagery`) and remove only that word from the mode's input. Otherwise infer the mode from the request and repository evidence.
 2. Add one secondary mode only when essential to the requested outcome.
 3. If routing remains ambiguous, ask which mode to use.
-4. Complete the routing brief, including Delivery. Find discoverable inputs in the repository; ask about remaining choices one at a time.
+4. Complete the routing brief, including Delivery. Find discoverable inputs in the repository; ask the remaining choices in rounds under the shared interview rule.
 5. Complete preflight (see Delivery) before editing application files.
 6. Load only the selected mode reference and conditional child references below.
 7. Deliver the primary contract completely, then add only necessary secondary-mode details.

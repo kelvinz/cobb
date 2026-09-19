@@ -48,7 +48,8 @@ Shared guardrails from the cobb router apply; the rules below are PRD-specific.
    - Cover product outcome, users, scope, flows, states, data, APIs, permissions, security/privacy, accessibility, performance, reliability, observability, migrations, rollout/rollback, and verification.
    - Mark a branch non-applicable only with a short reason.
    - Resolve prerequisite decisions before dependent decisions.
-   - Build the question queue and ask one question at a time using the shared interview format.
+   - Build the question tree and ask it in frontier rounds using the shared interview format (see Interview Protocol).
+   - When a design question needs a runnable answer (a state model that is hard to reason about on paper, or a UI that must be seen), build a throwaway prototype outside the product code, fold the verdict into a `D-###` entry with the snippet trimmed to the decision, and keep the prototype out of the PRD.
    - If the user cannot decide, apply a labelled provisional recommendation only when the choice is reversible and low-risk.
    - Keep high-risk or irreversible unresolved choices open and leave the PRD in `draft`.
 6. **Split oversized ideas when needed:**
@@ -96,18 +97,30 @@ Shared guardrails from the cobb router apply; the rules below are PRD-specific.
 
 ## Interview Protocol
 
-Resolve the design-tree gaps from the workflow, including feature type, priority, and dependencies. Find repository facts locally; ask the user only about unresolved choices with valid, safe alternatives.
+Resolve the design-tree gaps from the workflow, including feature type, priority, and dependencies. Finding facts is your job: look up repository facts, versions, and documentation yourself, and ask the user only about decisions with valid, safe alternatives. Classify a fork before asking: if the answer is observable by running something (behaviour, timing, output, layout, performance), it is a fact, and a prototype or a run settles it; reserve questions for product or preference calls no experiment can settle. A recommendation is a judgment, not validation: when the evidence says the feature or a branch of it does not earn its place, `0 — Recommended` may be to drop or defer it, with the reason.
 
-### Question format
+Ask in **rounds**. A round holds the whole frontier: every question whose prerequisites are settled. Each answer reshapes the tree, so recompute the frontier before the next round. A question that depends on another question in the same round belongs to the next round. Announce the total and the revised total after any change.
+
+### Round format
 
 ```text
-Question 3 of 11: What outcome should this change optimise for?
+Round 2 (Questions 3 to 5 of 11)
 
+Question 3 of 11: What outcome should this change optimise for?
 0. **Recommended:** Reduce checkout abandonment; this matches the stated user problem and existing funnel metrics.
 1. Reduce support workload.
 2. Increase average order value.
 3. Custom answer: describe the outcome.
+
+Question 4 of 11: Which seam do the tests cross?
+0. **Recommended:** The existing `checkoutService` interface; it already has integration tests and covers the full path.
+1. A new HTTP-level seam through the checkout route.
+2. Custom answer.
+
+Question 5 of 11: ...
 ```
+
+Reply with `3:0 4:1 5:2` or one number per line, in question order.
 
 ---
 
