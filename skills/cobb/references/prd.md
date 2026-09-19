@@ -57,6 +57,7 @@ Shared guardrails from the cobb router apply; the rules below are PRD-specific.
    - Keep high-risk or irreversible unresolved choices open and leave the PRD in `draft`.
 6. **Split oversized ideas when needed:**
    - Split by independently verifiable outcomes and dependency boundaries, not arbitrary file, subsystem, or duration limits.
+   - Replace an internal API by migrating every caller and deleting the old path in one wave (see `references/design-principles.md`). The exception is a **wide refactor**: one mechanical change whose blast radius spans the codebase so far that one wave cannot land green, such as renaming a column or retyping a shared symbol. Sequence it as expand, migrate, contract: add the new form beside the old, migrate call sites in batches sized by blast radius with each batch its own slice or PRD, then delete the old form once no caller remains. Every step stays green.
    - Resolve shared decisions once, then interview only child-specific gaps.
    - Present the numbered breakdown and dependency order for confirmation.
    - Assign consecutive new feature IDs in dependency order after confirmation.
@@ -75,9 +76,12 @@ Shared guardrails from the cobb router apply; the rules below are PRD-specific.
    - `Priority:` uses P0 (critical), P1 (high), P2 (medium), P3 (low).
    - Ensure implementation progress is trackable via checklist items.
    - Ground the technical design in actual files, symbols, interfaces, schemas, and repository commands.
+   - Read `references/design-principles.md` before writing section 6; name the data shape and its organising structure first, and sketch a second structurally distinct shape for any new interface before choosing.
    - For a `chore` that restructures code, read the Behaviour-Preserving Changes contract in `references/tdd.md` and fill the behaviour pin, equivalence proof, and reader-load target.
    - Include production-ready snippets or pseudocode for difficult logic, but leave routine syntax to the implementer.
    - Map stable requirement and acceptance-criterion IDs to ordered vertical implementation slices and verification evidence.
+   - Size each slice to fit one fresh agent session with room to spare; split a slice that would not.
+   - When a small preparatory refactor would make the feature slices simpler, make it the first slice (`prefactor`): make the change easy, then make the easy change. It is behaviour-preserving, covered by existing tests, and lands green on its own.
    - For behavioural `feat` and `fix` work, read `references/tdd.md` and include its complete PRD testing contract.
    - For UI/UX-heavy features, state whether design direction is needed before implementation and name the expected design inputs.
 10. **Run the readiness gate:**
@@ -144,9 +148,10 @@ Reply with `3:0 4:1 5:2` or one number per line, in question order.
   - Repro steps (if known): …
 - For chores, keep them crisp and outcome-oriented (e.g., "Chore: remove dead code") and set `Type: chore`.
 - Ensure each feature has a crisp outcome (what changes for the user).
-- Avoid implementation tasks ("refactor", "set up DB") unless they are truly user-facing requirements.
+- Frame each feature as a user-facing requirement; an implementation task ("refactor", "set up DB") becomes a `prefactor` slice or a `chore` only when it stands on its own.
 - If a feature is too large, split by user goal or workflow step until each item could reasonably become a single PRD.
 - Specify the chosen technical approach and why it fits existing architecture.
+- Record a decision in section 13 when it is hard to reverse, surprising without context, or the result of a real trade-off; the obvious choice needs no entry.
 - Record rejected approaches only when their trade-offs help prevent implementation drift.
 - Prefer exact contracts and examples over adjectives such as "robust", "fast", or "secure".
 

@@ -100,6 +100,7 @@ The Dispatch table above is the single routing source for phase files. These sha
 
 - `references/tdd.md` — behavioural testing contract and behaviour-preserving change contract; loaded by `prd`/`implement` when applicable.
 - `references/commit-review.md` — automatic repair and commit-folding loop; loaded by normal `commit`, `finalise`, or `hotfix` after a review result.
+- `references/design-principles.md` — data-shape, type, boundary, and simplicity principles; loaded by `prd` for the technical design and by `review` when the diff changes logic.
 - `references/diagnose.md` — also loaded by `prd` (unknown cause) and `implement` (RED test fails to reproduce), besides its own dispatch row.
 
 Design child references (`references/design/*.md`) are selected inside `references/design.md`, and templates (`references/templates/*.md`) load only when the active phase explicitly asks for them — each phase file names its own.

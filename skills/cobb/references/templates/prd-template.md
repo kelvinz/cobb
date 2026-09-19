@@ -122,7 +122,11 @@ For a `Type: chore` that restructures code, include:
 
 ### Chosen approach
 
-Describe control flow, ownership boundaries, and why this is the smallest maintainable design.
+- Data shape and organising structure: <the core types and the structure that holds the rules: state machine | typed model | table or registry | discriminated union | reducer | plain code, with why>
+- Boundaries: <where external data is parsed and validated once; what is trusted inside>
+- Alternative shape considered (new interfaces only): <the second structurally distinct sketch and why it lost; see D-###>
+
+Describe control flow, ownership boundaries, and why this is the smallest maintainable design. Apply `references/design-principles.md` and name the principles that shaped the choice.
 
 ### Files and symbols
 
@@ -309,7 +313,9 @@ Checklist progress records completed work. `Status` records whether the PRD is r
 - [ ] Every story and acceptance criterion has stable traceability to an ordered implementation slice and evidence.
 - [ ] Behavioural work has vertical RED/GREEN/REFACTOR instructions conforming to `references/tdd.md`.
 - [ ] Seams under test are named, user-confirmed, and as few and as high as the behaviour allows.
+- [ ] The data shape and its organising structure are named, illegal states are unrepresentable where the design admits variants, and validation sits at the boundary; a new interface has a second structurally distinct sketch recorded as a rejected alternative.
 - [ ] A behaviour-preserving `chore` names its behaviour pin, equivalence proof, and reader-load target.
+- [ ] Each slice fits one fresh agent session; an API replacement migrates callers and deletes the old path in one wave, or, when one wave cannot land green, is sequenced as expand, migrate, contract.
 - [ ] Mocks are limited to system boundaries; exceptions are explained.
 - [ ] Security, privacy, permissions, performance, reliability, observability, accessibility, migration, rollout, and rollback are addressed.
 - [ ] Automated and manual commands, fixtures, expected failures, and completion evidence are explicit.

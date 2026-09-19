@@ -32,7 +32,7 @@ For example, an API's UTC-only date contract belongs in task context. A repeated
 - Verification recipe: how to launch the app locally, how to tell it is ready, how an agent drives it (test harness, browser automation, PTY, HTTP), what evidence to capture and where it lands, and how to tear down what the run started → `## Project`, on the `Verification recipe` line. `implement` and `review` verify on this surface.
 - Project language: one canonical term per concept specific to this project, a one or two sentence definition of what it is, and the synonyms to avoid → `## Language`. Be opinionated: pick the best word and retire the others. General programming concepts stay out. Every phase names symbols, tests, and messages from this section.
 - Current state (what's done, what's next, what's blocked) → `## Current state`
-- Key decisions and durable design decisions (what we chose + why + tradeoffs) → `## Key decisions`
+- Key decisions (what we chose + why + tradeoffs) → `## Key decisions`. A decision earns an entry when it is hard to reverse, surprising without context, or the result of a real trade-off between genuine alternatives. The obvious choice, or one that is cheap to undo, needs no entry.
 - Completed work (feature IDs and notable outcomes) → `## Completed`
 - Notes/gotchas (constraints, pitfalls, conventions, sharp edges) → `## Notes / gotchas`
 - Optional context links (canonical docs, API specs, repos) → `## Links (optional)`

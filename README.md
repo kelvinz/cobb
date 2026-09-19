@@ -67,7 +67,8 @@ skills/cobb/
   SKILL.md                    # router: dispatch table, shared guardrails, bare-/cobb behaviour
   references/
     prd.md  diagnose.md  design.md  implement.md  tdd.md  review.md  commit.md
-    review-hotfix.md  commit-review.md  finalise.md  context-log.md  compact.md
+    review-hotfix.md  design-principles.md  commit-review.md
+    finalise.md  context-log.md  compact.md
     design/                   # ui / ux / motion / imagery; conditional tokens, examples,
                               # shadcn states, marketing rules, and official design systems
     templates/                # PRD, report, context, compact, commit, finalise templates

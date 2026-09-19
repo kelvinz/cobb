@@ -12,8 +12,9 @@ When called by `references/commit-review.md`, use Review-Repair Mode at the end 
 
 - Keep product scope exactly as the PRD states while executing:
   - If the PRD is missing details or ambiguous, stop and use `/cobb prd` to refine the PRD first.
-  - If implementation reveals the PRD is incorrect, pause and propose PRD edits via `/cobb prd`.
-  - Every deviation is stated and routed through `/cobb prd`.
+  - If implementation reveals a requirement in the PRD is incorrect, pause and propose PRD edits via `/cobb prd`.
+  - Fix a factual error that changes no requirement, such as a wrong command or file path, in place with a one-line note in the PRD.
+  - Every requirement deviation is stated and routed through `/cobb prd`.
   - Outside review-repair mode, if the feature has no PRD in `tasks/`, stop and use `/cobb prd` first.
   - Out-of-scope requirements or bugs discovered during execution become a new PRD via `/cobb prd`; the current scope stays fixed.
   - For a fix PRD whose RED test fails to reproduce the bug, the cause is not yet known: load `references/diagnose.md` with caller `implement` and run it, then update the fix PRD via `/cobb prd` from its report (root cause, reproduction, regression seam) and resume the slice.
@@ -75,7 +76,7 @@ When called by `references/commit-review.md`, use Review-Repair Mode at the end 
 
 3. **Execute**
    - Implement the feature as specified.
-   - Follow PRD implementation slices in dependency order.
+   - Follow PRD implementation slices in dependency order, a `prefactor` slice first when the PRD has one.
    - Write tests only at the seams the PRD confirmed: section 9 for behavioural work, or the behaviour pin for a restructuring `chore`.
    - For behavioural work with a practical automated harness, execute one vertical RED/GREEN/REFACTOR cycle at a time per `references/tdd.md`, keeping each completed slice together as one future atomic commit group.
    - For a behaviour-preserving `chore`, capture the pin before any structure moves, keep it green through each step, prove equivalence on the real artifact, and revert the reshape if reader load did not fall.
