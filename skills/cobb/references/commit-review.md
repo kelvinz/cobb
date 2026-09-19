@@ -56,9 +56,18 @@ If the user chooses follow-up commits instead, use the normal commit proposal/ap
 
 Finish only when the worktree matches the reviewed state, the latest review returns `Good to commit: Yes`, and every finding is verified as resolved, dismissed with evidence, or deferred by an explicit user decision. No required evidence may remain missing.
 
-Report the repaired findings, any dismissed/deferred items, old-to-new commit hashes, checks run, and the final reviewed base and HEAD.
+Report the repaired findings, any dismissed/deferred items, old-to-new commit hashes, checks run, the final reviewed base and HEAD, and any guardrail proposal from Recurring Findings below.
 
 - **Called by normal commit on a feature branch:** end here. Recommend `/cobb commit finalise` when every story, acceptance criterion, and task in the active PRD is checked; otherwise list the open items and recommend `/cobb implement`. Finalise runs only when the user calls it.
 - **Called by finalise:** return the new review record to the pending finalise step. Keep any confirmed decision bundle and completed closeout work; finalise resumes at its pending step.
 - **Called by normal commit on a base branch:** conclude the review without offering finalise. Publishing remains a separate, explicitly approved action.
 - **Called by hotfix:** return to its pre-commit snapshot checks with the index holding the reviewed tree.
+
+## Recurring Findings
+
+When the same finding class appears in more than one pass, or matches a class already recorded in `tasks/context.md` from an earlier session, propose a guardrail instead of relying on the next review to catch it again.
+
+- A mechanical rule (a fixed syntactic pattern, a banned API, an import shape, a file-location rule) gets a deterministic check. Pick the strongest mechanism the situation allows: a type that makes the wrong state unrepresentable, then a lint rule or banned API that fails CI, then a canonical helper, then a runtime check. Agents copy whatever the surrounding code does, so a weaker guard becomes the next template.
+- A judgement call (cross-file consistency, matching surrounding style) stays a review rule under Repo conventions in `tasks/context.md`.
+
+List the proposal in the completion report as a recommended follow-up. Adding the check is its own commit or PRD, outside this repair loop, so the caller's own choice block stays the only one.
