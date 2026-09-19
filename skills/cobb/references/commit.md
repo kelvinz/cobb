@@ -18,6 +18,7 @@ Load `references/templates/commit-rules.md` before the first proposal or when cl
 - Add AI attribution or `Co-authored-by` only when explicitly requested.
 - Normal mode leaves the remote untouched; push belongs to finalise.
 - Couple completed PRD checklist and durable context updates to the atomic change that produced them.
+- Commit a new PRD file with the first group of its feature, together with that group's checklist ticks.
 - Tracking-only catch-up commits outside finalise need explicit approval.
 - In normal mode, run review after all intended groups are committed and the worktree is clean. Hotfix mode uses the staged-review sequence below.
 - Review approval is tied to the exact recorded state for that review mode.
