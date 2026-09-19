@@ -26,6 +26,7 @@ When called by `references/commit-review.md`, use Review-Repair Mode at the end 
   - If approved design artifacts already exist, proceed directly with implementation.
 - Require user confirmation before creating or switching git branches.
 - Leave commits, merges, pushes, and branch deletions to `/cobb commit`; return review repairs to the calling loop.
+- Name new symbols, tests, and messages with the `## Language` section of `tasks/context.md`.
 
 ---
 

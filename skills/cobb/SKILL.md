@@ -87,7 +87,7 @@ Stay read-only and show the menu:
 ## Files cobb manages
 
 - `tasks/f-##-<slug>.md` — one PRD per feature, with `Status` (draft | ready), `Priority` (P0–P3), `Type` (feat | fix | chore), and a progress checklist.
-- `tasks/context.md` — shared work state, decisions, milestones, and technical constraints.
+- `tasks/context.md` — shared work state, project language (glossary), decisions, milestones, and technical constraints.
 - `tasks/archive/` — completed PRDs moved here during `commit` finalise (same filename, no rename).
 
 ---

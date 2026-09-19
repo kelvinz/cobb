@@ -26,7 +26,7 @@ Shared guardrails from the cobb router apply; the rules below are compact-specif
    - Suggest how many entries to keep in full detail vs consolidate into summary.
    - Offer the proposed plan and a custom retention-count option.
 3. Compact `tasks/context.md` in place:
-   - Preserve `Project` and `Current state` sections.
+   - Preserve `Project`, `Language`, and `Current state` sections.
    - Keep the user-selected number of most recent detailed entries (entries are newest-first, so keep from the top).
    - Before consolidating, extract still-relevant risks, open questions, or gotchas
      from older entries (bottom of each section).

@@ -65,6 +65,7 @@ Shared guardrails from the cobb router apply; the rules below are review-specifi
    - test depth and regression risk
    - scope control (especially if PRD path is provided)
      - Compare diff vs PRD 'In scope' and completed user stories; flag any diff not attributable to a PRD requirement.
+   - naming: symbols, tests, and messages use the `## Language` section of `tasks/context.md`
 5. **Classify** findings:
    - blockers (must fix), numbered `B1`, `B2`, ...
    - suggestions (non-blocking improvements), numbered `S1`, `S2`, ...
@@ -112,7 +113,7 @@ Shared guardrails from the cobb router apply; the rules below are review-specifi
   - regression coverage in touched areas
   - manual verification steps when automation is missing
 - Maintainability:
-  - naming clarity and control-flow simplicity
+  - naming clarity and control-flow simplicity, using the project language
   - comments/docs for non-obvious decisions only
 
 ---

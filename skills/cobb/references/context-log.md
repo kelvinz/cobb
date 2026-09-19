@@ -29,6 +29,7 @@ For example, an API's UTC-only date contract belongs in task context. A repeated
 
 - Project gist (what it is, who it's for, success measures) → `## Project`
 - Repo conventions the skill reads back (default base, base branches beyond the defaults, merge preference) → `## Project`, on the `Repo conventions` line
+- Project language: one canonical term per concept specific to this project, a one or two sentence definition of what it is, and the synonyms to avoid → `## Language`. Be opinionated: pick the best word and retire the others. General programming concepts stay out. Every phase names symbols, tests, and messages from this section.
 - Current state (what's done, what's next, what's blocked) → `## Current state`
 - Key decisions and durable design decisions (what we chose + why + tradeoffs) → `## Key decisions`
 - Completed work (feature IDs and notable outcomes) → `## Completed`

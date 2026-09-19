@@ -14,6 +14,9 @@ Use this when creating `tasks/context.md` for a new project.
 - Non-goals (optional): …
 - Repo conventions (optional): default base, base branches beyond the defaults, merge preference, …
 
+## Language
+- **<Term>**: <one or two sentences: what it is, not what it does>. _Avoid_: <synonyms retired in favour of this term>
+
 ## Current state
 - Where we are: …
 - Next up: f-##

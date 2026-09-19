@@ -305,5 +305,6 @@ Checklist progress records completed work. `Status` records whether the PRD is r
 - [ ] Automated and manual commands, fixtures, expected failures, and completion evidence are explicit.
 - [ ] Material decisions include rationale and relevant rejected alternatives.
 - [ ] Checked items still have valid evidence; affected items were reopened under Progress Updates, and unaffected completion and settled decisions were preserved.
+- [ ] Terms, symbols, and test names use the `## Language` section of `tasks/context.md`; new or sharpened terms were recorded there.
 - [ ] PRD is consistent with `tasks/context.md`, or `tasks/context.md` was updated in this run.
 - [ ] `Status: ready` appears only when every item above passes or has a documented non-blocking exception.

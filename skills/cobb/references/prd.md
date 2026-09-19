@@ -14,6 +14,7 @@ Shared guardrails from the cobb router apply; the rules below are PRD-specific.
 - For updates, audit completeness and interview only implementation-critical gaps.
 - Maintain the full dependency tree internally. Show a short resolved/current/remaining summary only when moving to a major branch.
 - If an earlier answer changes, invalidate and revisit only downstream decisions that depend on it.
+- Use the project language from `tasks/context.md` for every term, symbol, and test name; sharpen fuzzy terms as they appear (see Interview Protocol).
 - Use checklists and bullets for structure; Markdown tables are reserved for the router.
 - Preserve material decisions, rationale, trade-offs, and rejected alternatives; the interview transcript itself stays out of the PRD.
 
@@ -100,6 +101,13 @@ Shared guardrails from the cobb router apply; the rules below are PRD-specific.
 Resolve the design-tree gaps from the workflow, including feature type, priority, and dependencies. Finding facts is your job: look up repository facts, versions, and documentation yourself, and ask the user only about decisions with valid, safe alternatives. Classify a fork before asking: if the answer is observable by running something (behaviour, timing, output, layout, performance), it is a fact, and a prototype or a run settles it; reserve questions for product or preference calls no experiment can settle. A recommendation is a judgment, not validation: when the evidence says the feature or a branch of it does not earn its place, `0 — Recommended` may be to drop or defer it, with the reason.
 
 Ask in **rounds**. A round holds the whole frontier: every question whose prerequisites are settled. Each answer reshapes the tree, so recompute the frontier before the next round. A question that depends on another question in the same round belongs to the next round. Announce the total and the revised total after any change.
+
+Keep the project language sharp while you go:
+
+- when the user's term conflicts with the `## Language` section of `tasks/context.md`, say so and ask which meaning holds
+- when a term is vague or overloaded ("account" meaning both Customer and User), propose one canonical term and list the others under `_Avoid_`
+- when the user states how something works, check whether the code agrees and surface any contradiction
+- record each resolved term in `tasks/context.md` as it lands, not at the end
 
 ### Round format
 

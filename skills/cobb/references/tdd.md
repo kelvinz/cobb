@@ -11,6 +11,7 @@ Use this reference for behavioural `feat` and `fix` work during `prd` and `imple
 - Prefer real controlled dependencies, such as a test database, when they are practical and deterministic.
 - Keep project-owned collaborators real; a mock of one only pins the implementation structure.
 - Use dependency injection or narrow SDK-style adapters at boundaries when testability requires it.
+- Name tests and fixtures with the project language from `tasks/context.md`.
 
 ## Vertical Cycle
 
