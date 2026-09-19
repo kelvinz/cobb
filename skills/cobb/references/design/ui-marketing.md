@@ -1,6 +1,6 @@
 # Landing and Marketing UI
 
-Use for landing pages, portfolios, and marketing surfaces under the load conditions in `references/design.md`.
+Use for Persuade and Experience surfaces, such as landing, marketing, campaign, and pricing pages, portfolios, and showcases, under the load conditions in `references/design.md`.
 
 ## Layout and Copy
 
@@ -9,7 +9,7 @@ Use for landing pages, portfolios, and marketing surfaces under the load conditi
 3. Keep desktop navigation on one line, usually `64px–80px` high.
 4. Keep the primary CTA on one line on desktop; shorten the label or widen the button when needed.
 5. Choose each section's layout for its content: asymmetric grids, grouped lists, media-led sections, or a focused single feature. Use a centred hero, a three-equal-card row, a split-image section, or an eyebrow label only where the content earns it, and at most once per page.
-6. Re-read visible copy. Use plain, specific text instead of unclear wordplay, forced metaphors, and mixed registers.
+6. Run the copy self-audit in `references/design/ux.md` on every visible string.
 
 ## Images and Evidence
 

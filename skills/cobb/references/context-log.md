@@ -62,7 +62,7 @@ Avoid:
 3. Prepend new entries at the top of each section (newest-first order).
 4. Prefer referencing stable feature IDs (`f-##`) over PRD file paths (PRD paths change after archiving/compaction). Durable non-PRD links belong in `## Links (optional)`.
 5. If a link materially improves context, add or update entries in `## Links (optional)` using the links format.
-6. Check README freshness: if the change affects setup, commands, workflows, structure, or scope documented in the root or a touched directory's `README.md`, update the affected sections in the same pass. Review proposes these updates instead. Skip when nothing applies.
+6. Check README and DESIGN.md freshness: if the change affects setup, commands, workflows, structure, or scope documented in the root or a touched directory's `README.md`, update the affected sections in the same pass. If it changes the visual system recorded in the root `DESIGN.md` (tokens, type roles, component styles), update that file from the built result under `references/templates/design-md-template.md`. Review proposes these updates instead. Skip when nothing applies.
 7. If an important work decision remains unclear, ask for that decision; otherwise omit information that does not meet the recording rules.
 
 ---
@@ -76,6 +76,6 @@ Avoid:
 ## Output
 
 - Create or update `tasks/context.md`.
-- Note any README sections updated (or proposed, during `review`) alongside the context update.
+- Note any README or DESIGN.md sections updated (or proposed, during `review`) alongside the context update.
 - **Inline** (from another phase): reply with a short summary of what was added/updated. Let the calling phase's output format take precedence.
 - **Standalone** (`/cobb context`): report the file path and a short summary.

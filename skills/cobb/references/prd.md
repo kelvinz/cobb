@@ -16,6 +16,7 @@ Shared guardrails from the cobb router apply; the rules below are PRD-specific.
 - If an earlier answer changes, invalidate and revisit only downstream decisions that depend on it.
 - Use the project language from `tasks/context.md` for every term, symbol, and test name; sharpen fuzzy terms as they appear (see Interview Protocol).
 - Use checklists and bullets for structure; Markdown tables are reserved for the router.
+- A user-facing surface means a screen people interact with: web, mobile, or desktop UI. APIs, CLIs, libraries, and background jobs are not surfaces; their PRDs skip the UX-layer steps and mark section 5 `Not applicable`.
 - Preserve material decisions, rationale, trade-offs, and rejected alternatives; the interview transcript itself stays out of the PRD.
 
 ---
@@ -44,6 +45,7 @@ Shared guardrails from the cobb router apply; the rules below are PRD-specific.
    - For updates, preserve the existing ID.
 4. **Explore before interviewing:**
    - Inspect repository structure, conventions, relevant implementation, tests, configuration, and installed dependency versions.
+   - For a feature with a user-facing surface, find how the app runs and is checked. When `tasks/context.md` has no verification recipe, record one under the rules in `references/context-log.md`.
    - Resolve answerable questions from evidence and record the evidence-backed recommendation.
    - Use authoritative documentation for unstable or unfamiliar external contracts; record the relevant version, link, and resulting constraint in the PRD.
 5. **Build and walk the design tree:**
@@ -52,7 +54,9 @@ Shared guardrails from the cobb router apply; the rules below are PRD-specific.
    - Resolve prerequisite decisions before dependent decisions.
    - Build the question tree and ask it in frontier rounds using the shared interview format (see Interview Protocol).
    - Treat the test seams as a decision the user confirms: name the public interfaces the tests will cross, prefer existing seams over new ones, place any new seam as high as it can go, and keep the count small (one is the ideal). Record the confirmed seams in section 9 of the PRD.
-   - When a design question needs a runnable answer (a state model that is hard to reason about on paper, or a UI that must be seen), build a throwaway prototype outside the product code, fold the verdict into a `D-###` entry with the snippet trimmed to the decision, and keep the prototype out of the PRD.
+   - For a feature with a user-facing surface, settle the UX layer in the interview, function before form: the task flow, the state inventory, the copy for key states, and accessibility. Write the copy under UX Copy in `references/design/ux.md`. Visual direction may stay open for `/cobb design`; the flow may not.
+   - When the feature touches consent, pricing or checkout, subscriptions or trials, cancellation or account deletion, notifications, data collection or sharing, AI decisions that affect users, or products for children, run the dark-pattern check in `references/design/ethics.md` and resolve every match before `ready`.
+   - When a design question needs a runnable answer (a state model that is hard to reason about on paper, or a UI that must be seen), choose the artifact that matches the decision under Artifacts by Decision in `references/design.md`, build it outside the product code, fold the verdict into a `D-###` entry with the snippet trimmed to the decision, and keep the prototype out of the PRD.
    - If the user cannot decide, apply a labelled provisional recommendation only when the choice is reversible and low-risk.
    - Keep high-risk or irreversible unresolved choices open and leave the PRD in `draft`.
 6. **Split oversized ideas when needed:**
@@ -83,14 +87,16 @@ Shared guardrails from the cobb router apply; the rules below are PRD-specific.
    - Size each slice to fit one fresh agent session with room to spare; split a slice that would not.
    - When a small preparatory refactor would make the feature slices simpler, make it the first slice (`prefactor`): make the change easy, then make the easy change. It is behaviour-preserving, covered by existing tests, and lands green on its own.
    - For behavioural `feat` and `fix` work, read `references/tdd.md` and include its complete PRD testing contract.
-   - For UI/UX-heavy features, state whether design direction is needed before implementation and name the expected design inputs.
+   - For a feature with a user-facing surface, fill section 5: the state inventory, hardening inputs, copy matrix, and accessibility target. Each applicable hardening input becomes an acceptance criterion or is marked not applicable with a reason.
+   - For a change to an existing user-facing surface, classify it as extend, refine, or redesign under `references/design.md`, and add its protected items as non-goals.
+   - For UI/UX-heavy features, fill the visual direction block or mark it pending `/cobb design`, and name the expected design inputs.
 10. **Run the readiness gate:**
    - Audit the written PRD against the Readiness Checklist in `references/templates/prd-template.md`.
    - Downgrade to `draft` if any blocking detail remains, even if the user previously expected `ready`.
 11. **Update context:**
    - Update project gist in `tasks/context.md` if this is the first PRD or project scope changed.
    - Capture any durable decisions or constraints.
-12. **Reply** with updated file paths, status, readiness result, and a short change summary.
+12. **Reply** with updated file paths, status, readiness result, and a short change summary. When `design` called this phase, return to it with the PRD path instead of ending the phase.
 
 ---
 

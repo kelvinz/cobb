@@ -1,6 +1,6 @@
 # UX Mode
 
-Use this mode to shape task flows, information architecture, usability, accessibility, and audit quality. Follow the Delivery contract in `references/design.md` before applying changes.
+Use this mode to shape task flows, information architecture, copy, usability, accessibility, and audit quality. UX comes before UI under Function Before Form in `references/design.md`. Follow the Delivery contract there before applying changes.
 
 ## UX Discovery Inputs
 
@@ -21,22 +21,49 @@ When context is thin, state explicit assumptions and proceed.
 3. Group information by user intent, not implementation structure.
 4. Keep navigation labels concrete and predictable.
 5. Define primary actions and secondary actions with clear separation.
-6. Define empty, error, and recovery paths as first-class flows.
+6. Define empty, error, and recovery paths as first-class flows, using the state inventory in the PRD template.
 7. Answer wayfinding on every screen: where am I, where can I go, what will I find there, and how do I get out. Never trap the user.
+
+## Wireframes and Prototypes
+
+Use these under Artifacts by Decision in `references/design.md`:
+
+1. **Idea sketches** answer which mechanism solves the problem. Build several structurally different fragments of real UI, each at natural size with a one-line caption. Many quick sketches beat one full screen while the mechanism is open.
+2. **Grayscale wireframes** answer what a screen holds and how it is weighted. Every element that will exist is present, with real labels, hierarchy through size, weight, and placement, and working controls. Use a grayscale ramp, one accent on primary actions and selection, one neutral font, and grey boxes for images. A text wireframe in the PRD is enough when layout, not interaction, is in question.
+3. **Clickable prototypes** answer whether a sequence works as a task. Link the wireframes' real trigger elements along the flow.
+
+Call each artifact a wireframe in its title and in the reply. It looks real so the structure can be judged; the styling does not exist yet.
 
 ## Content Hierarchy and Clarity Heuristics
 
 1. Make the primary task visually and semantically obvious within seconds.
 2. Keep one dominant focus per view whenever possible.
 3. Make status, feedback, and next action explicit after each key action.
-4. Use consistent terminology and domain vocabulary across related surfaces.
-5. Keep microcopy specific, short, and consequence-aware.
-6. Place controls near what they affect and arrange them to mirror what they change; if a control needs a label to explain what it does, the mapping is weak.
-7. Cover four feedback kinds — status, completion, warning, and error — and validate inline rather than only on submit.
+4. Place controls near what they affect and arrange them to mirror what they change; if a control needs a label to explain what it does, the mapping is weak.
+5. Cover four feedback kinds — status, completion, warning, and error — and validate inline rather than only on submit.
+
+## UX Copy
+
+Copy is part of the function: it tells people what happened and what to do next. Use the `## Language` section of `tasks/context.md` for every product term.
+
+1. For each state, decide the one fact the user needs now, the next action, the context that changes the decision, and the tone for the moment. Say each idea once.
+2. Labels name the outcome with a verb and an object ("Save changes", not "Submit"). An action keeps its name through the flow: a "Publish" button leads to a "Published" confirmation.
+3. Use the same noun and verb for the same concept everywhere, and name things by what users understand ("notifications", not "webhook config").
+4. Errors say what happened and how to recover, in the interface's voice, without apology or vagueness. Place each error next to the field or action it concerns.
+5. Empty states say what will appear and offer the first action.
+6. Use sentence case, plain verbs, and active voice. Give each text element one job.
+
+**Copy self-audit.** Before shipping, re-read every visible string, including labels, errors, empty states, alt text, and captions. Rewrite any string that:
+
+- is grammatically broken or has an unclear referent
+- uses cute wordplay, forced metaphors, or filler verbs such as "elevate", "seamless", or "unleash"
+- shows precise-looking numbers that are not sourced from the brief or product evidence and not labelled as sample data
+- uses placeholder names such as "John Doe" or "Acme"
+- mixes registers the brand voice does not call for
 
 ## Accessibility Option Set for UI Components
 
-Use this section as the deeper accessibility reference for `ui` mode; the compact baseline in `references/design/ui.md` covers routine UI work, and this fuller set applies when more UX/accessibility depth is needed.
+Use this section as the deeper accessibility reference for `ui` mode; the compact baseline in `references/design/ui.md` covers routine UI work, and this fuller set applies when more UX/accessibility depth is needed. Target WCAG 2.2 AA unless the PRD names another level.
 
 1. Focus: include visible `focus-visible` styles with strong contrast and non-color-only indication.
 2. Keyboard: support tab order, Enter/Space activation, Escape handling where applicable, and no keyboard traps.
@@ -46,40 +73,57 @@ Use this section as the deeper accessibility reference for `ui` mode; the compac
 6. Contrast: maintain readable text/icon contrast for default, hover, active, focus, and disabled states.
 7. Motion safety: provide reduced-motion-safe behavior for transitions and feedback animations.
 8. Responsiveness: preserve comprehension and actionability across viewport and text sizes.
+9. Target size: at least 24×24 CSS px, and 44×44 for primary touch targets with 8px between targets. Measure the hit area, not the glyph; inline text links are exempt.
+10. Focus not obscured: sticky headers, toasts, and overlays never hide the focused element.
+11. Dragging: every drag interaction has a single-pointer alternative, such as move up and move down buttons.
+12. Redundant entry: never ask again for information given earlier in the same process; offer "same as" options and autocomplete.
+13. Accessible authentication: allow paste in password and code fields, support password managers and passkeys, and offer an alternative to puzzles.
+14. Time limits: warn before a session or timed action expires and let the user extend it; let users pause auto-updating content.
 
 ## Audit Workflow and Axes
 
-Use this workflow when auditing existing UI code or built interfaces.
+Use this workflow when auditing existing UI code or built interfaces. Evaluate function before form: steps 2 to 9 come before any visual finding.
 
-1. Confirm files, routes, or components in scope.
-2. Confirm target surface and known constraints.
-3. Evaluate hierarchy and information architecture.
-4. Evaluate spacing and layout consistency.
-5. Evaluate typography and readability.
-6. Evaluate color contrast and semantic clarity.
-7. Evaluate interaction states and feedback quality.
-8. Evaluate motion quality and reduced-motion compliance.
-9. Evaluate responsive behavior.
-10. Evaluate microcopy and content clarity (labels, errors, empty states, instructions).
+1. Confirm the files, routes, or components in scope, the target surface, and known constraints.
+2. Run a cognitive walkthrough of each key task. At every step, ask four questions:
+   - Motivation: will the user try to achieve the right effect?
+   - Visibility: will the user notice that the correct action is available?
+   - Understanding: will the user connect that action with the outcome they want?
+   - Feedback: after acting, will the user see progress?
+   Rate each step pass (all yes), hesitation (one no), or failure (two or more). A no on motivation is the most severe: the user will not even try.
+3. Walk the key tasks through two or three persona lenses chosen for the surface, and name the exact element and step that fails each one:
+   - power user: keyboard paths, repeated actions, and efficiency
+   - first-timer: jargon, discoverability, and where to start
+   - accessibility-dependent user: screen reader order, keyboard only, and zoom to 200 percent
+   - stress tester: extreme inputs, errors, double submits, and interrupted flows
+   - distracted mobile user: one hand, interruptions, and a slow network
+4. Evaluate information architecture, wayfinding, and cognitive load. Flag decision points with more than four visible options and flows that rely on memory from earlier screens.
+5. Evaluate states and feedback against the state inventory.
+6. Evaluate accessibility against the option set above.
+7. Evaluate copy against UX Copy.
+8. Run the dark-pattern check in `references/design/ethics.md` when the surface is in its scope.
+9. Evaluate responsive behaviour and the mobile web baseline in `references/design/ui.md`.
+10. Then evaluate form: hierarchy, spacing and layout consistency, typography, colour and contrast, and motion quality with reduced-motion compliance.
 11. Evaluate implementation risks and maintainability.
 
-For redesigns, run `scan -> diagnose`; apply `fix` only for implementation delivery after preflight:
+For redesigns, confirm the change kind under Extend, Refine, and Redesign in `references/design.md` first, then run `scan -> diagnose`; apply `fix` only for implementation delivery after preflight:
 
 1. `scan`: identify framework, styling method, component primitives, routes, and current design patterns.
-2. `diagnose`: list generic patterns, weak hierarchy, missing states, accessibility failures, and implementation risks before changing files.
-3. `fix` (implementation only): apply focused upgrades inside the existing stack. Direction and audit delivery describe these upgrades without changing application code. Rewrite from scratch only when the existing structure blocks the requested outcome.
+2. `diagnose`: list broken tasks, missing states, accessibility failures, weak hierarchy, generic patterns, and implementation risks before changing files.
+3. `fix` (implementation only): apply focused upgrades inside the existing stack in the Redesign Fix Priority order. Direction and audit delivery describe these upgrades without changing application code. Rewrite from scratch only when the existing structure blocks the requested outcome.
 
 ## Redesign Fix Priority
 
-Use this order when improving existing screens so changes stay high-impact and reviewable:
+Fix function before form, and bring the whole path to the same bar before perfecting one corner:
 
-1. Typography and font use: fix default fonts, weak headings, line length, hierarchy weights, and tabular numbers.
-2. Colour and surfaces: remove clashing accents, inconsistent grey families, low contrast, and generic shadows.
-3. Interaction feedback: add hover, active, focus, loading, empty, error, and success states.
-4. Layout and spacing: fix max-widths, grids, mobile collapse, alignment, and repeated section patterns.
-5. Generic components: replace cliché cards, fake screenshots, decorative labels, and redundant CTAs.
-6. Copy and content clarity: remove vague labels, invented precision, placeholder copy, and mixed voice.
-7. Polish: tune spacing, animation, depth, and responsive edge cases after functional paths are stable.
+1. Broken or blocked tasks, data loss, misleading state, and inaccessible paths.
+2. Missing states and feedback: loading, empty, error, success, disabled, and permission.
+3. Flow, information architecture, and copy clarity: vague labels, invented precision, placeholder copy, and mixed voice.
+4. Layout and responsive behaviour: max-widths, grids, mobile collapse, alignment, and repeated section patterns.
+5. Typography: default fonts, weak headings, line length, hierarchy weights, and tabular numbers.
+6. Colour and surfaces: clashing accents, inconsistent grey families, low contrast, and generic shadows.
+7. Generic components: cliché cards, fake screenshots, decorative labels, and redundant calls to action.
+8. Polish: spacing, motion, depth, and responsive edge cases.
 
 ## Severity Scale
 
@@ -92,7 +136,7 @@ Use one severity level per finding:
 
 ## Findings Format
 
-List findings first, ordered by severity. For each finding include:
+List findings first, ordered by severity, and within one severity put functional findings before visual ones. For each finding include:
 
 1. Severity (`Critical` | `High` | `Medium` | `Low`).
 2. Issue title.
@@ -138,13 +182,15 @@ When asked to audit against web interface guidelines:
 For UX design requests, deliver:
 
 1. Updated task flow and IA rationale.
-2. Prioritized UX changes with expected outcome.
-3. Accessibility and usability risk notes.
-4. Explicit assumptions and open risks.
+2. The state inventory and the copy for key states.
+3. Prioritized UX changes with expected outcome.
+4. Accessibility and usability risk notes.
+5. Explicit assumptions and open risks.
 
 For UX audit requests, deliver:
 
-1. Severity-ordered findings first.
-2. Evidence with file/line references where possible.
-3. Clear, actionable fixes.
-4. Residual risks and testing gaps.
+1. Walkthrough ratings per task step and persona red flags.
+2. Severity-ordered findings, function before form.
+3. Evidence with file/line references where possible.
+4. Clear, actionable fixes.
+5. Residual risks and testing gaps.

@@ -69,6 +69,7 @@ Shared guardrails from the cobb router apply; the rules below are review-specifi
      - requirements that look implemented but whose implementation looks wrong
    - standards: repository coding standards where documented, plus the smell baseline in `references/review-smells.md` and the principles in `references/design-principles.md` when the diff changes logic beyond configuration, documentation, or generated output
    - naming: symbols, tests, and messages use the `## Language` section of `tasks/context.md`
+   - user-facing surfaces, when the diff changes UI, judged function before form: captures under `references/design/visual-verification.md` are required evidence when the PRD has a user-facing surface, and review may capture them itself when it can run the app without editing tracked files. Changes to the protected items under Extend, Refine, and Redesign in `references/design.md` need a PRD requirement. Flows in scope of `references/design/ethics.md` get its check, and a Critical match is a blocker.
    - Redact secrets from any command output or artifact quoted in the report.
 5. **Classify** findings:
    - blockers (must fix), numbered `B1`, `B2`, ...
@@ -137,6 +138,7 @@ Shared guardrails from the cobb router apply; the rules below are review-specifi
 - Maintainability:
   - naming clarity and control-flow simplicity, using the project language
   - smell baseline matches (`references/review-smells.md`), reported as suggestions
+  - hand-built UI primitives where an accessible component is installed or belongs: toasts, dialogs and dropdowns with manual focus trapping, command menus, numbers animated by re-rendering text, very long lists without virtualisation, and drag and drop without a keyboard alternative
   - comments/docs for non-obvious decisions only
 
 ---
@@ -145,6 +147,7 @@ Shared guardrails from the cobb router apply; the rules below are review-specifi
 
 - Read `references/templates/report-template.md` when producing the report; use its fields for the selected review mode.
 - Read `references/review-smells.md` and `references/design-principles.md` in step 4 when the diff changes logic.
+- Read `references/design/visual-verification.md` in step 4 when the diff changes a user-facing surface, and `references/design/ethics.md` when the change touches consent, pricing or checkout, subscriptions or trials, cancellation or account deletion, notifications, data collection or sharing, AI decisions that affect users, or products for children.
 
 ---
 

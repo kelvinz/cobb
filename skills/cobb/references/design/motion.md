@@ -238,6 +238,27 @@ Prefer earlier fixes over later ones:
 7. Make deliberate/response timing asymmetric.
 8. Polish last: blur-masked crossfades, stagger, `@starting-style`.
 
+## Motion Audit
+
+Use for motion audits and when looking for places that would benefit from motion.
+
+Sweep these seams. Mark each one cleared, or record candidates with `file:line` evidence:
+
+1. Feedback gaps: pressable elements with no pressed state, and destructive actions confirmed by a plain click where hold-to-confirm would prevent slips.
+2. Teleporting state: content that appears, swaps, or vanishes instantly; accordions that snap; lists that add or remove items with no bridge.
+3. Missing spatial story: panels and menus with no connection to their trigger, and dismissable surfaces that leave a different way than they came.
+4. Group entrances: grids or lists that appear all at once on pages users see occasionally.
+5. Gesture seams: draggable or swipeable elements that snap with no physics.
+6. The delight budget: rare, high-emotion moments rendered flat, such as first run, empty states, and completion.
+
+Useful searches: conditional renders with no transition (`{isOpen &&`, `display: none` toggles), click handlers on elements with no `:active` style, accordion markup, drag handlers, and `.map(` renders of entering lists.
+
+Gate every candidate through the Frequency Gate and Purpose Rules above, then report:
+
+1. Opportunities, ordered by leverage: location, current behaviour, purpose, frequency, and the suggested motion with exact tokens, properties, and reduced-motion handling.
+2. Rejected candidates: two to five places considered and not suggested, each with the gate that ruled it out, such as "keyboard-initiated, used 100+ times a day" or "functional data the user is reading".
+3. Verdict: how much motion the interface needs and the single change with the most leverage. No change is a valid result.
+
 ## Quality Checks
 
 1. Motion explains what changed and why.

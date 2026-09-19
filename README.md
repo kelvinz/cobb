@@ -9,7 +9,7 @@ A single skill for ongoing product development, split into phases you call as su
 - `/cobb` — show the subcommand menu and recommend the next phase based on `tasks/` state (read-only; never runs a phase on its own).
 - `/cobb prd` — explore the codebase, interview in rounds until every design decision is resolved, and create implementation-ready PRDs (`tasks/f-##-*.md`) with status, priority, technical design, confirmed test seams, traceability, and TDD instructions. Also `/cobb list` to summarise active PRDs.
 - `/cobb diagnose` — find the cause of a bug whose cause is unknown: build a loop that goes red on the bug, minimise the repro, test ranked hypotheses, and return a diagnosis report. `prd` runs it automatically for a fix with an unknown cause, and `implement` runs it when a RED test fails to reproduce the bug; call it directly only when you want the cause before any PRD exists. Read-only on the repo; commits nothing.
-- `/cobb design` — choose UI, UX, motion, or imagery. Planning produces design direction; audits stay read-only. Explicit requests for working code run implement's preflight first (PRD, ready scope, branch). Requested imagery exports are produced directly. Design guidance is still being refined and has not been fully tested through agent runs.
+- `/cobb design` — design with function before form: UX (flow, states, copy, accessibility) is settled before UI, motion, or imagery. Planning produces design direction, recorded in a PRD: design runs `prd` first when none covers the surface. Audits stay read-only; `record` writes the root `DESIGN.md` from existing code. Explicit requests for working code run implement's preflight first (PRD, ready scope, branch). Requested imagery exports are produced directly. Design guidance is still being refined and has not been fully tested through agent runs.
 - `/cobb implement` — implement a ready PRD as vertical behavioural slices, using red-green-refactor where practical, verify each acceptance criterion on the real surface (graded verified, not verified, or inconclusive), and check off completed stories/tasks. Restructuring chores pin current behaviour first and prove it unchanged.
 - `/cobb review` — read-only branch review for correctness, security, tests, spec fidelity against the PRD, root cause versus symptom, and design and code-smell baselines, with numbered findings, dismissed candidates with reasons, a clear go/no-go decision, and an exact state fingerprint. It uses an explicit base, the branch upstream, or one clear repository default. Pass `/cobb review <base-ref>` when the base is unclear or to review a fully pushed branch against its merge target.
 - `/cobb commit` — propose atomic, user-approved commits (one at a time, or approve a multi-commit plan in one go), then automatically review, repair clear findings, and fold repairs into the appropriate unpublished commits. Also `/cobb commit finalise` (merge/branch cleanup) and `/cobb commit hotfix`.
@@ -30,6 +30,7 @@ These phases are written to be handoff-friendly: assume a junior dev (or another
 ## Recommended workflow: idea → merged
 
 1. `/cobb prd` (for a bug with an unknown cause, prd runs `diagnose` first and writes the fix PRD from its report) → `/cobb design` (optional, UI/UX-heavy features) → `/cobb implement`
+   Function before form: the PRD settles flow, states, copy, and accessibility; design adds the visual layer after.
    Context: capture durable decisions and project language inline as each step executes.
 2. `/cobb commit` (`commit` mode): atomic commits with user approval, followed automatically by `/cobb review` once all intended groups are committed and the worktree is clean.
 3. Post-review loop: automatically fix blockers and suggestions, run checks, fold each repair into its original unpublished commit where safe, and review again, for at most three passes. Pause only for a real decision, unavailable required evidence, or an unsafe history change. The session ends here; repeat steps 1 to 3 until the PRD is fully checked.
@@ -60,6 +61,10 @@ Hotfix mode prepares and stages one approved change, including tests and trackin
 - `tasks/archive/`
   - Archived completed PRDs, moved during `commit` finalise.
 
+- `DESIGN.md` (repository root, projects with a UI)
+  - The durable visual system in a portable format: token frontmatter and eight fixed sections.
+  - Recorded as built, and updated in the same commit as any change to the visual system. A PRD's visual direction overrides it for that feature only.
+
 ## Layout
 
 ```
@@ -69,7 +74,8 @@ skills/cobb/
     prd.md  diagnose.md  design.md  implement.md  tdd.md  review.md  commit.md
     review-hotfix.md  review-smells.md  design-principles.md  commit-review.md
     finalise.md  context-log.md  compact.md
-    design/                   # ui / ux / motion / imagery; conditional tokens, examples,
-                              # shadcn states, marketing rules, and official design systems
-    templates/                # PRD, report, context, compact, commit, finalise templates
+    design/                   # ui / ux / motion / imagery; product and marketing surfaces,
+                              # visual verification, dark-pattern check, tokens, examples,
+                              # shadcn states, and official design systems
+    templates/                # PRD, report, context, compact, commit, finalise, DESIGN.md templates
 ```

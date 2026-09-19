@@ -91,6 +91,7 @@ Stay read-only and show the menu:
 - `tasks/f-##-<slug>.md` — one PRD per feature, with `Status` (draft | ready), `Priority` (P0–P3), `Type` (feat | fix | chore), and a progress checklist.
 - `tasks/context.md` — shared work state, project language (glossary), decisions, milestones, and technical constraints.
 - `tasks/archive/` — completed PRDs moved here during `commit` finalise (same filename, no rename).
+- `DESIGN.md` (repository root, projects with a UI) — the durable visual system: token frontmatter and eight fixed sections, recorded as built.
 
 ---
 
@@ -103,5 +104,7 @@ The Dispatch table above is the single routing source for phase files. These sha
 - `references/review-smells.md` — Fowler smell baseline; loaded by `review` when the diff changes logic.
 - `references/design-principles.md` — data-shape, type, boundary, and simplicity principles; loaded by `prd` for the technical design and by `review` when the diff changes logic.
 - `references/diagnose.md` — also loaded by `prd` (unknown cause) and `implement` (RED test fails to reproduce), besides its own dispatch row.
+- `references/design/visual-verification.md` — screenshot captures and inspection rounds; loaded by `implement`, `review`, and `design` for UI work.
+- `references/design/ethics.md` — dark-pattern check; loaded by `prd`, `review`, and `design` for the flows in its load conditions.
 
-Design child references (`references/design/*.md`) are selected inside `references/design.md`, and templates (`references/templates/*.md`) load only when the active phase explicitly asks for them — each phase file names its own.
+Other design child references (`references/design/*.md`) are selected inside `references/design.md`, and templates (`references/templates/*.md`) load only when the active phase explicitly asks for them — each phase file names its own.
