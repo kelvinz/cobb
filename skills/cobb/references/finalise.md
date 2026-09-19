@@ -37,6 +37,7 @@ Finalise follows the completed automatic review-repair loop in `references/commi
    - tracking-only, so it does not trigger re-review (see the canonical re-review guardrail)
    - skip the commit when no tracking change is needed and state why
 4. Collect the finalise bundle using the shared Choices rule:
+   - state the merge danger first, from PRD section 10 and the reviewed diff: `Door: one-way | two-way` with why, and `Blast radius: <one phrase>`; a one-way door raises the recommendation to stop and confirm the rollback steps before merging
    - propose all five fields explicitly: resolved target branch, strategy `auto`, push no, delete local yes when safe, delete remote no
    - adjust the proposal to repository policy and safety, and give a brief reason; `auto` resolves via `references/templates/finalise-policy.md`
    - offer approve displayed bundle / change fields / stop; recommend approval only when every field is resolved and safe
@@ -52,4 +53,4 @@ Finalise follows the completed automatic review-repair loop in `references/commi
 
 ## Output
 
-Report the closeout commit, the review the merge relied on, merge result, push result, and branch cleanup.
+Report the merge danger (door and blast radius), the closeout commit, the review the merge relied on, merge result, push result, and branch cleanup.
