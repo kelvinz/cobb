@@ -11,14 +11,10 @@ Use this reference during `prd` and `implement` for behavioural `feat` and `fix`
 - Prefer real controlled dependencies, such as a test database, when they are practical and deterministic.
 - Keep project-owned collaborators real; a mock of one only pins the implementation structure.
 - Use dependency injection or narrow SDK-style adapters at boundaries when testability requires it.
-- Take every expected value from an independent source of truth: a known-good literal, a worked example, or the spec. A test whose expected value is recomputed the way the code computes it (`expect(add(a, b)).toBe(a + b)`) is **tautological**: it passes by construction and can never disagree with the code.
-- Before keeping a test, ask whether it would still pass if every function it imports returned `undefined`. If yes, it observes no behaviour: rewrite the assertion or delete the test. Five shapes fail this check:
-  - weak or no assertion (`toBeDefined`, `toBeTruthy`, `not.toThrow`, `toBeGreaterThan(0)`)
-  - mock or absence only (`toHaveBeenCalled`, `toEqual([])`, `not.toBe(wrongValue)`)
-  - self-referential expected values (the tautological case above)
-  - constant pins that restate a hand-maintained constant, default, or prompt string
-  - fixture asserts fixture: the assertion reads data the test built and the subject never runs
-  The fix is one concrete input and a literal expected output or observable effect; for an absence, assert the presence on the other input in the same test; for a mock, assert the payload it received or the state after the call.
+- Derive expected outcomes from the spec, a worked example, a trusted fixture, or an independent reference calculation. Keep that calculation independent of the subject and its complex production logic; a literal or independently calculated expectation can detect a wrong result.
+- **Fault check:** name a relevant wrong result or missing effect that the test must reject. Where practical, introduce that fault temporarily and confirm the test fails, then restore the correct implementation. Returning `undefined` or doing nothing is one useful probe, not a universal test of quality; void-returning operations are tested through their effects.
+- Judge assertions by the contract, not the matcher name. Defined, truthy, empty-result, no-throw, and boundary-call assertions can be valid, but may miss the important error. Check exact values, payloads, or resulting state when the behaviour requires them. For filtering or permission rules, cover both allowed and denied cases across the suite.
+- Ensure the subject runs and its result or effect is observed. A fixture asserting itself proves nothing about production behaviour. A fixed value or text check is useful when it protects an external contract; merely repeating an internal implementation detail is not a behaviour test.
 - Name tests and fixtures with the project language from `tasks/context.md`.
 
 ## Seams

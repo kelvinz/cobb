@@ -89,7 +89,7 @@ When called by `references/commit-review.md`, use Review-Repair Mode at the end 
    - Perform any manual QA steps listed in the PRD.
    - Grade each check `VERIFIED`, `NOT VERIFIED`, or `INCONCLUSIVE`. Inconclusive or wrong-surface is flagged, never counted as a pass.
    - Record evidence against the stable acceptance-criterion and slice IDs.
-   - Confirm tests exercise observable behaviour through confirmed seams, take expected values from an independent source, keep project-owned collaborators real, and would fail if every imported function returned `undefined`.
+   - Confirm tests exercise observable behaviour through confirmed seams, take expected outcomes from an independent source, keep project-owned collaborators real, and detect a relevant wrong result or missing effect under the fault check in `references/tdd.md`.
 
 5. **Update checklist progress (in-place)**
    - Check off completed user stories/tasks and acceptance criteria in the PRD as implementation progresses.
