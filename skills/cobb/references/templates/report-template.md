@@ -7,6 +7,8 @@ Review Report
 
 Caller: standalone | commit | finalise | hotfix
 Review mode: branch | staged-hotfix
+Scope: <PRD feature ID and reviewed requirement/slice IDs | no PRD, change intent>
+Partial delivery (finalise only): <confirmed included/deferred IDs | none>
 
 Decision:
 - Good to commit: Yes | No
@@ -21,7 +23,7 @@ Review fingerprint:
 - Upstream (staged-hotfix mode): <ref> @ <full commit hash> | none
 - Remote freshness: refreshed | unverified, with reason | no remotes
 - Worktree: clean | matches staged tree | dirty
-- Valid until: any branch, HEAD, base/upstream, index, or worktree change
+- Valid until: any scope, branch, HEAD, base/upstream, index, or worktree change; finalise's verified tracking-only closeout exception may apply
 
 Blockers (must fix):
 - B1: <finding with file/line, evidence, impact, required change, and decision needed or none>

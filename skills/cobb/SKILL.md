@@ -100,7 +100,7 @@ Stay read-only and show the menu:
 The Dispatch table above is the single routing source for phase files. These shared references are loaded by phases rather than dispatch:
 
 - `references/tdd.md` — behavioural testing contract and behaviour-preserving change contract; loaded by `prd`/`implement` when applicable.
-- `references/commit-review.md` — automatic repair and commit-folding loop; loaded by normal `commit`, `finalise`, or `hotfix` after a review result.
+- `references/commit-review.md` — repair loop after called reviews; also provides History Rewrite Safety before finalise rebases.
 - `references/review-smells.md` — Fowler smell baseline; loaded by `review` when the diff changes logic.
 - `references/design-principles.md` — data-shape, type, boundary, and simplicity principles; loaded by `prd` for the technical design and by `review` when the diff changes logic.
 - `references/diagnose.md` — also loaded by `prd` (unknown cause) and `implement` (RED test fails to reproduce), besides its own dispatch row.

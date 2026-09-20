@@ -66,15 +66,11 @@ When called by `references/commit-review.md`, use Review-Repair Mode at the end 
       - Trigger it when the PRD adds/changes UI surfaces, interaction/motion behaviour, or design-system patterns, and no approved design direction is available.
       - Call `/cobb design` for `direction` only at this stage. Treat its output as implementation constraints and keep PRD scope unchanged; this handoff leaves application code untouched.
    - Verify dependencies:
-     - Read this PRD's "Dependencies & Constraints" section for feature dependency IDs.
-     - For each dependency ID, locate PRD files by feature ID in `tasks/` and `tasks/archive/`.
-     - Treat dependencies as complete only when the dependency PRD is archived in `tasks/archive/`.
-     - If any dependency is still in `tasks/`, recommend finalising that dependency first.
-     - If a dependency has no PRD yet, stop and use `/cobb prd` to create that dependency PRD first.
-    - Override: if the user confirms dependencies are satisfied, proceed.
-    - Present numbered finalise-dependency/override/stop choices and recommend finalising unresolved dependencies unless repository evidence proves they are already satisfied.
-    - Example: dependency work merged but not yet archived.
-    - Record the override in `tasks/context.md`.
+     - Read feature dependency IDs from the PRD Summary's `Dependencies` field.
+     - For each ID, inspect its PRD in the resolved feature base's committed tree, for example with `git show <base-ref>:tasks/archive/<filename>`, not only the current worktree.
+     - Require a fully checked archived PRD on that base and its delivered work in the current feature history. Check that the target-side delivery commit is an ancestor of HEAD; for squash delivery, use the squash commit, not the old feature tip. A local archive alone proves neither completion nor merge.
+     - If the dependency is unfinished or unmerged, recommend finalising it first. If delivered work is absent from this feature, stop for a sync/base decision. If no PRD exists, use `/cobb prd` first.
+     - Offer numbered resolve-dependency/override/stop choices when blocked. An explicit override must name the evidence and any unmet requirement, for example work already merged without its archive; record it in `tasks/context.md`.
 
 3. **Execute**
    - Implement the feature as specified.

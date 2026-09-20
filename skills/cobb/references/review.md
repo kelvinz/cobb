@@ -27,6 +27,7 @@ Shared guardrails from the cobb router apply; the rules below are review-specifi
 - optional explicit comparison base argument (`/cobb review <base-ref>`) — wins over automatic resolution without prompting
 - otherwise the comparison base resolved by the Workflow step-1 ladder (never prompted for)
 - optional PRD path (if scope validation is needed)
+- optional caller-confirmed delivery scope from `finalise`: PRD feature ID and included/deferred requirement and slice IDs; inspect the entire diff for correctness and safety even for partial delivery
 
 ---
 
@@ -63,8 +64,10 @@ Shared guardrails from the cobb router apply; the rules below are review-specifi
    - correctness and edge cases
    - security risks and data handling
    - test depth and regression risk
-   - spec fidelity, when a PRD is available; quote the PRD line for each finding:
-     - requirements or acceptance criteria the PRD asks for that are missing or partial
+   - spec fidelity, when a PRD is available; record the reviewed requirement/slice IDs and quote the PRD line for each finding:
+     - check the caller-confirmed delivery scope, or otherwise the implemented/claimed stories and checked slices; untouched, unchecked future slices do not block an incremental commit
+     - report missing or partial behaviour required by that scope, including its dependencies, safety requirements, and required evidence
+     - for a confirmed partial finalise, leave excluded unfinished items open; partial approval is not permission to ship a broken included path or ignore a blocker
      - behaviour in the diff that no PRD requirement asked for (scope creep)
      - requirements that look implemented but whose implementation looks wrong
    - standards: repository coding standards where documented, plus the smell baseline in `references/review-smells.md` and the principles in `references/design-principles.md` when the diff changes logic beyond configuration, documentation, or generated output
@@ -94,11 +97,12 @@ Shared guardrails from the cobb router apply; the rules below are review-specifi
 8. Emit the review fingerprint:
    - Re-verify before emitting: `git rev-parse HEAD` must still equal `HEAD_HASH`, and `git rev-parse "${BASE_REF}^{commit}"` must still equal `BASE_HASH`. If either moved, rerun from step 1. If the worktree is no longer clean, invalidate a finalise-valid pass.
    - current branch
+   - reviewed scope (PRD feature ID and requirement/slice IDs, with confirmed partial-delivery exclusions if any)
    - branch kind (`base` or `feature`)
    - reviewed HEAD hash
    - reviewed comparison-base name, resolution source (`argument`, `finalise-target`, `upstream`, `session-start`, `repo-convention`, `remote-head`, or `local-fallback`), and pinned hash
    - `git status --short` result (must be clean for a finalise-valid pass)
-   - invalidate the approval after any commit, base movement, or worktree change
+   - invalidate the approval after any scope, branch, commit, base, or worktree change; finalise alone may apply its verified tracking-only closeout exception
 9. Return the report to the caller. Called reviews continue through `references/commit-review.md`. Standalone review ends read-only with the report and recommended next action.
 
 ---

@@ -1,6 +1,6 @@
 # Automatic Review Repairs
 
-Load this reference after normal `commit`, `finalise`, or `hotfix` receives a review report. The review itself stays read-only; this calling workflow owns the repairs and commit updates. An explicit review-only request takes precedence.
+After normal `commit`, `finalise`, or `hotfix` receives a review report, run this repair workflow. Before finalise rebases, load only History Rewrite Safety below. Review itself stays read-only; an explicit review-only request takes precedence.
 
 Fix blockers and suggestions automatically when the solution is clear and within the approved scope. **Process suggestions-only reports too, even when `Good to commit: Yes`.** A useful suggestion is work to complete, not an opt-in task. Routine repairs and safe local commit updates need no further approval; ask only for the decisions listed below.
 
@@ -23,23 +23,28 @@ Repair every finding, including findings a later review raises against your own 
 
 ## Repair Loop
 
-1. **Check the starting state.** Require a usable review report for the current branch, HEAD, and comparison base or staged tree, with a matching worktree. If the reviewed state changed, refresh the review before editing. If the base is unresolved or unrelated work is present, pause for that issue instead of inventing a code fix.
+1. **Check the starting state.** Require a usable review report for the current branch, HEAD, and comparison base or staged tree, with a matching worktree. If the reviewed state changed, refresh the review before editing. A target movement or sync requirement under caller `finalise` returns to finalise's preparation step with the confirmed bundle and scope; it is not a code repair. For other callers, or an unresolved base or unrelated work, pause for that issue instead of inventing a code fix.
 2. **Account for every finding.** Check each `B#`, `S#`, and linked `E#` against the code and requirements. Run available missing checks. Close disproved, duplicate, or already-resolved findings with evidence. Plan repairs under Loop Bound; identify only the decisions that actually need the user. If no repairs remain, go to Completion; first refresh the report if new evidence changes its verdict.
-3. **Choose each repair's commit.** Use the reviewed diff and history to find the commit whose intent covers the repair. Check the full rewrite range under Commit Folding before making changes. Resolve any scope or history decision first. `hotfix` skips this step; every repair belongs to the pending commit.
+3. **Choose each repair's commit.** Use the reviewed diff and history to find the commit whose intent covers the repair. Check the full rewrite range under History Rewrite Safety before making changes. Resolve any scope or history decision first. `hotfix` skips this step; every repair belongs to the pending commit.
 4. **Repair and verify.** Follow `references/implement.md` in review-repair mode on the same branch. Include tests, applicable PRD evidence, and durable context/README updates with the repair that caused them. Complete the relevant deterministic checks before folding or restaging.
 5. **Fold or restage the repairs.** Normal `commit` and `finalise` follow Commit Folding below and preserve separate commit intents rather than adding every repair to the latest commit. `hotfix` restages the repairs so the index again holds the complete pending change.
-6. **Review the result.** Run `review` again with the same comparison-base argument and caller; retain a confirmed finalise target or direct-base session-start hash. Let review refresh and pin the base again. Replace the old review record with the new one and repeat this loop under Loop Bound. If a completed pass makes no progress on the same findings, pause with the failed evidence and the specific decision or input needed.
+6. **Review the result.** Run `review` again with the same comparison-base argument, caller, and delivery scope; retain a confirmed finalise target or direct-base session-start hash. Let review refresh and pin the base again. Replace the old review record with the new one and repeat this loop under Loop Bound. If a completed pass makes no progress on the same findings, pause with the failed evidence and the specific decision or input needed.
+
+## History Rewrite Safety
+
+Use these checks before automatic repair folding or a finalise rebase. Record the original HEAD for recovery and the full range to rewrite. Every check must pass:
+
+- The current branch is a feature branch.
+- `git fetch --all --prune` succeeded in this pass, or `git remote` lists no remotes. A failed fetch is not proof that commits are unpublished.
+- For every commit in the range, `git branch -a --contains <hash>` lists only the current branch and `git tag --contains <hash>` lists nothing.
+- The range is linear: `git rev-list --merges <oldest-commit>^..HEAD` prints nothing, and `<oldest-commit>^` resolves.
+- Every commit in the range belongs to the approved work being repaired or finalised.
+
+On failure, return to the caller for a different plan. Never force-push or discard work to make a rewrite possible.
 
 ## Commit Folding
 
-Before rewriting history, record the original HEAD for recovery and the repair-to-commit mapping, then prove the range is private. The range is every commit from the oldest repair target through HEAD, because rewriting an earlier commit also rewrites its descendants.
-
-- The current branch is a feature branch, and `git fetch --all --prune` succeeded in this pass or `git remote` lists no remotes. A failed fetch is not proof that commits are unpublished.
-- For every commit in the range, `git branch -a --contains <hash>` lists only the current branch and `git tag --contains <hash>` lists nothing.
-- The range is linear: `git rev-list --merges <oldest-target>^..HEAD` prints nothing, and `<oldest-target>^` resolves.
-- Every commit in the range belongs to the reviewed work.
-
-If any check fails, ask for a different plan and recommend approved atomic follow-up commits. Never force-push or discard work to make folding possible.
+Record the repair-to-commit mapping. Apply History Rewrite Safety to every commit from the oldest repair target through HEAD, including descendants that will also be rewritten. If a check fails, ask for a different plan and recommend approved atomic follow-up commits.
 
 For an eligible range:
 

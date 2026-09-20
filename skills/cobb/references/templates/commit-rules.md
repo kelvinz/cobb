@@ -60,7 +60,7 @@ Notes:
 
 ## Finalise body template
 
-For a finalise commit, use this shorter body format:
+For a closeout tracking commit, use this shorter body format and list only actions actually taken. For a partial delivery, add `(partial)` after the feature name and record that the PRD stays active with its open requirement/slice IDs; do not claim it was completed or archived. Merge and push results belong in the finalise report, not this pre-merge message.
 
 ```text
 Finalise:
