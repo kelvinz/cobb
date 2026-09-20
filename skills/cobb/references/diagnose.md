@@ -21,6 +21,14 @@ A called run skips the standalone closing recommendation and returns control wit
 
 ## Workflow
 
+### Starting State
+
+**Baseline.** Before experiments, save the original branch, HEAD, index entries (`git ls-files --stage -z`), staged/unstaged binary diffs, untracked path list, and contents/modes/existence of every path the experiment can touch. Use private scratch storage outside the repo; the baseline may contain secrets.
+
+**Isolation.** Prefer a disposable copy that includes relevant user edits, with isolated test data. Run instrumentation, bisection, and tests there. Leave the original index and branch unchanged.
+
+**In-place exception.** If a copy cannot reproduce the environment, ask before experimenting in place. Save each path before touching it. Restore only your experiment changes from the baseline, never from HEAD or with a blanket reset/clean. If a path differs from your last written version, preserve the concurrent edit and pause.
+
 ### 1. Build a feedback loop
 
 This is the phase that matters. A **tight** loop is one command that goes **red** on this exact bug and green once it is fixed. With one, the remaining phases are mechanical; without one, code-reading produces theories, not causes. Spend disproportionate effort here.
@@ -68,9 +76,11 @@ Confirm the cause by turning the loop green with the smallest possible change, t
 
 Before ending:
 
-- remove all tagged instrumentation (grep the prefix)
+- remove all tagged instrumentation (grep the prefix) and restore any in-place experiment changes under Starting State
 - delete throwaway harnesses, or move them to a clearly marked scratch location outside the repo
-- confirm `git status --short` matches the starting state
+- compare every value in the Starting State baseline with the original repo; all must match, not only `git status --short`
+- if a comparison fails, report the changed paths without claiming cleanup succeeded; preserve concurrent user work and retain the private baseline until the difference is resolved
+- after successful cleanup, remove private backups that are not needed for the redacted repro
 
 Then produce the Diagnosis Report and recommend `/cobb prd` to write the fix PRD from it.
 
@@ -87,7 +97,7 @@ Confirmed cause: <the hypothesis that held, with the evidence>
 Regression seam: <where the regression test belongs, or why no correct seam exists>
 Regression surface: <related paths the fix must leave unchanged>
 Sibling instances: <other sites with the same pattern, or none>
-Cleanup: <instrumentation removed, harness location or deleted, worktree state>
+Cleanup: <instrumentation removed, harness location or deleted, baseline comparisons and any unresolved differences>
 ```
 
 The report maps directly onto the fix PRD: Symptom and Minimal repro feed Reproduction, Confirmed cause feeds Root cause, Regression seam feeds the first RED slice, and the confirmed hypothesis is recorded in the fix commit body.
