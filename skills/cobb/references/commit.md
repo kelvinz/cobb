@@ -8,7 +8,8 @@ Before proposing a commit, load `references/templates/commit-rules.md` for class
 
 ## Guardrails
 
-- Require numbered user confirmation for initial commit groups; a batch `approve all` reply confirms the presented groups' intents, titles, and bodies. That approval also authorises routine review repairs and safe folding into those commits under `references/commit-review.md`, so a folded commit may contain more than the hunks shown at approval.
+- Require numbered user confirmation for initial commit groups; a batch `approve all` reply confirms the presented groups' intents, titles, and bodies. Invoking `/cobb commit` starts the proposal workflow; it is not approval, even when a proposal is already shown. Permission to edit, upgrade, or document is not permission to commit.
+- That initial approval also authorises routine review repairs and safe folding into those commits under `references/commit-review.md`, so a folded commit may contain more than the hunks shown at approval. Those repairs, temporary fixup commits, and safe amendments need no new proposal or confirmation; pause only for that reference's Decisions That Need the User. New follow-up commits use the normal proposal/approval workflow.
 - Show files/hunks, intent, tracking updates, title, and body before initial approval or an approval required by a changed scope/history plan.
 - Recommend splitting or editing when a group's scope or message is weak.
 - Keep commits atomic; if a title needs "and", split the change set.
@@ -48,7 +49,7 @@ Before proposing a commit, load `references/templates/commit-rules.md` for class
    - edit scope/message and repropose
    - skip and leave uncommitted
    - split into smaller groups and repropose
-6. On approval, stage only the approved group, commit immediately, and report hash/title/summary. In approve-all mode, do this per group in the presented order; if staging drifts from the presented plan (missing files, conflicting hunks, new changes), stop the batch, report the drift, and fall back to one-at-a-time for the remaining groups.
+6. Before each initial or follow-up commit, identify the user's reply approving that group's current proposal. If approval is missing or the proposal changed, return to step 3 and wait for approval. Then stage only the approved group, commit with the approved title and body, and report hash/title/summary. In approve-all mode, do this per group in the presented order; if staging drifts from the presented plan (missing files, conflicting hunks, new changes), stop the batch, report the drift, and fall back to one-at-a-time for the remaining groups.
 7. Repeat until no intended groups remain.
 8. Recheck the worktree:
    - review runs only on a clean worktree; while changes remain:
@@ -71,7 +72,7 @@ Use only for an urgent fix committed directly to the default branch.
 2. Prepare one complete hotfix group, including tests and the failure, urgency, rationale, and follow-up in `tasks/context.md`. Use `fix` unless the change is non-behavioural; PRD sync may be `none` with a reason.
 3. Use Normal Commit Workflow steps 1–5 for proposal and approval only. Then stage exactly that group. Leave unrelated work untouched; ask for an isolation or defer decision if the worktree cannot match the staged change.
 4. Run `review` with caller `hotfix`; it loads `references/review-hotfix.md` and reviews the staged snapshot. Then load `references/commit-review.md` and run its repair loop as caller `hotfix`: repairs are restaged, not folded.
-5. When that loop completes, repeat the snapshot checks from `references/review-hotfix.md` immediately before committing with the approved message.
+5. When that loop completes, identify the user's reply approving the pending group. If approval is missing, return to the proposal/approval steps. Routine in-scope review repairs retain that approval. Repeat the snapshot checks from `references/review-hotfix.md` immediately before committing with the approved message.
 6. Apply that reference's Commit Check after committing. If it fails, review the actual committed change against its parent before claiming success; the commit stays as it is until the user decides.
 7. Report the hash and verification result. The verified staged review replaces normal post-commit review; finalise and push remain separate, explicitly requested actions.
 

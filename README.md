@@ -32,7 +32,7 @@ These phases are written to be handoff-friendly: assume a junior dev (or another
 1. `/cobb prd` (for a bug with an unknown cause, prd runs `diagnose` first and writes the fix PRD from its report) → `/cobb design` (optional, UI/UX-heavy features) → `/cobb implement`
    Function before form: the PRD settles flow, states, copy, and accessibility; design adds the visual layer after.
    Context: capture durable decisions and project language inline as each step executes.
-2. `/cobb commit` (`commit` mode): atomic commits with user approval, followed automatically by `/cobb review` once all intended groups are committed and the worktree is clean.
+2. `/cobb commit` (`commit` mode): propose atomic commits with full template messages and wait for user approval. The command itself, or permission to edit files, does not approve a commit. Once all intended groups are committed and the worktree is clean, `/cobb review` runs automatically.
 3. Post-review loop: automatically fix blockers and suggestions, run checks, fold each repair into its original unpublished commit where safe, and review again, for at most three passes. Pause only for a real decision, unavailable required evidence, or an unsafe history change. The session ends here; repeat steps 1 to 3 until the PRD is fully checked.
 4. `/cobb commit finalise`: run it yourself once the PRD is fully checked and the last repair loop passed; it refuses an unfinished PRD unless you confirm a partial merge. Confirm the closeout commit, archive the completed PRD, and update `tasks/context.md` if needed. Then merge and clean up branches using the confirmed choices.
 5. `/cobb compact` (periodic): summarise older context entries to keep tracking files easy to scan.
