@@ -39,7 +39,7 @@ These phases are written to be handoff-friendly: assume a junior dev (or another
 
 The default is **implement -> commit -> review/repair -> finalise**. Review checks stable commits; each repair or preparatory history rewrite ends with another review. Finalise also re-reviews when the target or delivery scope changes, but not for its verified tracking-only closeout commit. It checks the final merge tree before push or branch cleanup. On a pushed branch the automatic commit review covers the unpushed changes; finalise reviews against the merge target, including a fully pushed branch.
 
-Incremental reviews check delivered behaviour without demanding unfinished future slices. An archived PRD on an unmerged feature branch is not proof that a dependency is available.
+Review evidence must come from the pinned commit, using an isolated checkout when local edits could affect the result. Incremental reviews check delivered behaviour without demanding unfinished future slices. An archived PRD on an unmerged feature branch is not proof that a dependency is available.
 
 Routine review repairs need no extra approval. Automatic folding is limited to private, unpublished feature-branch history; if that cannot be established, the skill asks for a safe alternative such as new atomic fix commits. Standalone `/cobb review` stays read-only. Initial commits and finalise's closeout, merge, push, and deletion choices still need approval.
 

@@ -25,6 +25,10 @@ Review fingerprint:
 - Worktree: clean | matches staged tree | dirty
 - Valid until: any scope, branch, HEAD, base/upstream, index, or worktree change; finalise's verified tracking-only closeout exception may apply
 
+Verification:
+- <command/check>: <VERIFIED | NOT VERIFIED | INCONCLUSIVE> — <result/evidence>; source: <current worktree | isolated checkout> @ <HEAD hash or staged tree hash>
+- <unrun required check and its E#>
+
 Blockers (must fix):
 - B1: <finding with file/line, evidence, impact, required change, and decision needed or none>
 - None

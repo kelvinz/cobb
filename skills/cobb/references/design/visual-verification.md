@@ -15,8 +15,8 @@ Use the browser automation the environment provides. For touch and gesture behav
 ## Rounds
 
 1. Inspect all captures together against the request, the PRD's acceptance criteria, state inventory, and copy matrix, the chosen direction, and the Quality Checks in `references/design/ui.md`. Judge function first: the task completes, states render, focus is visible, and text fits. Then judge hierarchy, spacing, and visual quality.
-2. Fix everything found in one batch, recapture the same files, and confirm.
-3. Stop after the second round. Report what remains as open findings instead of starting a third pass.
+2. In read-only `review` or design audit delivery, report findings and missing evidence to the caller, then stop without editing product files or tracking records. Recapture invalid images when needed; recapture is not permission to repair the UI.
+3. In implementation or an authorised review repair, fix clear in-scope findings in one batch, recapture, and inspect again. Return scope or product decisions to the caller. Stop after this second inspection and report remaining findings; the calling repair loop owns any further pass.
 
 ## When the App Cannot Run
 

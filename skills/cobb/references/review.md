@@ -35,7 +35,7 @@ Shared guardrails from the cobb router apply; the rules below are review-specifi
 
 1. Refresh remote state, then pin HEAD and the comparison base.
    - Run `git fetch --all --prune` first (best-effort); if it fails (offline, unreachable remote), continue against local refs and record in the report that remote freshness is unverified.
-   - Resolve `HEAD_HASH=$(git rev-parse HEAD)` first. If HEAD is detached, return `Good to commit: No` and ask the user to check out or create a branch.
+   - Record `BRANCH_NAME=$(git branch --show-current)` and `HEAD_HASH=$(git rev-parse HEAD)` first. If HEAD is detached, return `Good to commit: No` and ask the user to check out or create a branch.
    - Classify the current branch as `base` when its name is in the shared base-branch list. Otherwise classify it as `feature`.
    - For caller `hotfix`, load `references/review-hotfix.md`, complete its staged-review workflow, and return to the caller. Skip the remaining branch-only workflow below, including the empty-history-range test.
    - Resolve the base for other callers in this order:
@@ -60,6 +60,8 @@ Shared guardrails from the cobb router apply; the rules below are review-specifi
 3. Validate the commit pair before reviewing content:
    - If `HEAD_HASH == BASE_HASH`, the review range is empty. Return `Good to commit: No`. Direct base-branch work needs commit mode when a session-start hash is required. For a fully pushed feature branch, rerun `/cobb review <merge-target>` to review the full branch.
    - If `git merge-base --is-ancestor "$BASE_HASH" "$HEAD_HASH"` fails, return `Good to commit: No` and require sync before re-review.
+   - Inspect source and run checks against `HEAD_HASH`, not local edits. Use the current worktree only when it is clean, its tracked contents match that hash, and unrelated untracked/ignored files cannot affect the checks. Otherwise use an isolated checkout at `HEAD_HASH`, without copying local source edits into it. Keep the user's index and files untouched.
+   - Record the verification checkout and revision. If isolation is unavailable, inspect with pinned Git reads and report unrun checks as missing evidence; results from a dirty worktree are not evidence for the committed change. A called repair/finalise flow still requires a matching clean original worktree before it can act.
 4. **Compare** the change set against required behaviour:
    - correctness and edge cases
    - security risks and data handling
@@ -95,9 +97,10 @@ Shared guardrails from the cobb router apply; the rules below are review-specifi
    - list proposed context entries and cross-reference each to a `B#`, `S#`, or `Finalise` candidate
    - if no durable outcome exists, mark context as `none` with reason
 8. Emit the review fingerprint:
-   - Re-verify before emitting: `git rev-parse HEAD` must still equal `HEAD_HASH`, and `git rev-parse "${BASE_REF}^{commit}"` must still equal `BASE_HASH`. If either moved, rerun from step 1. If the worktree is no longer clean, invalidate a finalise-valid pass.
+   - Re-verify before emitting: the current branch must still equal `BRANCH_NAME`, `git rev-parse HEAD` must still equal `HEAD_HASH`, and `git rev-parse "${BASE_REF}^{commit}"` must still equal `BASE_HASH`. If any changed, rerun from step 1. Verify the check environment still represents the pinned source; unexpected source changes invalidate its results. A dirty original worktree prevents a finalise-valid pass even when isolated checks passed.
    - current branch
    - reviewed scope (PRD feature ID and requirement/slice IDs, with confirmed partial-delivery exclusions if any)
+   - verification checkout and revision for each check, or missing evidence
    - branch kind (`base` or `feature`)
    - reviewed HEAD hash
    - reviewed comparison-base name, resolution source (`argument`, `finalise-target`, `upstream`, `session-start`, `repo-convention`, `remote-head`, or `local-fallback`), and pinned hash

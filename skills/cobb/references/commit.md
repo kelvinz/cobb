@@ -22,7 +22,7 @@ Before proposing a commit, load `references/templates/commit-rules.md` for class
 - Tracking-only catch-up commits outside finalise need explicit approval.
 - In normal mode, run review after all intended groups are committed and the worktree is clean. Hotfix mode uses the staged-review sequence below.
 - Review approval is tied to the exact recorded state for that review mode.
-- In normal mode on a base branch (see the shared list in `SKILL.md`), preserve the session-start HEAD and review `<session-start>..HEAD`; never compare the branch to itself or offer finalise.
+- On a base branch, preserve the session-start HEAD for review's fallback. Finalise is unavailable.
 
 ## Normal Commit Workflow
 
@@ -59,8 +59,7 @@ Before proposing a commit, load `references/templates/commit-rules.md` for class
      - show remaining files/hunks for a manual keep/discard decision — recommended when changes are unexpected, ambiguous, or potentially unrelated
    - the user decides what happens to every remaining change
 9. When clean, run `review` with caller `commit` automatically without another prompt:
-   - on a feature branch, compare against an explicit base, its upstream, or one clear repository default; stop and require `/cobb review <base-ref>` when the base is unclear
-   - on a base branch (any ref in the shared base-branch list), compare against the upstream when one exists and sits behind HEAD, since that is what a push publishes; otherwise compare the recorded session-start commit to HEAD. Disable finalise either way.
+   - use the base-resolution ladder in `references/review.md` Workflow step 1; pass the recorded session-start hash for its base-branch fallback
    - report the reviewed base back to the user; on a pushed branch the base is the upstream, so the pass covers the unpushed delta and finalise will re-review against the merge target
 10. Load `references/commit-review.md` and run the automatic repair loop. When already inside that loop, return the review report to it instead of starting another loop.
 
