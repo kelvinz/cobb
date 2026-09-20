@@ -4,7 +4,7 @@ Create approved atomic commits. Normal mode runs review and automatic repairs af
 
 Shared guardrails from the cobb router apply; the rules below are commit-specific.
 
-Load `references/templates/commit-rules.md` before the first proposal or when classification is ambiguous.
+Before proposing a commit, load `references/templates/commit-rules.md` for classification, title, and body rules.
 
 ## Guardrails
 
@@ -14,7 +14,6 @@ Load `references/templates/commit-rules.md` before the first proposal or when cl
 - Keep commits atomic; if a title needs "and", split the change set.
 - One intent per commit; a behavioural change is `feat` or `fix`, never `chore`.
 - Determine type from the diff, not branch name, paths, or habit.
-- Fix commits state the confirmed cause in the body (see the body template).
 - Add AI attribution or `Co-authored-by` only when explicitly requested.
 - Normal mode leaves the remote untouched; push belongs to finalise.
 - Couple completed PRD checklist and durable context updates to the atomic change that produced them.
@@ -24,25 +23,13 @@ Load `references/templates/commit-rules.md` before the first proposal or when cl
 - Review approval is tied to the exact recorded state for that review mode.
 - In normal mode on a base branch (see the shared list in `SKILL.md`), preserve the session-start HEAD and review `<session-start>..HEAD`; never compare the branch to itself or offer finalise.
 
-## Message Rules
-
-Title:
-
-`<emoji> <type>: <imperative summary>`
-
-- `feat` -> `✨`
-- `fix` -> `🐛`
-- `chore` -> `🧹`
-
-Use another emoji only when it is more precise. Keep the summary short, specific, and imperative.
-
 ## Normal Commit Workflow
 
 1. Record the session-start HEAD, then inspect `git status --short`, staged diff, and unstaged diff. Identify the active PRD when applicable. Retain the original session-start hash when returning from review repairs.
 2. Partition changes into atomic groups. Map each group to:
    - completed PRD checklist/story items, or `none` with reason
    - durable context outcomes, or `none` with reason
-3. Present each group's proposal:
+3. Before presenting each group's proposal, validate its title and body against `references/templates/commit-rules.md`. Present:
    - files and hunks
    - concise change summary
    - evidence-based `feat`/`fix`/`chore` rationale

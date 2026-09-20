@@ -23,37 +23,39 @@ Choose `type` in this order (first match wins):
 - If uncertain between `feat` and `fix`, prefer `fix` when correcting expected behaviour; otherwise use `feat`.
 - If still ambiguous after reviewing diff + context, offer the candidate classifications as a choice and wait before committing.
 
+## Title
+
+`<emoji> <type>: <imperative summary>`
+
+- `feat` -> `✨`
+- `fix` -> `🐛`
+- `chore` -> `🧹`
+
+Use another emoji only when it is more precise. Keep the summary short, specific, and imperative.
+
 ## Standard body template
 
-Include both a concise change summary and the decision rationale:
+Use these sections in order in both the proposal and the committed body:
 
-- short summary of what changed (2-5 bullets)
-- problem context a future reader would not have
-- alternatives considered
-- trade-offs made
-- consequences or side effects worth noting
+- `Summary` (required): what changed, in 1–3 bullets.
+- `Why` (required): why the change was needed, including essential problem context. Mention a rejected alternative only when it helps explain the decision.
+- `Cause` (required for `fix`, omitted otherwise): the confirmed cause.
+- `Notes` (only when applicable): important effects, trade-offs, limitations, compatibility changes, or migration steps.
+
+Use the literal headings below and omit inapplicable sections rather than writing `None`. Keep routine test results in the verification report; include a result here only when it helps explain the change.
 
 ```text
 Summary:
-- ...
+- What changed.
 
 Why:
-- ...
+- Why this change was needed.
 
-Cause (fix commits only):
-- <the confirmed hypothesis, so the next debugger learns>
+Cause:
+- Confirmed cause.
 
-Context:
-- ...
-
-Alternatives considered:
-- ...
-
-Trade-offs:
-- ...
-
-Consequences:
-- ...
+Notes:
+- Important effects or limitations.
 ```
 
 ## Finalise body template
