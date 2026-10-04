@@ -63,22 +63,13 @@ Copy is part of the function: it tells people what happened and what to do next.
 
 ## Accessibility Option Set for UI Components
 
-Use this section as the deeper accessibility reference for `ui` mode; the compact baseline in `references/design/ui.md` covers routine UI work, and this fuller set applies when more UX/accessibility depth is needed. Target WCAG 2.2 AA unless the PRD names another level.
+These checks extend the Compact Accessibility Baseline in `references/design/ui.md`. Apply that baseline first, then these when the work needs more UX or accessibility depth:
 
-1. Focus: include visible `focus-visible` styles with strong contrast and non-color-only indication.
-2. Keyboard: support tab order, Enter/Space activation, Escape handling where applicable, and no keyboard traps.
-3. Naming: provide accessible names via visible labels, `aria-label`, or `aria-labelledby`.
-4. State semantics: expose `disabled`, `invalid`, `required`, expanded/collapsed, and selected states correctly.
-5. Feedback: announce validation and async status with clear text and semantic roles where needed.
-6. Contrast: maintain readable text/icon contrast for default, hover, active, focus, and disabled states.
-7. Motion safety: provide reduced-motion-safe behavior for transitions and feedback animations.
-8. Responsiveness: preserve comprehension and actionability across viewport and text sizes.
-9. Target size: at least 24×24 CSS px, and 44×44 for primary touch targets with 8px between targets. Measure the hit area, not the glyph; inline text links are exempt.
-10. Focus not obscured: sticky headers, toasts, and overlays never hide the focused element.
-11. Dragging: every drag interaction has a single-pointer alternative, such as move up and move down buttons.
-12. Redundant entry: never ask again for information given earlier in the same process; offer "same as" options and autocomplete.
-13. Accessible authentication: allow paste in password and code fields, support password managers and passkeys, and offer an alternative to puzzles.
-14. Time limits: warn before a session or timed action expires and let the user extend it; let users pause auto-updating content.
+1. Responsiveness: preserve comprehension and actionability across viewport and text sizes.
+2. Dragging: every drag interaction has a single-pointer alternative, such as move up and move down buttons.
+3. Redundant entry: never ask again for information given earlier in the same process; offer "same as" options and autocomplete.
+4. Accessible authentication: allow paste in password and code fields, support password managers and passkeys, and offer an alternative to puzzles.
+5. Time limits: warn before a session or timed action expires and let the user extend it; let users pause auto-updating content.
 
 ## Audit Workflow and Axes
 
@@ -99,9 +90,9 @@ Use this workflow when auditing existing UI code or built interfaces. Evaluate f
    - distracted mobile user: one hand, interruptions, and a slow network
 4. Evaluate information architecture, wayfinding, and cognitive load. Flag decision points with more than four visible options and flows that rely on memory from earlier screens.
 5. Evaluate states and feedback against the state inventory.
-6. Evaluate accessibility against the option set above.
+6. Evaluate accessibility against the baseline in `references/design/ui.md` and the option set above.
 7. Evaluate copy against UX Copy.
-8. Run the dark-pattern check in `references/design/ethics.md` when the surface is in its scope.
+8. Run the dark-pattern check in `references/design/ethics.md` for a trust-sensitive flow.
 9. Evaluate responsive behaviour and the mobile web baseline in `references/design/ui.md`.
 10. Then evaluate form: hierarchy, spacing and layout consistency, typography, colour and contrast, and motion quality with reduced-motion compliance.
 11. Evaluate implementation risks and maintainability.

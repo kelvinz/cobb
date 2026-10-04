@@ -10,8 +10,6 @@ Shared guardrails from the cobb router apply; the rules below are diagnose-speci
 - `implement`: loaded automatically when a fix PRD's RED test fails to reproduce the bug. Return the report to `implement`, which updates the PRD through `prd` and resumes.
 - `standalone` (`/cobb diagnose`): the user wants the cause without a PRD yet. End with the report and recommend `/cobb prd`.
 
-A called run skips the standalone closing recommendation and returns control with the report.
-
 ## Guardrails
 
 - Leave product code, tests, and tracking files as you found them. Temporary instrumentation and throwaway harnesses are allowed while the phase runs and are removed before it ends.
@@ -23,9 +21,9 @@ A called run skips the standalone closing recommendation and returns control wit
 
 ### Starting State
 
-**Baseline.** Before experiments, save the original branch, HEAD, index entries (`git ls-files --stage -z`), staged/unstaged binary diffs, untracked path list, and contents/modes/existence of every path the experiment can touch. Use private scratch storage outside the repo; the baseline may contain secrets.
+**Baseline.** Before experiments, create a private scratch folder outside the repo and run `scripts/baseline.sh save <dir>`. It records branch, HEAD, index entries, staged and unstaged patches, and file fingerprints. This is a comparison record, not a complete backup: untracked contents and ignored files are not saved. Separately preserve the contents, modes, and existence of every path an in-place experiment can touch, including ignored files. The baseline may contain secrets. The script uses NUL-delimited path lists and hashes file bytes, including names with tabs or newlines. Check ignored files, submodule contents, and external state separately when experiments can affect them.
 
-**Isolation.** Prefer a disposable copy that includes relevant user edits, with isolated test data. Run instrumentation, bisection, and tests there. Leave the original index and branch unchanged.
+**Isolation.** Prefer a disposable copy that includes relevant user edits, with isolated test data. The router's Isolated work rule and `scripts/worktree.sh` cover private working-state copies. Run instrumentation, bisection, and tests there. Leave the original index and branch unchanged.
 
 **In-place exception.** If a copy cannot reproduce the environment, ask before experimenting in place. Save each path before touching it. Restore only your experiment changes from the baseline, never from HEAD or with a blanket reset/clean. If a path differs from your last written version, preserve the concurrent edit and pause.
 
@@ -78,11 +76,11 @@ Before ending:
 
 - remove all tagged instrumentation (grep the prefix) and restore any in-place experiment changes under Starting State
 - delete throwaway harnesses, or move them to a clearly marked scratch location outside the repo
-- compare every value in the Starting State baseline with the original repo; all must match, not only `git status --short`
+- compare the original repo with the Starting State baseline using `scripts/baseline.sh compare <dir>` and the separate checks for paths it cannot verify; require all comparisons to match. `SAME` alone does not cover those paths
 - if a comparison fails, report the changed paths without claiming cleanup succeeded; preserve concurrent user work and retain the private baseline until the difference is resolved
 - after successful cleanup, remove private backups that are not needed for the redacted repro
 
-Then produce the Diagnosis Report and recommend `/cobb prd` to write the fix PRD from it.
+Then reply under Output.
 
 ## Diagnosis Report
 

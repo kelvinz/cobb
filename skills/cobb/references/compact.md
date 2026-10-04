@@ -32,9 +32,7 @@ Shared guardrails from the cobb router apply; the rules below are compact-specif
      from older entries (bottom of each section).
    - Move them into `Notes / gotchas` or `Current state: Blockers` so they are not lost.
    - Replace older entries with a concise historical summary block appended at the bottom of each section.
-4. Report results:
-   - Show retained vs consolidated counts.
-   - Call out any sections intentionally left untouched.
+4. Report under Output.
 
 ---
 
@@ -56,8 +54,9 @@ Use these as initial recommendations, then ask the user to confirm or adjust:
 
 ## Output
 
-- Update only `tasks/context.md`.
-- Return:
-  - proposed numbers and user-selected numbers
-  - retained vs consolidated counts
-  - concise summary of what changed
+Return:
+
+- the proposed numbers and the user-selected numbers
+- retained versus consolidated counts
+- any sections intentionally left untouched
+- a concise summary of what changed

@@ -19,7 +19,7 @@ Each smell reads *what it is* then *how to fix*; match it against the diff:
 - **Divergent Change**: one module edited for several unrelated reasons. Split so each module changes for one reason.
 - **Speculative Generality**: abstraction, parameters, or hooks added for needs the PRD does not have. Delete it; inline back until a real need shows.
 - **Message Chains**: long `a.b().c().d()` navigation the caller should not depend on. Hide the walk behind one method on the first object.
-- **Middle Man**: a class or function that mostly delegates onward. Cut it and call the real target directly.
+- **Middle Man**: a class or function that only forwards calls without adding meaning or a boundary. Apply Subtract before you add in `references/design-principles.md` before proposing removal.
 - **Refused Bequest**: a subclass or implementer that ignores or overrides most of what it inherits. Drop the inheritance and use composition.
 
 Report each match as `S#` with the smell name, the quoted hunk, and the concrete improvement.

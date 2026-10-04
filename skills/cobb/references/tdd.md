@@ -15,6 +15,8 @@ Use this reference during `prd` and `implement` for behavioural `feat` and `fix`
 - **Fault check:** name a relevant wrong result or missing effect that the test must reject. Where practical, introduce that fault temporarily and confirm the test fails, then restore the correct implementation. Returning `undefined` or doing nothing is one useful probe, not a universal test of quality; void-returning operations are tested through their effects.
 - Judge assertions by the contract, not the matcher name. Defined, truthy, empty-result, no-throw, and boundary-call assertions can be valid, but may miss the important error. Check exact values, payloads, or resulting state when the behaviour requires them. For filtering or permission rules, cover both allowed and denied cases across the suite.
 - Ensure the subject runs and its result or effect is observed. A fixture asserting itself proves nothing about production behaviour. A fixed value or text check is useful when it protects an external contract; merely repeating an internal implementation detail is not a behaviour test.
+- Keep the inputs and expected results that distinguish a test visible beside its assertion. Share routine setup, but prefer a little repetition to helpers that hide the behaviour being tested.
+- For asynchronous work, wait for the observable event or state with a bounded deadline and a failure message that names the missing condition. Use controlled time for timing contracts where practical; a real delay must follow the triggering event and have a duration justified by that contract. Investigate a timeout before increasing it.
 - Name tests and fixtures with the project language from `tasks/context.md`.
 
 ## Seams
@@ -56,14 +58,14 @@ Include test code or pseudocode when setup, boundary control, concurrency, state
 
 ## Behaviour-Preserving Changes
 
-For a `chore` that restructures code (rename, extract, inline, dedupe, move), the contract is that behaviour does not change:
+For restructuring (rename, extract, inline, dedupe, move), whether a `chore` or a green-state refactor, the contract is that behaviour does not change:
 
-1. **Pin first.** Before any structure moves, capture current behaviour with a characterisation test, a snapshot, or an equivalence harness that replays a recorded baseline. Typecheck and lint are not a pin. If the area has no coverage, write the pin before touching structure.
-2. **Subtract, then reshape.** Delete dead code, one-caller wrappers, and redundant validators first, then introduce the new shape in small steps that keep the pin green. When a new internal API replaces an old one, migrate every caller and delete the old path in the same wave; use expand-migrate-contract only when a single wave cannot land green.
+1. **Pin first.** Before any structure moves, use existing tests to pin current behaviour; add a characterisation test or equivalence check only for uncovered behaviour. Cover outputs, errors, side effects, and their ordering where observable; a shorter expression can change these. Typecheck and lint are not a pin.
+2. **Subtract, then reshape.** Read and apply Subtract before you add and Migrate callers, then delete in `references/design-principles.md`. Make small changes that keep the pin green.
 3. **Prove equivalence on the real artifact.** Diff old-versus-new outputs, replay the baseline against the new code, or run the surface, not "it compiles".
 4. **Keep it only if reader load fell.** The success measure is fewer layers to trace or less hidden state to hold. A reshape that lowers neither is reverted.
 
-A cleanup that reveals a missing feature or a real bug is split out into its own PRD; the structural change ships first against the pin.
+A missing feature or real bug found during cleanup gets its own PRD; keep the current restructuring behaviour-preserving.
 
 ## Exceptions
 
@@ -100,4 +102,4 @@ Keep a completed behavioural slice together as one atomic group:
 - PRD checklist updates
 - durable context update, if any
 
-RED and GREEN land together in one commit. A deliberately failing regression test may be shown during implementation, but the committed group must be green unless the user explicitly approves a diagnostic-only commit.
+When two slices change the same lines, they share one group. RED and GREEN land together in one commit. A deliberately failing regression test may be shown during implementation, but the committed group must be green unless the user explicitly approves a diagnostic-only commit.

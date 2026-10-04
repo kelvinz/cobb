@@ -47,15 +47,17 @@ Shared guardrails from the cobb router apply; the rules below are PRD-specific.
    - Inspect repository structure, conventions, relevant implementation, tests, configuration, and installed dependency versions.
    - For a feature with a user-facing surface, find how the app runs and is checked. When `tasks/context.md` has no verification recipe, record one under the rules in `references/context-log.md`.
    - Resolve answerable questions from evidence and record the evidence-backed recommendation.
-   - Use authoritative documentation for unstable or unfamiliar external contracts; record the relevant version, link, and resulting constraint in the PRD.
+   - For an update, audit the existing PRD against the Readiness Checklist in `references/templates/prd-template.md` before building the interview tree.
+   - Apply the shared External contracts rule; record the relevant version, source link, and resulting constraint in the PRD.
 5. **Build and walk the design tree:**
    - Cover product outcome, users, scope, flows, states, data, APIs, permissions, security/privacy, accessibility, performance, reliability, observability, migrations, rollout/rollback, seams under test, and verification.
    - Mark a branch non-applicable only with a short reason.
+   - For operational-diagnosis requirements or deployment-stage data/consumer compatibility, read `references/production.md` and record the applicable contract and safe verification in the PRD.
    - Resolve prerequisite decisions before dependent decisions.
    - Build the question tree and ask it in frontier rounds using the shared interview format (see Interview Protocol).
    - Treat the test seams as a decision the user confirms: name the public interfaces the tests will cross, prefer existing seams over new ones, place any new seam as high as it can go, and keep the count small (one is the ideal). Record the confirmed seams in section 9 of the PRD.
    - For a feature with a user-facing surface, settle the UX layer in the interview, function before form: the task flow, the state inventory, the copy for key states, and accessibility. Write the copy under UX Copy in `references/design/ux.md`. Visual direction may stay open for `/cobb design`; the flow may not.
-   - When the feature touches consent, pricing or checkout, subscriptions or trials, cancellation or account deletion, notifications, data collection or sharing, AI decisions that affect users, or products for children, run the dark-pattern check in `references/design/ethics.md` and resolve every match before `ready`.
+   - For a trust-sensitive flow, run the dark-pattern check in `references/design/ethics.md` and resolve every match before `ready`.
    - When a design question needs a runnable answer (a state model that is hard to reason about on paper, or a UI that must be seen), choose the artifact that matches the decision under Artifacts by Decision in `references/design.md`, build it outside the product code, fold the verdict into a `D-###` entry with the snippet trimmed to the decision, and keep the prototype out of the PRD.
    - If the user cannot decide, apply a labelled provisional recommendation only when the choice is reversible and low-risk.
    - Keep high-risk or irreversible unresolved choices open and leave the PRD in `draft`.
@@ -74,7 +76,7 @@ Shared guardrails from the cobb router apply; the rules below are PRD-specific.
    - If found, use it (update in place).
    - Otherwise use `tasks/f-##-<feature-slug>.md`.
 9. **Write or update the PRD** at the chosen path using `references/templates/prd-template.md`:
-   - Set `Status:` and `Priority:` in the Summary section.
+   - Set `Status:` and `Priority:` in the Summary section. On an update, keep the existing `Priority:` unless the user asks to change it, and apply Progress Updates in the template to the checklist state.
    - Set `Status: ready` only when every implementation-blocking decision is resolved and the readiness checklist passes.
    - Otherwise set `Status: draft` and number each unresolved item.
    - `Priority:` uses P0 (critical), P1 (high), P2 (medium), P3 (low).
@@ -96,7 +98,7 @@ Shared guardrails from the cobb router apply; the rules below are PRD-specific.
 11. **Update context:**
    - Update project gist in `tasks/context.md` if this is the first PRD or project scope changed.
    - Capture any durable decisions or constraints.
-12. **Reply** with updated file paths, status, readiness result, and a short change summary. When `design` called this phase, return to it with the PRD path instead of ending the phase.
+12. **Reply** under Output. When `design` called this phase, return to it with the PRD path instead of ending the phase.
 
 ---
 
@@ -113,7 +115,7 @@ Shared guardrails from the cobb router apply; the rules below are PRD-specific.
 
 Resolve the design-tree gaps from the workflow, including feature type, priority, and dependencies. Finding facts is your job: look up repository facts, versions, and documentation yourself, and ask the user only about decisions with valid, safe alternatives. Classify a fork before asking: if the answer is observable by running something (behaviour, timing, output, layout, performance), it is a fact, and a prototype or a run settles it; reserve questions for product or preference calls no experiment can settle. A recommendation is a judgment, not validation: when the evidence says the feature or a branch of it does not earn its place, `0 — Recommended` may be to drop or defer it, with the reason.
 
-Ask in **rounds**. A round holds the whole frontier: every question whose prerequisites are settled. Each answer reshapes the tree, so recompute the frontier before the next round. A question that depends on another question in the same round belongs to the next round. Announce the total and the revised total after any change.
+Ask in rounds under the router's Interview in rounds rule, in the Round format below.
 
 Keep the project language sharp while you go:
 
@@ -128,15 +130,15 @@ Keep the project language sharp while you go:
 Round 2 (Questions 3 to 5 of 11)
 
 Question 3 of 11: What outcome should this change optimise for?
-0. **Recommended:** Reduce checkout abandonment; this matches the stated user problem and existing funnel metrics.
-1. Reduce support workload.
-2. Increase average order value.
-3. Custom answer: describe the outcome.
+0 — Recommended: Reduce checkout abandonment — it matches the stated user problem and existing funnel metrics
+1 — Reduce support workload
+2 — Increase average order value
+3 — Custom answer: describe the outcome
 
 Question 4 of 11: Which seam do the tests cross?
-0. **Recommended:** The existing `checkoutService` interface; it already has integration tests and covers the full path.
-1. A new HTTP-level seam through the checkout route.
-2. Custom answer.
+0 — Recommended: The existing `checkoutService` interface — it already has integration tests and covers the full path
+1 — A new HTTP-level seam through the checkout route
+2 — Custom answer
 
 Question 5 of 11: ...
 ```
@@ -163,30 +165,10 @@ Reply with `3:0 4:1 5:2` or one number per line, in question order.
 
 ---
 
-## Update Rules (When a PRD Exists)
-
-- Update the existing PRD in place, retaining its feature ID.
-- Preserve `Priority:` unless the user asks to change it.
-- Apply Progress Updates and the Readiness Checklist in `references/templates/prd-template.md` to checklist state and `Status:`. Report any reopened items or status change and why.
-
----
-
-## PRD Template
-
-Use `references/templates/prd-template.md` as the default PRD template and checklist.
-
-- Read it before creating or updating a PRD.
-- For updates, audit the whole document for implementation-critical gaps and edit the affected sections under its progress rules.
-- Keep acceptance criteria concrete and verifiable; examples are in the reference file.
-
----
-
 ## Output
 
-- Create or reuse `tasks/`.
-- Save/update the PRD at the chosen path.
-- Update `tasks/context.md` when durable decisions or project scope changes warrant it.
-- For UI/UX-heavy PRDs, recommend `/cobb design` (optional) before `/cobb implement`.
-- Suggest the next action:
-  - If `Status: draft`, recommend resolving its named blockers.
-  - If `Status: ready`, recommend design direction or implementation from the PRD's needs.
+Reply with:
+
+- each PRD path written or updated, with its `Status`, the readiness result, and a short change summary
+- any reopened items or `Status` change, and why
+- the next action: for `Status: draft`, resolve its numbered blockers; for `Status: ready`, `/cobb design` first for UI/UX-heavy work (optional), otherwise `/cobb implement`

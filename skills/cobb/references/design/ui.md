@@ -2,6 +2,10 @@
 
 Design or refine interactive interfaces and component systems. UI follows UX under Function Before Form in `references/design.md`: the visual layer is set only after the flow, states, and copy it serves are settled.
 
+## Contents
+
+Delivery and References, Repository Fit, Design Plan, Calibration, Direction Round, Variant Picker, Visual Rules, Mobile Web Baseline, Microinteractions, Interaction and Data States, Compact Accessibility Baseline, Quality Checks.
+
 ## Delivery and References
 
 Follow the delivery kind and preflight rule in `references/design.md`:
@@ -176,12 +180,12 @@ Use task-specific progress and success feedback rather than generic circular spi
 Target WCAG 2.2 AA unless the PRD names another level. Keep these checks available for routine UI work:
 
 1. Focus: visible `focus-visible` styles, using more than colour alone where possible. Sticky headers, toasts, and overlays never hide the focused element.
-2. Keyboard: logical tab order and expected `Enter`, `Space`, `Escape`, and arrow-key behaviour.
+2. Keyboard: logical tab order, expected `Enter`, `Space`, `Escape`, and arrow-key behaviour, and no keyboard traps.
 3. Naming: visible labels or accessible names through `aria-label` / `aria-labelledby`.
 4. State semantics: expose disabled, invalid, required, expanded/collapsed, selected, loading, and busy states correctly.
-5. Feedback: clear validation, async status, empty-state, and error text; use semantic roles where useful.
+5. Feedback: clear validation, async status, empty-state, and error text; announce validation and async status to assistive technology, with semantic roles where useful.
 6. Contrast: at least 4.5:1 for body and placeholder text, and 3:1 for large text and non-text UI such as icons, control borders, and focus rings, including hover and error states. On coloured surfaces, tint secondary text from the surface hue instead of using grey.
-7. Target size: at least 24×24 CSS px, and 44×44 for primary touch targets with 8px between targets.
+7. Target size: at least 24×24 CSS px, and 44×44 for primary touch targets with 8px between targets. Measure the hit area, not the glyph; inline text links are exempt.
 8. Motion safety: respect `prefers-reduced-motion` and provide non-motion feedback for critical changes.
 9. Preferences: honour `prefers-reduced-transparency` and `prefers-contrast: more` when using translucent or low-contrast surfaces; increase opacity, remove blur, and define borders as needed.
 

@@ -48,7 +48,7 @@ When called by `references/commit-review.md`, use Review-Repair Mode at the end 
        - Number the choices and recommend the higher-priority ready PRD unless a documented dependency or urgency justifies continuing.
      - If a higher-priority PRD is still `Status: draft`, mention it but proceed (it's not ready yet).
     - Create a new feature branch before making changes (unless you are already on an appropriate feature branch):
-      - Base it off the repository default branch (resolve via `origin/HEAD` or repo policy).
+      - Base it off the repository default, resolved under the router's shared rule.
       - Propose the branch name and base branch, then ask with numbered create/use-current/custom/stop choices; recommend the repository-conforming safe option.
       - Name it based on the PRD Summary `Type` (or match repo conventions):
         - `Type: fix` → `fix/f-##-<short-slug>`
@@ -58,6 +58,8 @@ When called by `references/commit-review.md`, use Review-Repair Mode at the end 
    - For UI work, read the root `DESIGN.md` when it exists and the PRD's visual direction block; the PRD overrides `DESIGN.md` for this feature.
    - Parse the PRD into an execution plan.
    - Require traceability from user stories and acceptance criteria to ordered implementation slices and evidence.
+   - Before the first product edit, apply the shared-contract consistency and implied-failure checks in the Readiness Checklist in `references/templates/prd-template.md`. Reuse a caller's valid preflight for a bounded assignment when its scope and inputs are unchanged; return a material contract conflict to `/cobb prd`.
+   - For approved operational-diagnosis requirements or deployment-stage data/consumer compatibility, read `references/production.md` and identify the applicable verification contract.
    - Include user stories, functional requirements, non-goals, technical design, risks, rollout, rollback, and testing notes.
    - For behavioural `feat` and `fix` work, read `references/tdd.md` and validate the PRD against it.
    - For a `chore` that restructures code, read the Behaviour-Preserving Changes contract in `references/tdd.md` and require the PRD's behaviour pin, equivalence proof, and reader-load target.
@@ -73,8 +75,8 @@ When called by `references/commit-review.md`, use Review-Repair Mode at the end 
      - Offer numbered resolve-dependency/override/stop choices when blocked. An explicit override must name the evidence and any unmet requirement, for example work already merged without its archive; record it in `tasks/context.md`.
 
 3. **Execute**
-   - Implement the feature as specified.
-   - Follow PRD implementation slices in dependency order, a `prefactor` slice first when the PRD has one.
+   - Implement every unchecked slice in dependency order, or only those the user names; run any `prefactor` first. Continue until all selected slices are verified and checked off, or a blocker requires a user decision. Close out under Output.
+   - For a bounded assignment from the user's workflow, execute only the assigned slices and return their evidence and blockers to the caller under the router's Handoff-friendly rule. Update tracking only when it belongs to that assignment; leave later phase handoffs to the caller.
    - Write tests only at the seams the PRD confirmed: section 9 for behavioural work, or the behaviour pin for a restructuring `chore`.
    - For behavioural work with a practical automated harness, execute one vertical RED/GREEN/REFACTOR cycle at a time per `references/tdd.md`, keeping each completed slice together as one future atomic commit group.
    - For a behaviour-preserving `chore`, capture the pin before any structure moves, keep it green through each step, prove equivalence on the real artifact, and revert the reshape if reader load did not fall.
@@ -86,6 +88,7 @@ When called by `references/commit-review.md`, use Review-Repair Mode at the end 
    - Verify acceptance criteria and edge cases from the PRD.
    - Verify on the matching surface, using the verification recipe under Repo conventions in `tasks/context.md` when one exists: a CLI change runs the real command, a UI change walks the changed flow in the running app, a parser or migration replays a saved input, a storage change reads back the written value, a performance change reports one primary number as before and after. Tests show branch behaviour; the surface shows the feature works.
    - For a UI slice, capture and inspect under `references/design/visual-verification.md`, function before form.
+   - For operational-diagnosis requirements or deployment-stage data/consumer compatibility, supply the applicable safe-environment evidence under `references/production.md` before closing the affected acceptance criteria and slices.
    - Perform any manual QA steps listed in the PRD.
    - Grade each check `VERIFIED`, `NOT VERIFIED`, or `INCONCLUSIVE`. Inconclusive or wrong-surface is flagged, never counted as a pass.
    - Record evidence against the stable acceptance-criterion and slice IDs.
@@ -101,12 +104,7 @@ When called by `references/commit-review.md`, use Review-Repair Mode at the end 
      - architectural/technical decisions with trade-offs
      - milestone-level completion notes worth preserving
 
-7. **Close out**
-   - Summarise what was changed and what remains.
-   - Next steps:
-     - If unresolved UI/UX direction remains, run `/cobb design` and continue `/cobb implement`.
-     - Run `/cobb commit` in `commit` mode; it runs review and automatic repairs after all intended groups are committed and the worktree is clean.
-     - When the PRD is fully checked and the repair loop has passed, run `/cobb commit finalise` to archive the PRD and merge.
+7. **Close out** under Output.
 
 ---
 
@@ -118,12 +116,9 @@ When called by `references/commit-review.md`, keep the current branch and approv
 
 ## Output
 
-- Update code and tests as needed.
-- Update PRD story/task checklist progress in the PRD file.
-- If you discover a durable decision/gotcha, update `tasks/context.md` in the same run.
-- Also update it when you complete a significant milestone.
-- Reply with:
-  - PRD path
-  - Which checklist items were completed
-  - Any follow-ups or open issues
-  - RED/GREEN/REFACTOR evidence per completed behavioural slice, or the approved exception evidence
+Reply with:
+
+- the PRD path and the checklist items completed in this run
+- RED/GREEN/REFACTOR evidence per completed behavioural slice, or the approved exception evidence
+- follow-ups, open issues, and the slices that remain
+- for standalone work, the next step: when UI/UX direction is still unresolved, `/cobb design`, then `/cobb implement` again; otherwise `/cobb commit`, which runs review and automatic repairs after all intended groups are committed and the worktree is clean. When the PRD is fully checked and the repair loop has passed, `/cobb commit finalise` archives the PRD and merges.

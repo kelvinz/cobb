@@ -1,6 +1,6 @@
 # Dark-Pattern Check
 
-Load under the conditions in `references/design.md`: consent, pricing or checkout, subscriptions or trials, cancellation or account deletion, notifications, data collection or sharing, AI decisions that affect users, or products for children. Treat every match as a defect, not a growth tactic.
+Load for every trust-sensitive flow, as the cobb router defines it. Treat every match as a defect, not a growth tactic.
 
 ## Severity and Handling
 

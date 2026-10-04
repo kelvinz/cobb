@@ -11,12 +11,11 @@ Finalise follows the completed automatic review-repair loop in `references/commi
 - Require a clean feature branch, never the default/base branch, with no merge, rebase, cherry-pick, or unresolved index entries in progress.
 - **Re-review rule (canonical).** Require a fresh review after code repairs or history rewrites during preparation, when no valid review exists, when the confirmed delivery scope or target differs from the review, or when the target advances. The approved tracking-only closeout commit and the merge/push/delete choices alone never trigger re-review. The final merge or squash needs no further review only when its tree matches the prepared delivery tree (step 7).
 - Collect target, merge strategy, push, local deletion, and remote deletion as one decision bundle using the router's shared Choices rule.
-- Treat selection of a fully displayed bundle as confirmation of its fields; ask only for missing or conflicting fields.
-- Resolve the target from repository defaults and policy; `main` is one candidate, never an assumption.
+- Bundle approval confirms the merge target and strategy. Push and deletion fields record intent; confirm each action immediately before execution under the router's rules.
+- Resolve the target from the repository default (the router's shared rule) and repository policy; `main` is one candidate, never an assumption.
 - Default push to **no**; the recommended bundle always leaves the remote untouched.
 - Keep closeout tracking (`tasks/` files only) in one approved pre-merge commit; catching up missed atomic updates there needs explicit approval.
 - The target, default, and currently checked-out branches are protected from deletion.
-- Require explicit confirmation for push and each deletion, either through the displayed bundle or a field choice.
 
 ## Workflow
 
@@ -56,8 +55,8 @@ Finalise follows the completed automatic review-repair loop in `references/commi
    - record the final feature HEAD and its tree as `DELIVERY_HEAD` and `DELIVERY_TREE`; require the target to be an ancestor of `DELIVERY_HEAD`
    - obtain any required squash-message approval, check out the confirmed target, recheck its hash, and merge without another rebase
    - verify the target's resulting tree equals `DELIVERY_TREE`; a hook or concurrent change that breaks this check stops push and deletion until investigated and reviewed
-8. Push the target only when the bundle confirms push; otherwise state that remote update remains pending. Stop if the target changed since the verified merge.
-9. Recheck branch-deletion safety under the policy, then apply only the confirmed local/remote deletions. A failed or unverified merge leaves the feature branch intact.
+8. Push the target only when the bundle asks for a push and the user confirms it again right before the push; otherwise state that remote update remains pending. Stop if the target changed since the verified merge.
+9. Recheck branch-deletion safety under the policy, then confirm each local/remote deletion with the user right before it, and apply only the confirmed ones. A failed or unverified merge leaves the feature branch intact.
 
 ## Output
 

@@ -200,8 +200,9 @@ Describe control flow, ownership boundaries, and why this is the smallest mainta
 - **Performance**: workload, limits, latency/budget, measurement method
 - **Reliability**: failure containment, retries, consistency, recovery
 - **Observability**: structured logs, metrics, traces, alerts; exclude secrets/PII
+- **Operational diagnosis** (when required): on-call questions, existing signals, safe probe, correlation/query, and expected evidence; otherwise Not applicable with a reason
 - **Accessibility**: applicable standard (WCAG 2.2 AA by default) and verification
-- **Ethics**: dark-pattern check from `references/design/ethics.md` when the feature touches consent, pricing or checkout, subscriptions or trials, cancellation or account deletion, notifications, data collection or sharing, AI decisions that affect users, or products for children | Not applicable
+- **Ethics**: dark-pattern check from `references/design/ethics.md` for a trust-sensitive flow | Not applicable
 
 ## 8. Implementation Plan
 
@@ -211,6 +212,7 @@ Execute in dependency order. Each slice must produce an independently verifiable
 
 - **Requirements**: US-001, AC-001, BR-001
 - **Depends on**: none
+- **Shared contracts** (cross-slice boundary only): section 6 contract pointer; what this slice produces/consumes
 - **Files/symbols**: `path/to/file#symbol`
 - **RED**: add `<test name>` in `path/to/test`; expected failure is ...
 - **GREEN**: implement the minimum behaviour by ...
@@ -224,6 +226,7 @@ Execute in dependency order. Each slice must produce an independently verifiable
 
 - **Requirements**: ...
 - **Depends on**: SL-001
+- **Shared contracts** (cross-slice boundary only): ...
 - **Files/symbols**: ...
 - **RED**: ...
 - **GREEN**: ...
@@ -273,6 +276,7 @@ This section is the approved TDD contract for behavioural `feat` and `fix` work;
 - Blast radius: <one phrase> — consumers, layouts, data, or integrations affected if it goes wrong
 - Feature flag or compatibility strategy: ...
 - Deployment/migration order: ...
+- Staged data/consumer changes (when applicable): old/new readers and writers at each schema stage, engine/version and lock bounds, backfill checkpoints/retries/verification, retirement evidence, and tested recovery; otherwise Not applicable with a reason
 - Progressive rollout and monitoring: ...
 - Rollback trigger and exact rollback steps: ...
 - Data recovery implications: ...
@@ -304,9 +308,9 @@ This section is the approved TDD contract for behavioural `feat` and `fix` work;
 ## 14. Open Questions
 
 - Q-001: <blocking question>
-  - `0` **Recommended:** ...
-  - `1` ...
-  - `2` Custom answer
+  - 0 — Recommended: <option> — <reason>
+  - 1 — <option>
+  - 2 — Custom answer
   - **Blocks**: status ready | SL-### | rollout | other
 
 Use `None` when all questions are resolved. A PRD with a high-risk or irreversible unresolved question cannot be `ready`.
@@ -352,6 +356,7 @@ Checklist progress records completed work. `Status` records whether the PRD is r
 - [ ] Existing architecture, files, symbols, versions, and commands were verified rather than guessed.
 - [ ] Difficult contracts and algorithms include usable types, examples, pseudocode, or snippets.
 - [ ] Every story and acceptance criterion has stable traceability to an ordered implementation slice and evidence.
+- [ ] Cross-slice contracts agree on symbols, signatures, types, fields, and exact values with section 6; producer-to-consumer dependencies and shared-file edits have a valid sequence. Every likely failure class implied by the approved outcome, beyond the reported happy path, has a named test or justified manual check.
 - [ ] Behavioural work has vertical RED/GREEN/REFACTOR instructions conforming to `references/tdd.md`.
 - [ ] Seams under test are named, user-confirmed, and as few and as high as the behaviour allows.
 - [ ] The data shape and its organising structure are named, illegal states are unrepresentable where the design admits variants, and validation sits at the boundary; a new interface has a second structurally distinct sketch recorded as a rejected alternative.
@@ -362,6 +367,7 @@ Checklist progress records completed work. `Status` records whether the PRD is r
 - [ ] Each slice fits one fresh agent session; an API replacement migrates callers and deletes the old path in one wave, or, when one wave cannot land green, is sequenced as expand, migrate, contract.
 - [ ] Mocks are limited to system boundaries; exceptions are explained.
 - [ ] Security, privacy, permissions, performance, reliability, observability, accessibility, migration, rollout, and rollback are addressed.
+- [ ] Applicable operational-diagnosis and deployment-stage compatibility contracts follow `references/production.md`; non-applicable branches have reasons.
 - [ ] Automated and manual commands, fixtures, expected failures, and completion evidence are explicit.
 - [ ] Material decisions include rationale and relevant rejected alternatives.
 - [ ] Checked items still have valid evidence; affected items were reopened under Progress Updates, and unaffected completion and settled decisions were preserved.

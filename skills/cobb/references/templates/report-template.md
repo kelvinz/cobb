@@ -45,6 +45,9 @@ Dismissed (considered, not findings):
 - <candidate, which lens raised it, and the one-line reason: no reachable path | preference only | consistent with repository convention | out of scope>
 - None
 
+Coverage (every changed file):
+- <path>: <B#/S#/E# IDs> | dismissed | clean
+
 Security notes:
 - ...
 

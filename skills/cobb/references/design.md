@@ -50,7 +50,7 @@ Conditional references (canonical load conditions; other files defer here):
 - Load `references/design/ui-examples.md` only when concrete token, config, or component snippets are needed.
 - Load `references/design/ui-shadcn.md` only when creating or changing shadcn/ui components.
 - Load `references/design/ui-systems.md` only when the brief maps to an official product ecosystem and a design-system choice is needed.
-- Load `references/design/ethics.md` when the surface touches consent, pricing or checkout, subscriptions or trials, cancellation or account deletion, notifications, data collection or sharing, AI decisions that affect users, or products for children.
+- Load `references/design/ethics.md` for a trust-sensitive flow.
 - Load `references/design/visual-verification.md` for implementation or audit of working UI.
 - Load `references/templates/design-md-template.md` when creating or refreshing the root `DESIGN.md`.
 
