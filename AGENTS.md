@@ -1,5 +1,8 @@
 - **README:** Read `README.md` before you start work; it explains the project, its commands, and where things are. If there is none, create one with your first change. When a change alters the project's purpose, commands, or layout, update the README in the same change.
 - **Language:** Write in ASD-STE100 Simplified Technical English, like one human talking to another. Give context before detail.
-- **Memory:** `MEMORY.md` beside this `AGENTS.md` is the only memory store. If it exists, read it before you start work. Record only the corrections and preferences that the user repeats. Create the file when you first need to record one.
+- **Memory:** `MEMORY.md` beside this `AGENTS.md` is the only memory store. If it exists, read it before you start work. Record only the corrections and preferences that the user repeats, one line each. Create the file when you first need to record one.
 - **Simplicity:** Keep your thinking, work, and replies as simple as the need allows. Apply DRY: state each point once, and reuse existing functionality where it fits. Add abstractions only when they reduce complexity.
+- **Git:** Commit and push only when the user asks. When the user asks you to fix a commit that is not pushed, amend that commit instead of adding one. Commit messages carry no AI attribution trailer.
+- **Cleanup:** Before you finish, stop every process, server, and worktree you started. Keep scratch files in a visible folder inside the project, never in a hidden or system temp folder.
 - **Verification:** Use deterministic checks to verify facts and assumptions before you rely on them. Verify task results the same way before you report completion. For code changes, run the relevant tests and checks. State what you checked and what remains unverified.
+- **Completion:** Continue until the task is done or you are blocked on a decision only the user can make. Report done only after verification.
