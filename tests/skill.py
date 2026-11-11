@@ -1,4 +1,4 @@
-"""Check literal bundled paths in cobb, including an isolated install. No agent calls."""
+"""Check literal bundled paths in each skill, including an isolated install. No agent calls."""
 import os
 from pathlib import Path
 import re
@@ -242,6 +242,11 @@ class InstalledSkillTest(unittest.TestCase):
             errors = validate_skill(package)
             self.assertTrue(any(error.startswith("SKILL.md:") and
                                 "references/menu.md — missing file" in error for error in errors))
+
+    def test_every_skill_in_the_repository_resolves(self):
+        for skill in sorted(path for path in (ROOT / "skills").iterdir() if path.is_dir()):
+            with self.subTest(skill=skill.name):
+                self.assertEqual(validate_skill(skill), [])
 
 
 if __name__ == "__main__":

@@ -1,17 +1,19 @@
 # cobb
 
-One agent skill for ongoing product development. You call it with a subcommand, such as `/cobb prd`, `/cobb implement`, or `/cobb commit`, and it runs that phase under shared guardrails.
+Two agent skills for ongoing product development:
 
-Everything lives in one skill, `skills/cobb/`. The phases are reference files that load on demand, not separate skills. The skill is agent-agnostic: it is installed for many agents, so every instruction in it must work for any of them.
+- **`cobb`** (`skills/cobb/`) — one skill for the product-development phases. You call it with a subcommand, such as `/cobb prd`, `/cobb implement`, or `/cobb commit`, and it runs that phase under shared guardrails. The phases are reference files that load on demand, not separate skills. The skill is agent-agnostic: it is installed for many agents, so every instruction in it must work for any of them.
+- **`agentcy`** (`skills/agentcy/`) — Agent C's agency: your session becomes the orchestrator of a team of agents that plan, build, review, and learn, each in its own herdr-core (`hc`) terminal or T3 Code subagent thread. It needs `hc`, which the Herdr app installs, or T3 Code; see [agentcy](#agentcy) below.
 
 ## Install
 
 ```bash
-npx skills add kelvinz/cobb -g     # install for all your projects
-npx skills update cobb             # update an installed copy
+npx skills add kelvinz/cobb -g --skill cobb      # install cobb for all your projects
+npx skills add kelvinz/cobb -g --skill agentcy   # install agentcy
+npx skills update cobb agentcy                   # update installed copies
 ```
 
-The [`skills`](https://github.com/vercel-labs/skills) tool installs only `skills/cobb/` and links it into each agent you pick. The rest of this repository (this README, `AGENTS.md`, `evals/`) is for working on `cobb` itself.
+The [`skills`](https://github.com/vercel-labs/skills) tool installs only the skill folders you pick and links them into each agent you pick. The rest of this repository (this README, `AGENTS.md`, `evals/`, `tests/`) is for working on the skills themselves.
 
 `cobb` is meant to run only when you call it. Claude Code enforces this through the `disable-model-invocation` field in `SKILL.md`; other agents may ignore that field. Agents call skills in different ways; this README writes `/cobb <subcommand>`.
 
@@ -62,10 +64,71 @@ The rules for each step live in the phase files under `skills/cobb/references/`;
 
 Agent preferences and lessons follow the memory rule in your project's `AGENTS.md`; task files are never a memory store.
 
+## agentcy
+
+Four commands:
+
+- `/agentcy init` creates a visible `agentcy/` folder in the project root and sets up the team with you: each agent's harness, model, and thinking level, Donna's included. You do not need `init` to start. Without it, Donna works with the default cast in your session, and before she starts an agent that has no setting, she asks you about every such agent the task needs, in one message. The first answers create `agentcy/agentcy.json`, so she asks about each agent only once.
+
+  Both use the same numbered menu: installed harnesses, their models, and their thinking levels, with Donna's recommended pick for each agent. Reply `0` to take her picks, or one line for each agent to change, such as `skyler 1:2:3` (harness 1, model 2, thinking 3). Names work in place of numbers.
+- `/agentcy <request>` gives the work to Donna, the orchestrator (described below).
+- `/agentcy <agent> <request>`, such as `/agentcy edna make a hero image`, gives the work straight to one agent. Your words are its brief and you judge the result; Donna only starts the tab, passes messages, and records your feedback.
+- `/agentcy learn` has Hermione turn the feedback that has built up into lessons. Run it when you like; Donna reminds you once 7 lines are waiting.
+
+With `/agentcy <request>`, your session becomes the orchestrator. It plans the work, writes a short brief for each workstream, starts each agent in its own `hc` terminal or T3 Code thread, verifies each result by reading the changed files, has the work reviewed, and records your feedback. The orchestrator never edits project files itself.
+
+- **In the Herdr app** — Each agent shows in the agents list under the orchestrator's tab; from any terminal, `hc attach <address>` opens one. The orchestrator can also run outside the Herdr app, as long as it can run `hc`; its agents then show only through `hc attach`.
+- **In T3 Code** — When you run the orchestrator in a T3 Code thread, each agent is a subagent thread under it, named `agentcy: <agent>`. Donna starts it with T3 Code's `delegate_task` tool, using the call that `spawn` prints, and the script then reaches the thread through T3 Code's `t3` command. T3 Code applies each agent's provider, model, and effort; `"approve": "ask"` makes a supervised child, and extra flags in `args` do not apply. Inside T3 Code, Donna cannot hand herself off to another setting; start a new T3 Code thread in that setting instead. Set `"backend"` in `agentcy.json` to `hc` or `t3` to choose one yourself.
+- **What you see** — Each agent's terminal or thread shows the brief it got and its short reply. You see a rough plan to approve, a short board of who is doing what while the work runs, and a brief final report: who did what, what the review found, what was fixed, and how each result was checked.
+- **Questions** — Donna answers her agents' questions herself where she can; she asks you only real decisions, as numbered options where `0` is her recommendation, so you reply with a number.
+
+The design borrows from [oh-my-pi](https://github.com/can1357/oh-my-pi): short role prompts with one shared worker contract, model roles that agents point to, a fixed brief shape (`Goal`, `Contract`, `Target`, `Change`, `Acceptance`, solution space), a director that verifies by reading, one persistent worker per workstream, and sparse lessons.
+
+The default cast (change any of it in `agentcy.json`):
+
+| Agent | Role and use | Default harness |
+|---|---|---|
+| Donna Paulsen (*Suits*) | orchestrator: plans, briefs, verifies; your session, or a tab she starts in her setting | pi |
+| Arya Stark (*Game of Thrones*) | worker: mechanical, well-specified work | pi |
+| Trinity (*The Matrix*) | worker: design, hard bugs, multi-file changes | pi |
+| Skyler White (*Breaking Bad*) | reviewer: read-only, go/no-go with graded findings | Claude Code |
+| Amy Farrah Fowler (*The Big Bang Theory*) | researcher: fast, read-only exploration | pi |
+| Hermione Granger (*Harry Potter*) | learner: turns feedback into lessons on `/agentcy learn` | Claude Code |
+| Edna Mode (*The Incredibles*) | image: makes and judges images with the tool you choose (codex, antigravity, api) | pi; codex and antigravity tools start their own harness |
+| Robin Scherbatsky (*How I Met Your Mother*) | video: makes and judges short videos with the api tool | pi |
+
+Each agent holds its own harness, model, effort, and extra flags. The default models are in `skills/agentcy/templates/agentcy.json`, and `check` shows the ones a project uses. For pi, `check` also confirms that each model name exists. When an agent hits a usage limit, Donna asks you whether to move the work to an agent on another provider, wait for the reset, or stop. An agent can also have **tools**: other ways to run it, each with its own `use`. Edna's tools are `codex` (GPT Image on your ChatGPT plan), `antigravity` (nano banana through the `agy` CLI on your Google plan), and `api` (pay per image with an API key). Robin's one tool is `api`: Gemini Omni Flash, paid per video with an API key (OpenAI shut down its video API on 24 September 2026). When a request could use images or video, Donna asks whether you want them and which tool to use.
+
+Workers move work only through the orchestrator: a fast worker escalates to a strong one with its result file, and the reviewer's findings go back to the worker that owns the file. Workers share one working tree, so each file has one owner.
+
+Files agentcy manages in your project:
+
+- `agentcy/agentcy.json` (committed) — the backend and the agents: each one's role, `use`, harness, model, effort, `approve`, extra launch flags, persona, and optional tools. `"approve": "auto"` starts each harness in its own reviewed auto mode, so permission prompts are answered without you; `"ask"` leaves them in the agent's terminal for you. **pi itself has no permission prompts,** so `approve` changes nothing for a pi agent (six of the eight defaults). Unless a pi extension adds prompts, a pi agent runs every command, deletions included, without asking; use an operating-system sandbox, a container, or a restricted account when that matters. `init` creates it; `references/config.md` in the skill explains every field.
+- `agentcy/feedback.md` (committed) — what should change the team's work next time: your rejections and corrections with your reasons, your standing preferences about the work, and the mistakes that checks caught. Routine answers, such as where Donna runs or which tool to use this time, are not recorded. Donna adds one line per event, naming the run and the agent. The lines wait here until `/agentcy learn`.
+- `agentcy/lessons/<agent>.md` (committed) — one file per agent, Donna's included. `/agentcy learn` turns each feedback line into a one-line lesson in the right agent's file, removes the handled lines from `feedback.md`, and keeps each file under 1,500 characters. Each agent's first prompt includes its own lessons. Edit these files by hand whenever you like.
+- `agentcy/runs/` and `agentcy/state.json` (ignored by `agentcy/.gitignore`) — each run's briefs, each agent's rules file, and the results, and the agents agentcy started.
+
+The skill drives `skills/agentcy/scripts/agentcy.py` (`init`, `check`, `options`, `set`, `run`, `changes`, `spawn`, `send`, `handoff`, `wait`, `read`, `list`, `close`, `image`, `video`; `--dry-run` shows the intended action without writing files or running agents).
+
+- **Settings** — `options <agent>...` prints the numbered menu, and `set <agent> <answer>...` saves your answers, creating `agentcy/agentcy.json` when it is missing. Before that, `check` shows `"initialized": false` and the cast without settings, and `spawn` refuses an agent without a setting.
+- **Addresses** — Agent commands use the saved address: an `hc` terminal such as `t12`, which `hc` never gives to another terminal, or a T3 Code subagent thread id. When the agent has ended, the commands stop, and `close` only removes the record. In T3 Code, `close` leaves the thread for you and refuses a thread that still works. Under `hc`, `spawn` starts each agent through your interactive login shell (zsh or bash), so the agent finds the same commands as your terminal, such as those that pnpm and mise add. `wait` takes several agents and returns when the first one stops. A backend error stops the command and keeps the record for a retry.
+- **Media** — The `image` and `video` commands serve the `api` tools; they read `GEMINI_API_KEY` or `OPENAI_API_KEY` from the environment.
+- **Review** — For reviewed work, `run <slug> --review` saves the starting files and existing staged and unstaged changes. `changes <run-folder>` compares current files with that saved state, including new files that Git does not yet track. Both leave out the `agentcy/` folder, so Donna's feedback notes during a run are not counted as changes. These commands write Git objects through a temporary staging area; they do not change your files, staging area, branches, or commits.
+- **Review limits** — Review stops if project paths have `assume-unchanged` or `skip-worktree` index flags; it does not change those flags. It also stops if a submodule has staged, unstaged, or non-ignored new files, because the snapshot stores only its commit. Review those files separately in the submodule. Run them while workers are stopped so the saved state is consistent. Keep the original baseline for all review rounds.
+- **Other backends** — To support another backend, add a `Backend` subclass with the same methods as `Hc` and `T3` in that script, and add its name to `BACKENDS` and `backend()`.
+
 ## Repository layout
 
 ```
-skills/cobb/                  # the skill that `npx skills add` installs
+skills/agentcy/               # the agent-team skill (needs hc or T3 Code)
+  SKILL.md                    # the orchestrator loop and guardrails
+  references/
+    contract.md               # shared rules every worker gets
+    config.md                 # agentcy.json fields
+    roles/                    # worker, reviewer, researcher, learner, image, video
+  templates/agentcy.json      # default roles and cast
+  scripts/agentcy.py          # config, prompts, lessons, hc and T3 Code backends, image and video APIs; standard library only
+skills/cobb/                  # the product-development skill
   SKILL.md                    # router: dispatch table and shared guardrails
   references/
     menu.md  prd.md  diagnose.md  design.md  implement.md  review.md
@@ -83,6 +146,9 @@ tests/
   scripts.sh                  # deterministic tests for the scripts; not installed
   skill.py                    # bundled-path checks and isolated-install tests; no agent calls
   evals.py                    # deterministic eval-harness safety tests; no agent calls
+  agentcy.py                  # agentcy script tests with a fake hc, t3, and pi; no agent or API calls
+  agentcy_lab.py              # opens a live agentcy lab in hc
+  agentcy-lab/                # the lab's starter project: a small bike-shop page with a cart test
 evals/                        # behaviour tests for the skill; not installed
   run.sh  report.py           # confirm settings, run scenarios, compare results
   process.py                 # stop the run's processes on cancellation
@@ -101,7 +167,9 @@ AGENTS.md                     # rules for agents working in this repository
 - Each rule lives in one file. `SKILL.md` holds only routing and the shared guardrails; a phase file holds that phase's rules. Change a rule where it lives, and point to it from other files.
 - Keep the skill agent-agnostic: no instruction that only one agent can follow.
 - Git helpers live in `skills/cobb/scripts/`. Checks can fetch remote refs or write Git objects; baseline saves scratch records; worktree creates working-state snapshots, stages private-copy changes, and removes owned checkouts. The phase file states the rule and the checks that still need agent judgement. If a helper cannot safely check the state, apply the rule by hand and report the limitation. After a script change, run `bash tests/scripts.sh`; after an eval-harness change, also run `python3 tests/evals.py`. Both take seconds and cost nothing.
-- Run `python3 tests/skill.py` after changing bundled paths. It checks literal `references/...` and `scripts/...` pointers from the skill root, in an isolated copy of `skills/cobb/`. It skips fenced examples, placeholders, and user-project paths; it does not check external URLs or dynamically described paths. Missing files, parent traversal, escaping symlinks, and unreadable inputs fail the check.
+- After an agentcy change, run `python3 tests/agentcy.py`. It uses a fake `hc`, `t3`, and `pi` on `PATH`, so it starts no agent and calls no image API.
+- To try agentcy live, run `python3 tests/agentcy_lab.py`. It copies `tests/agentcy-lab/` to a new temp folder outside this repository (so the session loads no cobb instructions), commits it, links the skill as a skills.sh project install does, and starts `claude` there in `hc`. In the Herdr app it opens as a new tab; elsewhere, use `hc attach <address>`. Run `/agentcy init` there, then give Donna a task. Each run starts clean, and the script prints the command that removes its folder when you finish; each agent it starts uses your plans.
+- Run `python3 tests/skill.py` after changing bundled paths. It checks literal `references/...` and `scripts/...` pointers from each skill root under `skills/`, and in an isolated copy of `skills/cobb/`. It skips fenced examples, placeholders, and user-project paths; it does not check external URLs or dynamically described paths. Missing files, parent traversal, escaping symlinks, and unreadable inputs fail the check.
 - Run focused evals before and after a skill change. Select cases that cover the changed decision or failure mode; add a regression only for a distinct risk. Use the full suite for broad changes. Repeat live cases only for an approved reliability or wording experiment, not by default. Keep fast deterministic safety checks even when a live case covers related behaviour: they test the tools and graders, not model judgement.
 - When a run is slow or repeats work, inspect its existing timing records and the relevant transcript before changing the workflow. Separate adapter time from setup/check time, and identify repeated reads, tests, or repairs with measured durations or transcript locations. Reuse existing results and report the finding in the reply; no separate diagnostic record is needed. A repeat can be necessary after changed inputs or source, so establish the cause before removing it.
 - Match guidance to the observed failure: missing information gets a required template field; a wrong output shape gets a positive output recipe; conditional behaviour gets an observable load condition; a demonstrated permission shortcut gets a targeted guardrail. Keep each rule in its authoritative file.
