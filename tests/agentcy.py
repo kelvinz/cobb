@@ -843,7 +843,7 @@ class WithoutInit(Project):
         menu = report["menu"]
         self.assertIn("pi · zai/glm-5.3-flash · max  (3:4:7)", menu)
         self.assertIn("claude · claude-opus-5-5 · high  (1:2:3)", menu)
-        self.assertIn("    models:   1 claude-fable-5-1  2 claude-opus-5-5", menu)
+        self.assertIn("    models:   1 claude-fable-5-2  2 claude-opus-5-5", menu)
         self.assertIn("    models:   type a name", menu)  # codex without a model cache
         self.assertNotIn("trinity", menu)
         self.assertEqual(len(self.options()["agents"]), 8)  # init asks about every agent

@@ -63,7 +63,7 @@ EFFORTS = {
     "agy": ("low", "medium", "high", "xhigh", "max"),
 }
 # Claude Code cannot list its models without a network call; add new models here.
-CLAUDE_MODELS = ("claude-fable-5-1", "claude-opus-5-5", "claude-sonnet-5-5", "claude-haiku-5-5")
+CLAUDE_MODELS = ("claude-fable-5-2", "claude-opus-5-5", "claude-sonnet-5-5", "claude-haiku-5-5")
 # Flags a harness always needs under hc. Codex's shared daemon would run its commands outside hc.
 ALWAYS = {"codex": ["--no-daemon"]}
 BACKENDS = ("auto", "hc", "t3")  # auto: t3 inside a T3 Code thread, hc otherwise
