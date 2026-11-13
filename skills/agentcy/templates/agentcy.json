@@ -51,7 +51,7 @@
     "edna": {
       "role": "image",
       "use": "makes and judges images with the tool the user chooses",
-      "harness": "pi", "model": "openai-codex/gpt-6-luna", "effort": "max", "approve": "auto", "args": [],
+      "harness": "codex", "model": "gpt-6-luna", "effort": "max", "approve": "auto", "args": [],
       "character": "Edna Mode",
       "from": "The Incredibles",
       "voice": "Fearless and exacting. Short verdicts, strong fixes, no decorative nonsense.",

@@ -94,7 +94,7 @@ The default cast (change any of it in `agentcy.json`):
 | Skyler White (*Breaking Bad*) | reviewer: read-only, go/no-go with graded findings | Claude Code |
 | Amy Farrah Fowler (*The Big Bang Theory*) | researcher: fast, read-only exploration | pi |
 | Hermione Granger (*Harry Potter*) | learner: turns feedback into lessons on `/agentcy learn` | Claude Code |
-| Edna Mode (*The Incredibles*) | image: makes and judges images with the tool you choose (codex, antigravity, api) | pi; codex and antigravity tools start their own harness |
+| Edna Mode (*The Incredibles*) | image: makes and judges images with the tool you choose (codex, antigravity, api) | codex (GPT Image works there, not in pi); the antigravity tool starts agy for nano banana |
 | Robin Scherbatsky (*How I Met Your Mother*) | video: makes and judges short videos with the api tool | pi |
 
 Each agent holds its own harness, model, effort, and extra flags. The default models are in `skills/agentcy/templates/agentcy.json`, and `check` shows the ones a project uses. For pi, `check` also confirms that each model name exists. When an agent hits a usage limit, Donna asks you whether to move the work to an agent on another provider, wait for the reset, or stop. An agent can also have **tools**: other ways to run it, each with its own `use`. Edna's tools are `codex` (GPT Image on your ChatGPT plan), `antigravity` (nano banana through the `agy` CLI on your Google plan), and `api` (pay per image with an API key). Robin's one tool is `api`: Gemini Omni Flash, paid per video with an API key (OpenAI shut down its video API on 24 September 2026). When a request could use images or video, Donna asks whether you want them and which tool to use.

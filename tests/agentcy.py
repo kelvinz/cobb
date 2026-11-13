@@ -356,13 +356,14 @@ class SpawnSendClose(Project):
                          ["codex", "-c", "model_reasoning_effort=medium", "--approve-for-me", "--no-daemon"])
         out, argv = start("--tool", "antigravity")
         self.assertEqual((out["name"], out["tool"], argv), ("edna-2", "antigravity", ["agy", "--mode", "auto"]))
-        self.assertEqual(start("--tool", "api")[1], ["pi", "--model", "openai-codex/gpt-6-luna", "--thinking", "max"])
+        self.assertEqual(start("--tool", "api")[1], ["codex", "--model", "gpt-6-luna", "-c", "model_reasoning_effort=max",
+                                                  "--approve-for-me", "--no-daemon"])
         run = Path(self.cli("run", "art").stdout.strip())
         (run / "edna-3-1.md").write_text("Make a hero image.\n")
         prompt = Path(json.loads(self.cli("send", "edna-3", str(run / "edna-3-1.md")).stdout)["rules"]).read_text()
         self.assertIn("Tool: `api` — Gemini or OpenAI image API, paid per image with an API key. Settings: "
                       '{"provider": "gemini", "models": {"gemini": "gemini-nano-banana-2.1", "openai": "gpt-image-2.6-flare"}}', prompt)
-        self.assertIn("Harness: pi, model openai-codex/gpt-6-luna.", prompt)
+        self.assertIn("Harness: codex, model gpt-6-luna.", prompt)
 
     def test_login_shells_start_agents_with_the_user_environment(self):
         # hc gives programs the login session's PATH; zsh and bash add the rest from their startup files.
