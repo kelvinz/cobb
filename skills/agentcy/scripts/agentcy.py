@@ -1111,11 +1111,13 @@ def cmd_spawn(args):
         print(json.dumps({"agent": key, "tool": args.tool, "status": "delegate", "delegate_task": hc.delegate(key, spec)}))
         return
     state = load_state(root)
-    taken = set(state["agents"]) | hc.live_names()
+    # A copy is arya2, arya3, ...: no dash, so it never looks like a brief number such as arya-2.md.
+    # A name that ends in a digit gets an underscore, so a copy of gpt5 is gpt5_2, not gpt52.
+    taken = set(state["agents"]) | hc.live_names() | (set(cfg["agents"]) - {key})
     name, number = key, 1
     while name in taken:
         number += 1
-        name = f"{key}-{number}"
+        name = f"{key}{'_' * key[-1].isdigit()}{number}"
     if not NAME.match(name):
         raise Fail(f"name {name!r} is too long")
     if t3:
@@ -1130,10 +1132,13 @@ def cmd_spawn(args):
                       "reach": hc.reach(address), "status": status}))
 
 
-def configured(cfg, worker) -> dict:
+def configured(cfg, name, worker) -> dict:
     agent = cfg["agents"].get(worker["agent"])
     if not agent:
         raise Fail(f"agent {worker['agent']!r} is no longer in {CONFIG}")
+    if name != worker["agent"] and name in cfg["agents"]:
+        raise Fail(f"{name} is a copy of {worker['agent']}, but {CONFIG} now has an agent named {name}; "
+                   f"close {name}, then spawn the agent you want")
     return agent
 
 
@@ -1142,7 +1147,7 @@ def cmd_handoff(args):
     root = find_root(Path.cwd())
     cfg = load(root)
     worker = owned(root, args.name)["agents"][args.name]
-    if configured(cfg, worker)["role"] != "orchestrator":
+    if configured(cfg, args.name, worker)["role"] != "orchestrator":
         raise Fail(f"{args.name} is not the orchestrator; use send")
     text = (f"Read {SKILL / 'SKILL.md'} and follow it with these arguments: {args.text} "
             f"(This session was started with the setting in {HOME}/{CONFIG}; skip the session check.)")
@@ -1158,7 +1163,7 @@ def cmd_send(args):
     if not worker and not args.dry_run:
         raise Fail(f"{args.name!r} was not spawned by agentcy; run `spawn` first")
     worker = worker or {"agent": args.name, "tool": None, "turns": 0, "rules": None, "address": args.name}
-    agent = configured(cfg, worker)
+    agent = configured(cfg, args.name, worker)
     if agent["role"] == "orchestrator":
         raise Fail(f"{args.name} is the orchestrator; use handoff")
     if worker.get("tool") and worker["tool"] not in agent.get("tools", {}):

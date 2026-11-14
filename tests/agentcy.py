@@ -372,12 +372,12 @@ class SpawnSendClose(Project):
         self.assertEqual(start("--tool", "codex")[1],
                          ["codex", "-c", "model_reasoning_effort=medium", "--approve-for-me", "--no-daemon"])
         out, argv = start("--tool", "antigravity")
-        self.assertEqual((out["name"], out["tool"], argv), ("edna-2", "antigravity", ["agy", "--mode", "auto"]))
+        self.assertEqual((out["name"], out["tool"], argv), ("edna2", "antigravity", ["agy", "--mode", "auto"]))
         self.assertEqual(start("--tool", "api")[1], ["codex", "--model", "gpt-6-luna", "-c", "model_reasoning_effort=max",
                                                   "--approve-for-me", "--no-daemon"])
         run = Path(self.cli("run", "art").stdout.strip())
-        (run / "edna-3-1.md").write_text("Make a hero image.\n")
-        prompt = Path(json.loads(self.cli("send", "edna-3", str(run / "edna-3-1.md")).stdout)["rules"]).read_text()
+        (run / "edna3-1.md").write_text("Make a hero image.\n")
+        prompt = Path(json.loads(self.cli("send", "edna3", str(run / "edna3-1.md")).stdout)["rules"]).read_text()
         self.assertIn("Tool: `api` — Gemini or OpenAI image API, paid per image with an API key. Settings: "
                       '{"provider": "gemini", "models": {"gemini": "gemini-nano-banana-2.1", "openai": "gpt-image-2.6-flare"}}', prompt)
         self.assertIn("Harness: codex, model gpt-6-luna.", prompt)
@@ -403,11 +403,51 @@ class SpawnSendClose(Project):
     def test_a_second_spawn_gets_a_numbered_name(self):
         self.cli("spawn", "arya")
         done = self.cli("spawn", "arya")
-        self.assertEqual((json.loads(done.stdout)["name"], self.state()["agents"]["arya-2"]["address"]), ("arya-2", "t2"))
+        self.assertEqual((json.loads(done.stdout)["name"], self.state()["agents"]["arya2"]["address"]), ("arya2", "t2"))
 
     def test_a_live_hc_name_is_not_reused(self):
         done = self.cli("spawn", "arya", env={"FAKE_HC_LIVE": json.dumps([{"name": "arya", "address": "t9"}])})
-        self.assertEqual(json.loads(done.stdout)["name"], "arya-2")
+        self.assertEqual(json.loads(done.stdout)["name"], "arya2")
+
+    def test_a_copy_skips_the_name_of_another_agent(self):
+        self.config(lambda cfg: cfg["agents"].__setitem__("arya2", dict(cfg["agents"]["arya"])))
+        self.cli("spawn", "arya")
+        self.assertEqual(json.loads(self.cli("spawn", "arya").stdout)["name"], "arya3")
+
+    def test_a_copy_of_a_name_that_ends_in_a_digit_gets_an_underscore(self):
+        self.config(lambda cfg: cfg["agents"].__setitem__("gpt5", dict(cfg["agents"]["arya"])))
+        self.assertEqual([json.loads(self.cli("spawn", "gpt5").stdout)["name"] for _ in range(3)],
+                         ["gpt5", "gpt5_2", "gpt5_3"])
+
+    def test_a_copy_stops_when_its_name_becomes_another_agent(self):
+        for _ in range(2):
+            self.cli("spawn", "arya")
+        self.config(lambda cfg: cfg["agents"].__setitem__("arya2", dict(cfg["agents"]["trinity"])))
+        done = self.cli("send", "arya2", self.brief())
+        self.assertEqual(done.returncode, 1)
+        self.assertIn("arya2 is a copy of arya, but agentcy.json now has an agent named arya2", done.stderr)
+        self.assertNotIn("send", [c[0] for c in self.calls()])
+        self.assertEqual(self.cli("send", "arya", self.brief()).returncode, 0)
+        self.assertEqual(self.cli("close", "arya2").returncode, 0)
+        self.assertEqual(json.loads(self.cli("spawn", "arya2").stdout)["name"], "arya2")
+        self.assertEqual(self.started()[-1][:3], ["pi", "--model", "openai-codex/gpt-6.1-sol"])
+
+    def test_copies_of_one_agent_work_in_parallel(self):
+        run = Path(self.cli("run", "copies").stdout.strip())
+        sent = {}
+        for name in ("arya", "arya2"):
+            self.assertEqual(json.loads(self.cli("spawn", "arya").stdout)["name"], name)
+            (run / f"{name}-1.md").write_text(f"Work for {name}.\n")
+            sent[name] = json.loads(self.cli("send", name, str(run / f"{name}-1.md")).stdout)
+        self.assertEqual({n: Path(s["rules"]).name for n, s in sent.items()},
+                         {"arya": "arya.rules.md", "arya2": "arya2.rules.md"})
+        self.assertEqual({n: Path(s["result"]).name for n, s in sent.items()},
+                         {"arya": "arya-1.result.md", "arya2": "arya2-1.result.md"})
+        self.assertIn("Your team name is `arya2`.", Path(sent["arya2"]["rules"]).read_text())
+        self.assertEqual({a["agent"] for a in self.state()["agents"].values()}, {"arya"})
+        # Arya (t1) still works; her copy (t2) has finished.
+        waited = json.loads(self.cli("wait", "arya", "arya2", env={"FAKE_HC_STATUS_t1": "working"}).stdout)
+        self.assertEqual((waited["name"], [w["name"] for w in waited["waiting"]]), ("arya2", ["arya"]))
 
     def test_a_startup_question_keeps_the_agent_for_the_user(self):
         # agy reports blocked at its trust question; Claude Code and Codex report nothing until it is answered.
@@ -779,8 +819,8 @@ class SpawnSendClose(Project):
             for job in jobs:
                 done = job.result(timeout=10)
                 self.assertEqual(done.returncode, 0, done.stderr)
-        self.assertEqual(set(self.state()["agents"]), {"arya", "arya-2"})
-        self.assertEqual({c[c.index("--name") + 1] for c in self.calls() if c[0] == "run"}, {"arya", "arya-2"})
+        self.assertEqual(set(self.state()["agents"]), {"arya", "arya2"})
+        self.assertEqual({c[c.index("--name") + 1] for c in self.calls() if c[0] == "run"}, {"arya", "arya2"})
 
     def test_dry_run_run_and_send_leave_files_unchanged(self):
         brief = self.root / "brief.md"
@@ -1120,14 +1160,14 @@ class T3Code(Project):
         self.assertEqual(self.spawn(), {"name": "arya", "tool": None, "harness": "pi", "address": "child1",
                                         "reach": "https://t3.test/child1", "status": "ready"})
         self.assertEqual(self.state()["agents"]["arya"]["address"], "child1")
-        self.assertEqual(self.spawn(thread="child2")["name"], "arya-2")
+        self.assertEqual(self.spawn(thread="child2")["name"], "arya2")
         for thread, env, text in (("child9", {}, "T3 Code has no thread child9"),
                                   ("child1", {"FAKE_T3_PARENT": "mcp:other"}, "not a subagent of this session's thread")):
             with self.subTest(text=text):
                 refused = self.cli("spawn", "arya", "--thread", thread, env=env)
                 self.assertEqual(refused.returncode, 1)
                 self.assertIn(text, refused.stderr)
-        self.assertEqual(set(self.state()["agents"]), {"arya", "arya-2"})
+        self.assertEqual(set(self.state()["agents"]), {"arya", "arya2"})
         hc = self.cli("spawn", "arya", "--thread", "child1", env={"T3CODE_THREAD_ID": ""})
         self.assertIn("--thread records a T3 Code subagent; this backend is hc", hc.stderr)
 

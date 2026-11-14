@@ -47,9 +47,9 @@ Done when `check` passes and the user has confirmed every agent, the orchestrato
 The user gives the work to one agent: their words are the brief, and they judge the result.
 
 1. Do step 1, items 1–2. When the agent has `tools` and the user named none, list the tools with their `use` and ask which one. When it has no setting, ask about it in the same message (**Settings**).
-2. Run `run <slug>`, and write the user's words unchanged to `<agent>-1.md` in the run folder.
-3. `spawn`, `send`, and `wait` as in steps 3 and 4; a `blocked` agent or a missing result goes to the user the same way.
-4. Show the user the result path and its Status and Changed lines. Record the user's verdict and corrections as in step 6. A follow-up goes to the same agent, unchanged, as `<agent>-<n+1>.md`.
+2. Run `run <slug>`. Spawn as in step 3, then write the user's words unchanged to `<name>-1.md` in the run folder, using the returned name.
+3. `send` and `wait` as in steps 3 and 4; a `blocked` agent or a missing result goes to the user the same way.
+4. Show the user the result path and its Status and Changed lines. Record the user's verdict and corrections as in step 6. A follow-up goes to the same agent, unchanged, as `<name>-<n+1>.md`.
 5. When the user says the work is done, `close` the agent.
 
 Done when the agent is closed and the user's feedback is recorded.
@@ -94,6 +94,8 @@ Choose each agent by its role and its `use`, as `check` shows them. When the fil
 
 An agent with `tools` starts with the one you name: `spawn <agent> --tool <name>`. `check` shows each tool's `use` and whether its harness is `installed`. Choose a tool by its `use`, except for **media tools: images and videos spend the user's plan or money, so the user chooses.** When the request could use images or video (a page, an app, docs, marketing) and the user has not said, make it a question in the plan: none, or each tool with its `use` as numbered options, with how many images or videos the plan needs.
 
+You can start more than one copy of an agent. When several independent workstreams fit the same `use`, give each one its own copy: each `spawn <agent>` starts a new copy and prints its name, such as `arya`, then `arya2`. Do not queue independent workstreams on one agent.
+
 Workers share one working tree, so give each file one owner. Parallel workstreams touch different files; a file two streams need gets one owner, and the other stream gets the interface in its brief. Split only where the work is really independent.
 
 Show the user the rough plan for approval in the words of the work, as a lead explains it to a client: the goal, then a few bullets on what will change, how it will be built, and how it will be checked. The bullets name files, functions, and checks, not agents; the agents first appear on the progress board, once work starts. How you run the team (which agent, how many agents, how many review rounds) is your call. Open questions are about the work itself, as numbered options. For example:
@@ -110,9 +112,13 @@ One approval covers the spawns, escalations, and review rounds that the plan nee
 
 Done when the user has approved the plan.
 
-## 3. Brief and spawn
+## 3. Spawn and brief
 
-For each workstream, write a brief named `<agent>-<n>.md` in the run folder:
+For each workstream, run `spawn <agent>` first; an agent without a setting needs **Settings** first. It prints the agent's name, its address (an `hc` terminal such as `t12`, or a T3 Code thread id), `reach` (how the user opens it), and a status.
+
+In T3 Code, `spawn <agent>` prints status `delegate` and a `delegate_task` object instead, because only your session can start a subagent. Call your `delegate_task` tool with exactly those fields. Then run `spawn <agent> --thread <childThreadId>`, with the same `--tool`, to get the name. Use `delegate_task` only for this: `send`, `wait`, `read`, and `close` handle the agent after that.
+
+Use the returned name to write a brief named `<name>-<n>.md` in the run folder, such as `arya-1.md` or `arya2-1.md`:
 
 ```markdown
 # Goal
@@ -131,9 +137,7 @@ Solution space: <how open the problem is: "one fix, names given" … "cause open
 
 The worker starts blank. Give it absolute paths, the facts it needs, and the decisions already made. Put large inputs in files and give their paths. A brief carries requirements; the worker finds the answer.
 
-Run `spawn <agent>`; an agent without a setting needs **Settings** first. It prints the agent's name, its address (an `hc` terminal such as `t12`, or a T3 Code thread id), `reach` (how the user opens it), and a status. Then run `send <name> <brief>`; it prints the result path.
-
-In T3 Code, `spawn <agent>` prints status `delegate` and a `delegate_task` object instead, because only your session can start a subagent. Call your `delegate_task` tool with exactly those fields. Then run `spawn <agent> --thread <childThreadId>`, with the same `--tool`, and continue as below. Use `delegate_task` only for this: `send`, `wait`, `read`, and `close` handle the agent after that.
+Then run `send <name> <brief>` when the status allows it; it prints the result path.
 
 - Spawn status `ready`: send the brief.
 - Spawn status `blocked` or `starting`: the agent has not reported that it is ready. Usually a startup question is open, such as whether to trust the folder. Run `read <name>`, tell the user which agent asks what and how to reach it, and `send` once `list` shows the agent `idle`.
@@ -150,7 +154,7 @@ The user reaches an agent through its `reach`. In the Herdr app, each agent also
   - `timeout`: wait again; `read <name>` shows progress.
   - `blocked`: run `read <name>`. An approval or a question in an agent's terminal or thread belongs to the user: tell them which agent needs them and how to reach it (step 3), and let them answer it.
 - Verify each result: read the changed files and check the evidence. A claim counts once you have seen its evidence.
-- A follow-up for the same workstream goes to the same agent as a new brief, `<agent>-<n+1>.md`, with `send`; the agent keeps its context.
+- A follow-up for the same workstream goes to the same agent as a new brief, `<name>-<n+1>.md`, with `send`; the agent keeps its context.
 - **Escalate** when a worker is blocked, returns partial twice, or meets a judgement call beyond its `use`: send the worker whose `use` covers it a brief that names the first worker's result file.
 - An agent's `blocked` result or question is yours to answer first: decide it as in **Talking to the user**, and send the decision to the same agent as a follow-up brief. Ask the user only when the decision needs them.
 
@@ -171,7 +175,7 @@ Done when every workstream is accepted, or its blocker is with the user.
 
 ## 5. Review
 
-Spawn the reviewer. Its brief gives the goal, the acceptance criteria (or the spec that holds them), the run folder with its original `baseline.json`, the agents' changed-file lists, and the verification commands. Keep the same baseline for every review round. On no-go, send each finding to the agent that owns the file, then review again. After three review rounds, stop and report what remains.
+Spawn the reviewer. Its brief gives the goal, the acceptance criteria (or the spec that holds them), the run folder with its original `baseline.json`, the agents' changed-file lists, and the verification commands. Keep the same baseline for every review round. On no-go, send each finding to the agent that owns the file, then send the next round to the same reviewer. Keep every worker and the reviewer open until review ends: a closed agent loses its context, and a new copy can get its freed name. After three review rounds, stop and report what remains.
 
 Done when the verdict is go, or the third round's open findings are reported.
 
@@ -183,7 +187,7 @@ Done when the verdict is go, or the third round's open findings are reported.
 - the user states a standing preference about the work itself: style, scope, conventions, how to split or check it;
 - verification, review, or the user catches a mistake by you or an agent.
 
-Routine answers carry no lesson: the session check, which tool to use this time, an approval with no change, and other one-off choices. One line per event: the run folder name, the agent it concerns (you, for plans and briefs), the kind, what it was about, and the user's words.
+Routine answers carry no lesson: the session check, which tool to use this time, an approval with no change, and other one-off choices. One line per event: the run folder name, the agent it concerns (you, for plans and briefs; for a copy such as `arya2`, the agent it copies, `arya`, because lessons are kept per agent), the kind, what it was about, and the user's words.
 
 ```markdown
 - 20261017-150312-landing — donna — rejected — plan: three workstreams — "too many agents for this, use one worker"

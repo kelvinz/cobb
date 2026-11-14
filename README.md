@@ -99,7 +99,7 @@ The default cast (change any of it in `agentcy.json`):
 
 Each agent holds its own harness, model, effort, and extra flags. Setup starts with the cast but no agent launch settings; the launch settings in `skills/agentcy/templates/agentcy.json` are examples, not automatic picks. `check` shows the settings a project uses. For pi, `check` also confirms that each model name exists. When an agent hits a usage limit, Donna asks you whether to move the work to an agent on another provider, wait for the reset, or stop. An agent can also have **tools**: other ways to run it, each with its own `use`. Edna's tools are `codex` (GPT Image on your ChatGPT plan), `antigravity` (nano banana through the `agy` CLI on your Google plan), and `api` (pay per image with an API key). Robin's one tool is `api`: Gemini Omni Flash, paid per video with an API key (OpenAI shut down its video API on 24 September 2026). When a request could use images or video, Donna asks whether you want them and which tool to use.
 
-Workers move work only through the orchestrator: a fast worker escalates to a strong one with its result file, and the reviewer's findings go back to the worker that owns the file. Workers share one working tree, so each file has one owner.
+Donna can start several copies of one agent, such as `arya` and `arya2` (or `gpt5` and `gpt5_2`, when the name ends in a digit), when independent workstreams fit the same `use`. Workers move work only through the orchestrator: a fast worker escalates to a strong one with its result file, and the reviewer's findings go back to the worker that owns the file. Workers share one working tree, so each file has one owner.
 
 Files agentcy manages in your project:
 
