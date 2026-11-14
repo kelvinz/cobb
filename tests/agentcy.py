@@ -220,21 +220,111 @@ class Discovery(unittest.TestCase):
 
 
 class LabLauncher(unittest.TestCase):
-    def test_lab_launch_passes_harness_settings(self):
+    def setUp(self):
         spec = importlib.util.spec_from_file_location("agentcy_lab", ROOT / "tests/agentcy_lab.py")
-        lab_module = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(lab_module)
+        self.lab_module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(self.lab_module)
+
+    def launch_lab(self, harness):
+        lab_module = self.lab_module
         with tempfile.TemporaryDirectory() as temp:
             hc = mock.Mock()
             hc.live_names.return_value = set()
             hc.spawn.return_value = ("t1", "ready")
-            with mock.patch.object(sys, "argv", ["agentcy_lab.py", "--harness", "pi"]), \
+            with mock.patch.object(sys, "argv", ["agentcy_lab.py", "--harness", harness]), \
                     mock.patch.object(lab_module.tempfile, "mkdtemp", return_value=temp), \
                     mock.patch.object(lab_module, "make_lab"), \
                     mock.patch.object(lab_module.agentcy, "Hc", return_value=hc), \
                     contextlib.redirect_stdout(io.StringIO()):
                 lab_module.main()
-            hc.spawn.assert_called_once_with("lab-1", {"harness": "pi"}, Path(temp).resolve(), own_tab=True)
+            return hc.spawn, Path(temp).resolve()
+
+    def test_lab_passes_working_copy_flags_to_each_harness(self):
+        # This checks launch arguments, not discovery inside a live harness.
+        with tempfile.TemporaryDirectory() as home:
+            installed = Path(home).resolve() / ".agents/skills/agentcy/SKILL.md"
+            installed.parent.mkdir(parents=True)
+            installed.write_text("installed\n")
+            with mock.patch.object(Path, "home", return_value=Path(home)), mock.patch.dict(os.environ, {"CODEX_HOME": ""}):
+                for harness, args in (
+                        ("claude", lambda lab: ["--setting-sources", "project,local"]),
+                        ("pi", lambda lab: ["--no-skills", "--skill", str(lab / ".agents/skills/agentcy")]),
+                        ("codex", lambda lab: ["-c", f'skills.config=[{{path="{installed}",enabled=false}}]']),
+                        ("agy", lambda lab: [])):
+                    with self.subTest(harness=harness):
+                        spawn, lab = self.launch_lab(harness)
+                        spawn.assert_called_once_with("lab-1", {"harness": harness, "args": args(lab)}, lab, own_tab=True)
+
+    def test_codex_needs_no_override_without_a_readable_install(self):
+        with tempfile.TemporaryDirectory() as temp:
+            home = Path(temp).resolve()
+            installed = home / ".agents/skills/agentcy"
+            with mock.patch.object(Path, "home", return_value=home), mock.patch.dict(os.environ, {"CODEX_HOME": ""}):
+                self.assertEqual(self.lab_module.working_copy_only("codex", home / "lab"), [])
+                installed.parent.mkdir(parents=True)
+                installed.symlink_to(home / "missing-skill")
+                self.assertEqual(self.lab_module.working_copy_only("codex", home / "lab"), [])
+
+    def test_codex_disables_the_resolved_installed_copy(self):
+        with tempfile.TemporaryDirectory() as temp:
+            home = Path(temp).resolve()
+            target = home / 'installed "agentcy"'
+            target.mkdir()
+            source = target / "SKILL.md"
+            source.write_text("installed\n")
+            installed = home / ".agents/skills/agentcy"
+            installed.parent.mkdir(parents=True)
+            installed.symlink_to(target, target_is_directory=True)
+            with mock.patch.object(Path, "home", return_value=home), mock.patch.dict(os.environ, {"CODEX_HOME": ""}):
+                args = self.lab_module.working_copy_only("codex", home / "lab")
+            self.assertEqual(args, ["-c", f"skills.config=[{{path={json.dumps(str(source))},enabled=false}}]"])
+            self.assertTrue(installed.is_symlink())
+            self.assertEqual(source.read_text(), "installed\n")
+
+    def test_codex_disables_each_installed_copy_once(self):
+        with tempfile.TemporaryDirectory() as temp:
+            home = Path(temp).resolve()
+            copies = [home / ".agents/skills/agentcy/SKILL.md", home / "codex-home/skills/agentcy/SKILL.md"]
+            for copy in copies:
+                copy.parent.mkdir(parents=True)
+                copy.write_text("installed\n")
+            with mock.patch.object(Path, "home", return_value=home):
+                with mock.patch.dict(os.environ, {"CODEX_HOME": str(home / "codex-home")}):
+                    args = self.lab_module.working_copy_only("codex", home / "lab")
+                off = [f"{{path={json.dumps(str(copy))},enabled=false}}" for copy in copies]
+                self.assertEqual(args, ["-c", f"skills.config=[{','.join(off)}]"])
+                # The default Codex home, linked to the first copy as skills.sh links it, adds no second entry.
+                (home / ".codex/skills").mkdir(parents=True)
+                (home / ".codex/skills/agentcy").symlink_to(copies[0].parent, target_is_directory=True)
+                with mock.patch.dict(os.environ, {"CODEX_HOME": ""}):
+                    args = self.lab_module.working_copy_only("codex", home / "lab")
+                self.assertEqual(args, ["-c", f"skills.config=[{off[0]}]"])
+
+    def test_codex_keeps_an_install_linked_to_the_working_copy_enabled(self):
+        with tempfile.TemporaryDirectory() as temp:
+            home = Path(temp).resolve()
+            installed = home / ".agents/skills/agentcy"
+            installed.parent.mkdir(parents=True)
+            installed.symlink_to(self.lab_module.SKILL, target_is_directory=True)
+            with mock.patch.object(Path, "home", return_value=home), mock.patch.dict(os.environ, {"CODEX_HOME": ""}):
+                self.assertEqual(self.lab_module.working_copy_only("codex", home / "lab"), [])
+            self.assertEqual((installed / "SKILL.md").resolve(), self.lab_module.SKILL / "SKILL.md")
+
+    def test_lab_links_and_explicit_pi_path_point_to_the_working_copy(self):
+        with tempfile.TemporaryDirectory() as temp:
+            lab = Path(temp).resolve()
+            # Exercise the real fixture and links without creating a Git commit or starting an agent.
+            with mock.patch.object(self.lab_module.agentcy, "git"):
+                self.lab_module.make_lab(lab)
+            skill = self.lab_module.SKILL
+            for folder in (".agents/skills/agentcy", ".claude/skills/agentcy"):
+                link = lab / folder
+                self.assertTrue(link.is_symlink())
+                self.assertEqual(link.resolve(), skill)
+                self.assertEqual((link / "SKILL.md").read_bytes(), (skill / "SKILL.md").read_bytes())
+            args = self.lab_module.working_copy_only("pi", lab)
+            self.assertEqual(args[:2], ["--no-skills", "--skill"])
+            self.assertEqual(Path(args[2]).resolve(), skill)
 
 
 class InitAndCheck(Project):

@@ -8,6 +8,7 @@ Then answer any startup question there and run `/agentcy init`. Starts a model s
 import argparse
 import importlib.util
 import json
+import os
 from pathlib import Path
 import shlex
 import shutil
@@ -36,6 +37,23 @@ def make_lab(lab: Path) -> None:
         agentcy.git(lab, *command)
 
 
+def working_copy_only(harness: str, lab: Path) -> list[str]:
+    """Launch flags that stop a user-level agentcy install from loading in place of the linked working copy."""
+    if harness == "claude":
+        return ["--setting-sources", "project,local"]  # no user settings, so no user-level skills
+    if harness == "pi":
+        return ["--no-skills", "--skill", str(lab / ".agents/skills/agentcy")]
+    if harness == "codex":
+        # Codex lists every copy under one name. Switch off each installed one, unless it is this working copy.
+        homes = (Path.home() / ".agents", Path(os.environ.get("CODEX_HOME") or Path.home() / ".codex"))
+        installed = dict.fromkeys((home / "skills/agentcy/SKILL.md").resolve() for home in homes)
+        off = [f"{{path={json.dumps(str(path))},enabled=false}}" for path in installed
+               if path.is_file() and path != SKILL / "SKILL.md"]
+        if off:
+            return ["-c", f"skills.config=[{','.join(off)}]"]
+    return []  # agy needs no flag: there, the lab's copy wins over a user-level one
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--harness", default="claude", help="the command that plays Donna's session")
@@ -46,7 +64,8 @@ def main():
         live = hc.live_names()
         name = next(f"lab-{n}" for n in range(1, 100) if f"lab-{n}" not in live)
         make_lab(lab)
-        address, status = hc.spawn(name, {"harness": args.harness}, lab, own_tab=True)
+        spec = {"harness": args.harness, "args": working_copy_only(args.harness, lab)}
+        address, status = hc.spawn(name, spec, lab, own_tab=True)
     except agentcy.Fail as error:
         shutil.rmtree(lab)  # removes the skill link, not the skill
         sys.exit(f"agentcy_lab: {error}")
