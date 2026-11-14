@@ -972,6 +972,8 @@ def cmd_check(args):
             if name_of == "t3" and info["harness"] not in ("(this session)", None) and t3_problem(info):
                 warnings.append(f"{where}: {t3_problem(info)}")
         rows.append(row)
+    # Lessons load by agent name, so a file under another name, such as a copy's (arya2.md), is never read.
+    unread = [str(path) for path in sorted((root / HOME / "lessons").glob("*.md")) if path.stem not in cfg["agents"]]
     print(json.dumps({
         "root": str(root),
         "initialized": initialized(root),
@@ -982,6 +984,7 @@ def cmd_check(args):
         "session": {"harness": session.get("harness"), "model": session.get("model"), "inside": name_of if session else None},
         "api_keys": {key: bool(os.environ.get(key)) for key in MEDIA_KEYS.values()},
         "lessons": lesson_report(root, cfg),
+        "unread_lessons": unread,
         "feedback": feedback_report(root),
     }, indent=2))
 

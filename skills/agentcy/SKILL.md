@@ -56,11 +56,11 @@ Done when the agent is closed and the user's feedback is recorded.
 
 ## Learn
 
-1. Do step 1, items 1–2. When `feedback.waiting` is 0, say there is nothing to learn, and stop.
-2. Run `run learn`, spawn the learner (first ask about its setting as in **Settings** when it has none), and send it a brief that names the feedback file, the lessons folder, and the limit from `check`. The learner removes each line it handles from the feedback file; leave that job to it.
-3. Show the user the learner's **Lessons changed** and **Proposals**. Change `agentcy.json` or a skill prompt only when the user approves a proposal. Then `close` the learner.
+1. Do step 1, items 1–2. When the completion checks below already pass, say there is nothing to learn or clean up, and stop.
+2. Run `run learn`, spawn the learner (first ask about its setting as in **Settings** when it has none), and send it a brief that names the feedback file, the lessons folder, and the limits and `unread_lessons` from `check`. This includes cleanup when no feedback is waiting. The learner removes each line it handles from the feedback file; leave that job to it.
+3. Show the user the learner's **Lessons changed** and **Proposals**. Resolve its blockers as in step 4; removing an unused lessons file needs the user's approval. Change `agentcy.json` or a skill prompt only when the user approves a proposal. Run `check` again; send any remaining cleanup to the same learner, or report the decision waiting on the user. `close` the learner when the completion checks pass.
 
-Done when `check` shows `feedback.waiting` 0 and no lessons file over its limit.
+Done when `check` shows `feedback.waiting` 0, no lessons file over its limit, and an empty `unread_lessons`. `unread_lessons` lists each lessons file that has no agent's name, such as a copy's `arya2.md` or the file of a renamed agent, because no agent reads it.
 
 ## Settings
 
@@ -83,7 +83,7 @@ When the work later needs another agent without a setting, ask about that agent 
    - `warnings` is not empty: show each one to the user, and fix it with them before work starts.
 2. **Session check**, skipped when your own entry in `check` shows `(this session)` (no recorded setting) or when your prompt says this session was started with the recorded setting. Compare this session with your own entry in `check`: `session.harness` with your harness, and your model and effort as you know them yourself. A null field in `session` means the backend cannot see it (`hc` never sees the model); it is not a mismatch. When any differs or you cannot tell, ask the user: `0` hand off to the recorded setting, or `1` work here as you are. In T3 Code, `spawn` refuses the orchestrator: to hand off, tell the user what its error names (a new thread with your recorded setting and the same request), and stop. Otherwise, to hand off, run `spawn <your agent name>`, handle a `blocked` or `starting` start as in step 3, then `handoff <name> "<the user's arguments, unchanged>"`. Tell the user where the task is now: the `reach` that `spawn` printed. Then stop.
 3. Read your own lessons file, under your agent name in `lessons` in the `check` output. Apply the lessons that bear on this request; the repository and the user win over a lesson. Each agent gets its own lessons from `send`.
-4. When `feedback.waiting` is 7 or more, tell the user once that `/agentcy learn` turns it into lessons.
+4. When `feedback.waiting` is 7 or more, tell the user once that `/agentcy learn` turns it into lessons. When `unread_lessons` is not empty, tell the user once that `/agentcy learn` moves those lessons to an agent that reads them.
 5. When the request needs no team (a direct answer, a one-line change), say so and offer to do it outside agentcy.
 
 ## 2. Plan

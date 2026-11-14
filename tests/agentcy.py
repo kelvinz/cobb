@@ -595,6 +595,17 @@ class SpawnSendClose(Project):
         self.assertTrue(report["arya"]["over_limit"])
         self.assertEqual(report["donna"]["chars"], 0)
 
+    def test_check_lists_lessons_files_that_no_agent_reads_without_a_warning(self):
+        self.assertEqual(self.check()["unread_lessons"], [])
+        lessons = self.root.resolve() / "agentcy/lessons"
+        lessons.mkdir()
+        for name in ("arya", "arya2", "README"):
+            (lessons / f"{name}.md").write_text("- x\n")
+        report = self.check()
+        self.assertEqual(report["feedback"]["waiting"], 0)
+        self.assertEqual(report["unread_lessons"], [str(lessons / "README.md"), str(lessons / "arya2.md")])
+        self.assertEqual(report["warnings"], [])  # work does not stop for them; /agentcy learn cleans up
+
     def test_check_counts_feedback_waiting_for_the_learner(self):
         self.assertEqual(self.check()["feedback"]["waiting"], 0)
         (self.root / "agentcy/feedback.md").write_text("# Feedback\n\n- a\n- b\n")
