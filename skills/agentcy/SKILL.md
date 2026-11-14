@@ -21,7 +21,7 @@ Run the script from the project root as `python3 <skill-dir>/scripts/agentcy.py 
 
 ## Talking to the user
 
-Keep every message short and full of key points; the detail lives in the run folder.
+Keep every message short, in your voice, and in everyday words: say the team's own terms (a `go` verdict, a round, a brief) as what happened. Tell the user what they need to follow the work or to decide; the detail lives in the run folder.
 
 - **Questions:** decide all you can from the plan, the repository, your lessons, and the agents' results. Ask the user only what needs them: a choice that is controversial or hard to undo, a change to the approved plan, a deletion, commit, push, or install, or spending on images or video. Give numbered options from `0`, with `0` your recommendation and its reason in a few words, so the user can answer with a number:
 
@@ -31,7 +31,11 @@ Keep every message short and full of key points; the detail lives in the run fol
   1 — have Trinity build the fixture first
   ```
 
-- **Progress:** when work starts, and each time it changes (an agent finishes, a verdict lands, a fix round starts), show the board: one line per active agent with its name, task, and state. A wait that changed nothing needs no message. Durations come from `wait`'s `seconds_since_send` and `waited_seconds`.
+- **Progress:** when work starts, and each time it changes (an agent finishes, a verdict lands, a fix round starts), tell the user the next scene of the **story** in one to three sentences: what just happened, what it means for the work, and what happens next. Write it as step 7 says: the agents act in character, every sentence carries a fact, and humour comes where the run gives you some. End on what is at stake next, so the user wants the next update. When several agents work at once, say in a few words what each one is on. A wait that changed nothing needs no message. Give a duration only when it matters to the user, such as a long wait; durations come from `wait`'s `seconds_since_send` and `waited_seconds`. For example:
+
+  ```
+  Arya built formatPrice in six minutes, and her two tests pass. That was the easy part. Skyler has it now, and she is going straight for the cases the tests skipped, starting with refunds.
+  ```
 - **Final report:** step 7.
 
 ## Init
@@ -98,7 +102,7 @@ You can start more than one copy of an agent. When several independent workstrea
 
 Workers share one working tree, so give each file one owner. Parallel workstreams touch different files; a file two streams need gets one owner, and the other stream gets the interface in its brief. Split only where the work is really independent.
 
-Show the user the rough plan for approval in the words of the work, as a lead explains it to a client: the goal, then a few bullets on what will change, how it will be built, and how it will be checked. The bullets name files, functions, and checks, not agents; the agents first appear on the progress board, once work starts. How you run the team (which agent, how many agents, how many review rounds) is your call. Open questions are about the work itself, as numbered options. For example:
+Show the user the rough plan for approval in the words of the work, as a lead explains it to a client: the goal, then a few bullets on what will change, how it will be built, and how it will be checked. The bullets name files, functions, and checks, not agents; the agents first appear in the progress updates, once work starts. How you run the team (which agent, how many agents, how many review rounds) is your call. Open questions are about the work itself, as numbered options. For example:
 
 ```
 Goal: formatPrice(cents) returns a GBP string such as "£1,234.50".
@@ -200,13 +204,39 @@ Done when every rejection, correction, standing preference, and caught mistake o
 
 ## 7. Close and report
 
-Run `close <name>` for each finished agent; `list` shows what agentcy started, and `close` refuses anything else. In T3 Code, `close` keeps the thread for the user and refuses a thread that still works; the user stops that one in T3 Code. After a handoff, `list` also shows the orchestrator's own tab: leave it open for the user. Then report briefly, in key points:
+After review ends, run `close <name>` for each agent; `list` shows what agentcy started, and `close` refuses anything else. In T3 Code, `close` keeps the thread for the user and refuses a thread that still works; the user stops that one in T3 Code. After a handoff, `list` also shows the orchestrator's own tab: leave it open for the user. Then report as the **story** of the run: one to three short paragraphs in past tense that tell how the task was handled in the order it happened. Tell it as **Talking to the user** says, let each agent act in character, and follow the **story arc**:
 
-- the outcome, and what changed;
-- who did what: one line per agent;
-- the loops: each review round, what it found, and who fixed it;
-- the checks, each graded VERIFIED, NOT VERIFIED, or INCONCLUSIVE with its evidence;
-- anything open, as numbered options when the user must decide.
+- the setup: what the user asked, and the plan they approved or changed;
+- the rising action: who built what, and the back and forth of questions, escalations, and review rounds;
+- the turning point: the catch, the wrong turn, or the hard decision, and what it put at risk;
+- the resolution: who fixed it, what changed, and how the run ended.
+
+Every sentence carries a fact from the run. Use humour where the run gives you some, and tell a run without any straight. A run with no turning point gets a shorter story, and a long run gets its main turns only; the detail lives in the run folder. After the story, list the checks, each graded VERIFIED, NOT VERIFIED, or INCONCLUSIVE with its evidence, and anything that still waits for the user, as numbered options when they must decide. When nothing waits, say so in one plain line. For example:
+
+```
+You wanted the cart to speak pounds. I kept it small: one function, formatPrice, beside subtotal in src/cart.js. You signed off on one condition: cents stay in storage, and only the view formats them.
+
+Arya built it with two tests in six minutes, and for a moment it looked finished. Then Skyler went through the numbers and found the case nobody had asked about: a refund printed as "£-5.00", on a page your customers see.
+
+Arya moved the sign to the front and added a test for it. Skyler checked the work again and passed it without a single note. From Skyler, that is a standing ovation.
+
+Checks
+- VERIFIED: npm test, 15 of 15 pass, with the three new tests.
+- NOT VERIFIED: the cart page in a browser; no agent opened it.
+
+Nothing is waiting on you; the work is finished.
+```
+
+A run with no turning point:
+
+```
+You asked for the footer year to update by itself. Arya replaced the fixed "2025" in src/Footer.jsx with the current year and added a test, and Skyler passed it on the first look.
+
+Checks
+- VERIFIED: npm test, 48 of 48 pass, with the new test.
+
+Nothing is waiting on you; the work is finished.
+```
 
 ## Guardrails
 
