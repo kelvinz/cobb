@@ -9,7 +9,7 @@ disable-model-invocation: true
 
 The first word of the arguments picks the mode:
 
-- `init`: set up the team for this project. Follow **Init**.
+- `init`: set up the team for this project, or go through its settings again. Follow **Init**.
 - `learn`: turn the waiting feedback into lessons. Follow **Learn**.
 - The name of an agent in `agentcy.json` other than the orchestrator: the rest is a **direct** request to that agent. Follow **Direct**.
 - Anything else: the whole text is the user's request (a leading orchestrator name, such as `donna`, is dropped). Follow steps 1–7.
@@ -36,8 +36,8 @@ Keep every message short and full of key points; the detail lives in the run fol
 
 ## Init
 
-1. Run `init`. It creates the visible `agentcy/` folder in the project root with `agentcy.json` from the template, which holds the recommended setting for every agent. When `agentcy/agentcy.json` exists already, `init` prints `"created": false` and leaves it as it is; continue with the current file.
-2. Ask about every agent, the orchestrator included, as in **Settings**: run `options` with no agent names, and show its `menu`. In a new file, each agent's "now" setting is already your pick, so `0` changes nothing. Save the changes with `set`.
+1. Run `init`. It creates the visible `agentcy/` folder in the project root with the template's cast in `agentcy.json`, without agent harness, model, or thinking settings. When the file exists already, `init` prints `"created": false` and leaves it as it is.
+2. Follow **Settings** for every agent, the orchestrator included: discover the local choices, recommend a team from them, and ask for confirmation. When the file existed already, this is a refresh after a change to the installed harnesses or their models: recommend from what `options` reports now, and give the reason for each pick that differs from the current setting, which the menu shows as `now`. Keep existing settings unless the user approves a change.
 3. Run `check`, and fix every error with the user. For pi, `check` warns about each model name that pi does not list; continue only when there are no `warnings`, or the user accepts each one.
 
 Done when `check` passes and the user has confirmed every agent, the orchestrator included. Then tell the user to give work with `/agentcy <request>`, or straight to one agent with `/agentcy <agent> <request>`.
@@ -66,9 +66,10 @@ Done when `check` shows `feedback.waiting` 0 and no lessons file over its limit.
 
 An agent with `harness` null in `check` has no setting yet; `spawn` refuses it. Before the first `spawn`, ask the user about every such agent that the work needs, in one message: the researcher, the workers, the reviewer, and any image or video agent. Ask only about those; Init asks about all. A tool that names its own harness in `check`, such as Edna's `codex`, needs no setting. When the work needs a plan approval, put this question in the same message, so the user answers both at once.
 
-1. Run `options <agent>...` with those agents. Show its `menu` to the user unchanged. It numbers the installed harnesses, their models, and their thinking levels, and shows your recommended pick for each agent with its numbers.
-2. The user replies `0` for your picks, or a line for each agent to change, such as `skyler 1:2:3` (harness 1, model 2, thinking 3). Names work in place of numbers, and a part left out keeps the harness's own model or thinking.
-3. Run `set` with one agent and answer per agent: `set arya 0 skyler 1:2:3`. It saves the picks in `agentcy/agentcy.json`, and creates that file when the project has none. When it creates it, tell the user in one line that the picks are saved there for next time. When `set` refuses an answer, show the user its error and ask again for that agent only.
+1. Run `options <agent>...` with those agents, or no names for Init. It reports installed harnesses, model lists and their sources, thinking levels, each agent's role, `use`, tools, and current setting. A catalog, cache, or built-in list does not prove account access. Tell the user what is unverified; paid access checks need approval.
+2. Recommend settings from those choices by role and `use`: fast models for routine work and exploration; stronger models for planning, hard changes, and review; tools that support the required media. Use the reported per-model thinking levels where available. Keep current settings by default, and flag any that discovery cannot find rather than silently replacing them. When model access or suitability is unknown, ask the user or offer the harness's own default with that limit stated; T3 Code needs an explicit model. Media tool choice and spending still need the user's approval.
+3. Run `options` again for the same agents, with `--recommend <agent> <harness>:<model>:<thinking>` for each proposed setting. This checks the choices and writes nothing. It can check a model name only where `model_source` is a catalog or a cache; any other name passes unchecked, so tell the user. Agent names can come before or after the `--recommend` pairs. Show its `menu` unchanged, with a short reason for each recommendation. Offer `0` to accept all only when the menu offers it; otherwise ask for the missing choices. The orchestrator needs no pick: without one, it runs in the session that the user starts. The user can override a pick with a line such as `skyler 1:2:3`. A part left out keeps the harness's own model or thinking.
+4. Translate `0` into the recommendations in that displayed report, and numbered overrides into names from that same report. Run `set` with explicit names, such as `set arya pi:provider/model:high skyler claude:model:medium`; the CLI does not resolve `0`. This keeps approval tied to the displayed choices even if the catalog order changes. `set` checks each answer as `--recommend` does. `set` creates `agentcy/agentcy.json` when it is missing; tell the user when the picks are first saved. When `set` refuses an answer, show its error and ask again for that agent only.
 
 When the work later needs another agent without a setting, ask about that agent only, the same way.
 

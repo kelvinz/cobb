@@ -172,6 +172,8 @@ class Project(unittest.TestCase):
         (Path(self.temp.name) / "codex-home").mkdir()
         if self.INIT:
             self.assertEqual(self.cli("init").returncode, 0)
+            # Runtime tests use an already-configured team; setup tests below start without settings.
+            self.config(lambda cfg: cfg.update(agentcy.template()))
 
     def tearDown(self):
         self.temp.cleanup()
@@ -200,6 +202,21 @@ class Project(unittest.TestCase):
         done = self.cli("check", env=env)
         self.assertEqual(done.returncode, 0, done.stderr)
         return json.loads(done.stdout)
+
+
+class Discovery(unittest.TestCase):
+    def test_pi_discovery_failure_is_bounded_and_leaves_models_unknown(self):
+        for error in (OSError("cannot start pi"), subprocess.TimeoutExpired("pi", 10)):
+            with self.subTest(error=type(error).__name__):
+                agentcy.pi_models.cache_clear()
+                try:
+                    with mock.patch.object(agentcy.shutil, "which", return_value="pi"), \
+                            mock.patch.object(agentcy.subprocess, "run", side_effect=error) as run:
+                        self.assertIsNone(agentcy.pi_models())
+                        run.assert_called_once_with(["pi", "--offline", "--list-models"],
+                                                    capture_output=True, text=True, timeout=10)
+                finally:
+                    agentcy.pi_models.cache_clear()
 
 
 class LabLauncher(unittest.TestCase):
@@ -809,6 +826,7 @@ class WithoutInit(Project):
         for name in ("claude", "codex"):  # so the menu numbers claude 1, codex 2, pi 3 on every computer
             (bin_dir / name).write_text("#!/bin/sh\n")
             (bin_dir / name).chmod(0o755)
+        self.no_agy = f"{bin_dir}{os.pathsep}/usr/bin{os.pathsep}/bin"  # a PATH without the user's harnesses
 
     def options(self, *agents):
         done = self.cli("options", *agents)
@@ -834,12 +852,18 @@ class WithoutInit(Project):
         self.assertEqual(self.cli("spawn", "edna", "--tool", "codex").returncode, 0)  # the tool has its own harness
 
     def test_options_number_the_installed_harnesses_and_recommend(self):
-        report = self.options("arya", "skyler")
+        self.assertIsNone(self.options("arya")["agents"][0]["recommended"])
+        report = self.options("arya", "skyler", "--recommend", "arya", "3:4:7",
+                              "--recommend", "skyler", "1:2:3")
         self.assertEqual([h["harness"] for h in report["harnesses"]][:3], ["claude", "codex", "pi"])
         pi = report["harnesses"][2]
         self.assertEqual(pi["models"][3], "zai/glm-5.3-flash")
         self.assertEqual(pi["efforts"], list(agentcy.EFFORTS["pi"]))
-        self.assertEqual(report["harnesses"][1], {"harness": "codex", "models": [], "efforts": list(agentcy.EFFORTS["codex"])})
+        self.assertEqual(report["harnesses"][1]["models"], [])
+        self.assertEqual(report["harnesses"][1]["model_source"], "unavailable")  # no cache to read
+        self.assertEqual(report["harnesses"][0]["model_source"], "built-in list")
+        self.assertEqual(pi["model_source"], "offline catalog")
+        self.assertFalse(any(h["access_verified"] for h in report["harnesses"]))
         self.assertEqual([row["name"] for row in report["agents"]], ["arya", "skyler"])
         menu = report["menu"]
         self.assertIn("pi · zai/glm-5.3-flash · max  (3:4:7)", menu)
@@ -857,20 +881,26 @@ class WithoutInit(Project):
         (Path(self.temp.name) / "codex-home/models_cache.json").write_text(json.dumps(cache))
         codex = self.options("arya")["harnesses"][1]
         self.assertEqual((codex["models"], codex["efforts"]), (["gpt-a", "gpt-b"], ["low", "ultra"]))
+        self.assertEqual(codex["model_source"], "local cache")
 
-    def test_options_tell_an_unlisted_model_from_a_missing_harness(self):
+    def test_options_flag_saved_settings_without_replacing_them(self):
+        self.cli("set", "donna", "pi:openai-codex/gpt-6-astra:medium")
+        path = self.root / "agentcy/agentcy.json"
+        before = path.read_bytes()
         bin_dir = Path(self.temp.name) / "bin"
         (bin_dir / "pi").write_text("#!/bin/sh\nprintf 'provider  model\\nzai  glm-5.3-flash\\n'\n")
-        menu = self.options("donna", "arya")["menu"]
-        self.assertIn("pi · openai-codex/gpt-6-astra · medium  (pi does not list this model or thinking level)", menu)
-        self.assertIn("pi · zai/glm-5.3-flash · max  (3:1:7)", menu)
+        report = self.options("donna")
+        self.assertIsNone(report["agents"][0]["recommended"])
+        self.assertIn("saved setting: pi does not list model openai-codex/gpt-6-astra; keep it or change it",
+                      report["menu"])
         (bin_dir / "pi").unlink()
-        done = self.cli("options", "donna", env={"PATH": f"{bin_dir}{os.pathsep}/usr/bin{os.pathsep}/bin"})  # no pi on PATH
+        done = self.cli("options", "donna", env={"PATH": f"{bin_dir}{os.pathsep}/usr/bin{os.pathsep}/bin"})
         self.assertEqual(done.returncode, 0, done.stderr)
-        self.assertIn("pi · openai-codex/gpt-6-astra · medium  (pi is not installed)", json.loads(done.stdout)["menu"])
+        self.assertNotIn("pi", [h["harness"] for h in json.loads(done.stdout)["harnesses"]])
+        self.assertEqual(path.read_bytes(), before)
 
     def test_set_saves_the_picks_and_creates_the_config(self):
-        done = self.cli("set", "arya", "0", "skyler", "1:3:2")
+        done = self.cli("set", "arya", "3:4:7", "skyler", "1:3:2")
         self.assertEqual(done.returncode, 0, done.stderr)
         saved = json.loads(done.stdout)
         self.assertTrue(saved["created"])
@@ -901,6 +931,7 @@ class WithoutInit(Project):
                            (("arya", "1:2:3:4"), "answer '1:2:3:4' as harness:model:thinking"),
                            (("arya",), "give pairs of agent and answer"),
                            (("nobody", "0"), "no agent nobody"),
+                           (("arya", "0"), "expand the approved recommendation to harness:model:thinking"),
                            (("arya", "gemini:m"), "agentcy knows no model/effort flags for gemini")):
             with self.subTest(args=args):
                 done = self.cli("set", *args)
@@ -908,11 +939,127 @@ class WithoutInit(Project):
                 self.assertIn(text, done.stderr)
         self.assertFalse((self.root / "agentcy/agentcy.json").exists())
 
-    def test_init_keeps_the_recommended_settings(self):
+    def test_init_waits_for_choices_and_preserves_existing_settings(self):
         self.assertEqual(self.cli("init").returncode, 0)
         rows = {row["name"]: row for row in self.check()["agents"]}
-        self.assertEqual((rows["arya"]["harness"], rows["arya"]["model"]), ("pi", "zai/glm-5.3-flash"))
-        self.assertIn("— now pi · zai/glm-5.3-flash · max", self.options("arya")["menu"])
+        self.assertIsNone(rows["arya"]["harness"])
+        self.assertEqual(self.cli("set", "arya", "claude:claude-haiku-5-5:low").returncode, 0)
+        path = self.root / "agentcy/agentcy.json"
+        before = path.read_bytes()
+        self.assertFalse(json.loads(self.cli("init").stdout)["created"])
+        self.assertEqual(path.read_bytes(), before)
+        self.assertEqual(self.options("arya")["agents"][0]["recommended"],
+                         {"harness": "claude", "model": "claude-haiku-5-5", "effort": "low"})
+
+    def test_recommendations_are_read_only_and_save_exact_named_choices(self):
+        report = self.options("arya", "--recommend", "arya", "claude:claude-haiku-5-5:low")
+        pick = report["agents"][0]["recommended"]
+        self.assertFalse((self.root / "agentcy").exists())
+        self.assertIn("claude · claude-haiku-5-5 · low", report["menu"])
+        answer = ":".join(pick.get(key, "") for key in agentcy.SETTING)
+        self.assertEqual(self.cli("set", "arya", answer).returncode, 0)
+        cfg = json.loads((self.root / "agentcy/agentcy.json").read_text())
+        self.assertEqual(agentcy.setting(cfg["agents"]["arya"]), pick)
+
+    def test_recommendations_and_set_refuse_undetected_choices(self):
+        for answer, text in (("agy:model:high", "harness agy is not installed"),
+                             ("pi:missing:high", "pi does not list model missing"),
+                             ("pi:zai/glm-5.3-flash:ultra", "pi has no thinking level ultra"),
+                             ("claude:opus:turbo", "claude has no thinking level turbo")):
+            for command in (("options", "arya", "--recommend"), ("set",)):
+                with self.subTest(answer=answer, command=command[0]):
+                    done = self.cli(*command, "arya", answer, env={"PATH": self.no_agy})
+                    self.assertEqual(done.returncode, 1)
+                    self.assertIn(f"arya: {text}", done.stderr)
+        self.assertFalse((self.root / "agentcy/agentcy.json").exists())
+
+    def test_a_typed_model_name_passes_where_the_harness_has_no_catalog(self):
+        # codex has no model cache here, and claude's built-in list is not the account's catalog.
+        picks = {"arya": "codex:gpt-x:high", "skyler": "claude:opus:high", "amy": "pi:glm-5.3-flash"}
+        recommend = [part for name, answer in picks.items() for part in ("--recommend", name, answer)]
+        report = self.options(*picks, *recommend)
+        self.assertEqual([row["recommended"].get("model") for row in report["agents"]], ["gpt-x", "opus", "glm-5.3-flash"])
+        for text in ("codex · gpt-x · high  (2:gpt-x:3)", "claude · opus · high  (1:opus:3)", "0 — my picks for all:"):
+            self.assertIn(text, report["menu"])
+        self.assertEqual(self.cli("set", *(part for pair in picks.items() for part in pair)).returncode, 0)
+        report = self.options(*picks)  # the saved names stay the picks, with no warning
+        self.assertEqual([(row["recommended"], row["warning"]) for row in report["agents"]],
+                         [(row["now"], None) for row in report["agents"]])
+        self.assertIn("Reply 0 to accept", report["menu"])
+
+    def test_agent_names_can_follow_a_recommendation(self):
+        report = self.options("arya", "--recommend", "arya", "claude", "skyler", "amy")
+        self.assertEqual([row["name"] for row in report["agents"]], ["arya", "skyler", "amy"])
+        done = self.cli("options", "arya", "--recommend", "arya", "claude", "--bogus")
+        self.assertEqual(done.returncode, 2)
+        self.assertIn("unrecognized arguments: --bogus", done.stderr)
+        self.assertIn("unrecognized arguments: extra", self.cli("check", "extra").stderr)
+
+    def test_an_orchestrator_without_a_setting_needs_no_pick(self):
+        menu = self.options("donna", "arya", "--recommend", "arya", "claude")["menu"]
+        self.assertIn("no pick: runs in this session", menu)
+        self.assertIn("0 — my picks for all:", menu)
+        self.assertNotIn("0 —", self.options("donna")["menu"])  # nothing to accept
+        self.assertIn("no pick: choose one", self.options("donna", "arya")["menu"])
+        self.cli("set", "donna", "pi:openai-codex/gpt-6-astra")
+        (Path(self.temp.name) / "bin/pi").write_text("#!/bin/sh\nprintf 'provider  model\\nzai  glm-5.3-flash\\n'\n")
+        menu = self.options("donna", "arya", "--recommend", "arya", "claude")["menu"]
+        self.assertNotIn("0 —", menu)  # her saved setting cannot be used, so she needs a choice
+
+    def test_codex_recommendation_checks_the_selected_models_effort(self):
+        cache = {"models": [{"slug": "small", "supported_reasoning_levels": [{"effort": "low"}]},
+                            {"slug": "large", "supported_reasoning_levels": [{"effort": "high"}]}]}
+        (Path(self.temp.name) / "codex-home/models_cache.json").write_text(json.dumps(cache))
+        for command in (("options", "arya", "--recommend"), ("set",)):
+            done = self.cli(*command, "arya", "codex:small:high")
+            self.assertEqual(done.returncode, 1)
+            self.assertIn("arya: codex has no thinking level high for model small", done.stderr)
+            self.assertIn("codex does not list model gpt-x", self.cli(*command, "arya", "codex:gpt-x").stderr)
+        self.assertFalse((self.root / "agentcy/agentcy.json").exists())
+        self.assertEqual(self.options("arya", "--recommend", "arya", "codex:small:low")
+                         ["agents"][0]["recommended"]["model"], "small")
+
+    def test_no_installed_harness_produces_no_recommendation(self):
+        done = self.cli("options", "arya", env={"PATH": ""})
+        self.assertEqual(done.returncode, 0, done.stderr)
+        report = json.loads(done.stdout)
+        self.assertEqual(report["harnesses"], [])
+        self.assertIsNone(report["agents"][0]["recommended"])
+        self.assertIn("No harness", report["menu"])
+        self.assertNotIn("0 —", report["menu"])
+        self.assertFalse((self.root / "agentcy").exists())
+
+    def test_custom_agents_can_have_recommendations_and_keep_other_fields(self):
+        self.cli("init")
+        self.config(lambda cfg: cfg["agents"].__setitem__("helper", {
+            **cfg["agents"]["arya"], "approve": "ask", "args": ["--extra"], "character": "Helper"}))
+        report = self.options("helper", "--recommend", "helper", "claude:claude-haiku-5-5:low")
+        self.assertEqual(report["agents"][0]["recommended"]["model"], "claude-haiku-5-5")
+        done = self.cli("set", "helper", "claude:claude-haiku-5-5:low")
+        self.assertEqual(done.returncode, 0, done.stderr)
+        helper = json.loads((self.root / "agentcy/agentcy.json").read_text())["agents"]["helper"]
+        self.assertEqual((helper["approve"], helper["args"], helper["character"]), ("ask", ["--extra"], "Helper"))
+
+    def test_recommendations_reject_duplicates_and_agents_outside_the_menu(self):
+        for args, error in (
+                (("arya", "--recommend", "skyler", "claude"), "not among the requested agents"),
+                (("arya", "--recommend", "arya", "claude", "--recommend", "arya", "pi"), "duplicate recommendation")):
+            with self.subTest(error=error):
+                done = self.cli("options", *args)
+                self.assertEqual(done.returncode, 1)
+                self.assertIn(error, done.stderr)
+        self.assertFalse((self.root / "agentcy").exists())
+
+    def test_unknown_catalog_can_offer_harness_default_but_not_for_t3(self):
+        report = self.options("arya", "--recommend", "arya", "codex")
+        self.assertEqual(report["agents"][0]["recommended"], {"harness": "codex"})
+        self.assertIn("access is not verified", report["menu"])
+        done = self.cli("options", "arya", "--recommend", "arya", "codex", env={"T3CODE_THREAD_ID": "self"})
+        self.assertEqual(done.returncode, 1)
+        self.assertIn("arya: T3 Code needs a model to choose the provider", done.stderr)
+        done = self.cli("set", "arya", "codex", env={"T3CODE_THREAD_ID": "self"})
+        self.assertIn("arya: T3 Code needs a model to choose the provider", done.stderr)
+        self.assertFalse((self.root / "agentcy/agentcy.json").exists())
 
 
 class T3Code(Project):

@@ -70,6 +70,7 @@ BACKENDS = ("auto", "hc", "t3")  # auto: t3 inside a T3 Code thread, hc otherwis
 # T3 Code provider instance and effort option per harness. T3 Code starts the harness itself,
 # so launch flags in "args" do not reach it.
 PROVIDERS = {"claude": "claudeAgent", "codex": "codex", "pi": "pi", "agy": "antigravity"}
+CATALOGS = {"codex": "local cache", "pi": "offline catalog"}  # the harnesses that list their own models
 EFFORT_OPTION = {"claudeAgent": "effort", "codex": "reasoningEffort", "pi": "thinking", "antigravity": "thinking_level"}
 T3_NOT_APPLIED = ["args"]
 GREETING = "You are an agentcy agent. Your briefs arrive as messages in this thread. For now, reply with the single word: ready"
@@ -110,7 +111,10 @@ def pi_models() -> tuple[str, ...] | None:
     """`pi --offline --list-models` prints a table of provider and model; None when pi cannot list them."""
     if not shutil.which("pi"):
         return None
-    done = subprocess.run(["pi", "--offline", "--list-models"], capture_output=True, text=True)
+    try:
+        done = subprocess.run(["pi", "--offline", "--list-models"], capture_output=True, text=True, timeout=10)
+    except (OSError, subprocess.TimeoutExpired):
+        return None
     if done.returncode:
         return None
     rows = [line.split()[:2] for line in done.stdout.splitlines()[1:] if len(line.split()) > 1]
@@ -127,21 +131,21 @@ def listed_models(harness: str) -> frozenset | None:
 
 
 @functools.cache
-def codex_models() -> tuple[tuple[str, ...], tuple[str, ...]]:
-    """The models in the cache that Codex keeps, and their thinking levels; empty without a cache."""
+def codex_models() -> dict[str, tuple[str, ...]]:
+    """The cached models and each one's thinking levels; empty without a readable cache."""
     path = Path(os.environ.get("CODEX_HOME") or Path.home() / ".codex") / "models_cache.json"
     try:
-        listed = [m for m in json.loads(path.read_text())["models"] if m.get("visibility") != "hide"]
-        efforts = dict.fromkeys(level["effort"] for m in listed for level in m.get("supported_reasoning_levels", []))
-        return tuple(m["slug"] for m in listed), tuple(efforts)
+        return {m["slug"]: tuple(level["effort"] for level in m.get("supported_reasoning_levels", []))
+                for m in json.loads(path.read_text())["models"] if m.get("visibility") != "hide"}
     except (OSError, ValueError, KeyError, TypeError, AttributeError):
-        return (), ()
+        return {}
 
 
 def choices(harness: str) -> tuple[list[str], list[str]]:
     """The models and thinking levels that the menu numbers for a harness."""
     if harness == "codex":
-        models, efforts = codex_models()
+        models = codex_models()
+        efforts = dict.fromkeys(level for levels in models.values() for level in levels)
         return list(models), list(efforts or EFFORTS["codex"])
     models = {"pi": pi_models() or (), "claude": CLAUDE_MODELS}.get(harness, ())
     return list(models), list(EFFORTS.get(harness, ()))
@@ -149,7 +153,18 @@ def choices(harness: str) -> tuple[list[str], list[str]]:
 
 def harness_menu() -> list[dict]:
     """The installed harnesses that agentcy knows flags for, numbered from 1 in this order."""
-    return [{"harness": h, "models": choices(h)[0], "efforts": choices(h)[1]} for h in FLAGS if shutil.which(h)]
+    menu = []
+    for harness in FLAGS:
+        if not shutil.which(harness):
+            continue
+        models, efforts = choices(harness)
+        source = "built-in list" if harness == "claude" else "unavailable"
+        if models and harness in CATALOGS:
+            source = CATALOGS[harness]
+        menu.append({"harness": harness, "models": models, "efforts": efforts,
+                     "model_efforts": codex_models() if harness == "codex" else {},
+                     "model_source": source, "access_verified": False})
+    return menu
 
 
 def launch_errors(where: str, spec: dict) -> list[str]:
@@ -228,8 +243,8 @@ def template() -> dict:
 
 
 def cast() -> dict:
-    """The template's team without harness, model, or effort. The user picks those for each agent
-    when the orchestrator first needs it; the template's own values are the recommended picks."""
+    """The template's team without settings. The orchestrator recommends settings from discovery;
+    only the user's confirmed choices are saved."""
     cfg = template()
     for agent in cfg["agents"].values():
         for key in SETTING:
@@ -572,11 +587,10 @@ class T3(Backend):
 
     def delegate(self, key, spec) -> dict:
         """The `delegate_task` call that starts the agent as a subagent of this session's thread."""
-        provider = PROVIDERS.get(spec["harness"])
-        if not provider:
-            raise Fail(f"T3 Code runs only {', '.join(PROVIDERS)}; {key} uses {spec['harness']}")
-        if spec.get("model", "") in DEFAULT:
-            raise Fail(f"T3 Code needs a model to choose the provider; set a model for {key} in {CONFIG}")
+        problem = t3_problem(spec)
+        if problem:
+            raise Fail(f"{key}: {problem}")
+        provider = PROVIDERS[spec["harness"]]
         effort = spec.get("effort", "")
         # Empty options clear the orchestrator's own, so the model keeps its default effort.
         options = {} if effort in DEFAULT else {EFFORT_OPTION[provider]: effort}
@@ -656,6 +670,15 @@ class T3(Backend):
         return False
 
 
+def t3_problem(spec: dict) -> str | None:
+    """Why T3 Code cannot start a setting, or None when it can."""
+    if spec["harness"] not in PROVIDERS:
+        return f"T3 Code runs only {', '.join(PROVIDERS)}, not {spec['harness']}"
+    if spec.get("model", "") in DEFAULT:
+        return "T3 Code needs a model to choose the provider"
+    return None
+
+
 def backend_name(cfg) -> str:
     """auto: T3 Code inside a T3 Code thread, where the user talks to the orchestrator; hc otherwise."""
     chosen = cfg.get("backend", "auto")
@@ -699,31 +722,52 @@ def rules_text(cfg, key, name, tool_name, root) -> str:
 
 # ---------------------------------------------------------------- commands
 
-def cmd_init(args):
-    root = Path.cwd()
-    home = root / HOME
-    created = not (home / CONFIG).exists()
-    if created and not args.dry_run:
-        make_home(root)
-        shutil.copyfile(SKILL / "templates" / CONFIG, home / CONFIG)
-    print(json.dumps({"config": str(home / CONFIG), "home": str(home), "created": created}))
+def save_config(root: Path, cfg: dict) -> None:
+    path = make_home(root) / CONFIG
+    temp = path.with_suffix(".tmp")
+    temp.write_text(json.dumps(cfg, indent=2) + "\n")
+    temp.replace(path)
 
 
 def setting(spec: dict) -> dict:
     return {key: spec[key] for key in SETTING if key in spec}
 
 
-def numbered(spec: dict, menu: list[dict]) -> str | None:
-    """A setting as the menu's numbers, such as 3:16:7; None when a part is not in the menu."""
-    entry = next((i for i, h in enumerate(menu, 1) if h["harness"] == spec.get("harness")), None)
+def cmd_init(args):
+    root = Path.cwd()
+    home = root / HOME
+    created = not (home / CONFIG).exists()
+    if created and not args.dry_run:
+        save_config(root, cast())
+    print(json.dumps({"config": str(home / CONFIG), "home": str(home), "created": created}))
+
+
+def unavailable(spec: dict, menu: list[dict], t3: bool) -> str | None:
+    """Why a setting cannot start an agent here, or None when it can. A model name passes when the
+    harness has no catalog to check it against."""
+    harness, model, effort = (spec.get(key, "default") for key in SETTING)
+    entry = next((h for h in menu if h["harness"] == harness), None)
     if entry is None:
-        return None
-    parts = [str(entry)]
-    for key, listed in (("model", menu[entry - 1]["models"]), ("effort", menu[entry - 1]["efforts"])):
-        value = spec.get(key, "default")
-        if value not in DEFAULT and value not in listed:
-            return None
-        parts.append("" if value in DEFAULT else str(listed.index(value) + 1))
+        if harness in FLAGS or not shutil.which(harness):
+            return f"harness {harness} is not installed"
+    else:
+        if (model not in DEFAULT and entry["model_source"] in CATALOGS.values()
+                and model not in (listed_models(harness) or entry["models"])):
+            return f"{harness} does not list model {model}"
+        own = entry["model_efforts"].get(model)
+        if effort not in DEFAULT and effort not in (own or entry["efforts"]):
+            return f"{harness} has no thinking level {effort}" + (f" for model {model}" if own else "")
+    return t3_problem(spec) if t3 else None
+
+
+def numbered(spec: dict, menu: list[dict]) -> str:
+    """A setting as an answer for the menu: its numbers, such as 3:16:7, with a name for each part
+    that the menu does not list."""
+    entry = next((h for h in menu if h["harness"] == spec["harness"]), None)
+    parts = [str(menu.index(entry) + 1) if entry else spec["harness"]]
+    for key in ("model", "effort"):
+        value, listed = spec.get(key, "default"), entry[f"{key}s"] if entry else []
+        parts.append("" if value in DEFAULT else str(listed.index(value) + 1) if value in listed else value)
     return ":".join(parts).rstrip(":")
 
 
@@ -742,30 +786,35 @@ def packed(label: str, items: list[str]) -> list[str]:
 
 
 def menu_text(rows: list[dict], menu: list[dict]) -> str:
-    if not menu:
-        return f"No harness that agentcy knows is installed: {', '.join(FLAGS)}."
     width = max(len(row["name"]) for row in rows)
-    lines = ["Pick a harness:model:thinking for each agent by number, such as 1:2:3.", "0 — my picks for all:"]
+    # An orchestrator with no setting runs in the session that the user starts, so it needs no pick.
+    here = [row for row in rows if row["role"] == "orchestrator" and not row["now"] and not row["recommended"]]
+    complete = len(here) < len(rows) and all(row["recommended"] or row in here for row in rows)
+    lines = ["Pick a harness:model:thinking for each agent by number, such as 1:2:3.",
+             "Model lists are local hints; account access is not verified.",
+             "0 — my picks for all:" if complete else "Settings (entries with no pick still need a choice):"]
+    if not menu:
+        lines.append(f"No harness that agentcy knows is installed: {', '.join(FLAGS)}.")
     for row in rows:
         about = row["role"] + (f": {row['use'].split(':')[0]}" if row.get("use") else "")
         pick = row["recommended"]
         text = f"  {row['name']:<{width}}  {textwrap.shorten(about, 44, placeholder='…'):<44}  "
         if pick:
-            number = numbered(pick, menu)
-            installed = any(entry["harness"] == pick["harness"] for entry in menu)
-            problem = "does not list this model or thinking level" if installed else "is not installed"
-            text += shown(pick) + (f"  ({number})" if number else f"  ({pick['harness']} {problem})")
+            text += shown(pick) + f"  ({numbered(pick, menu)})"
         else:
-            text += "no pick: choose one"
+            text += "no pick: runs in this session" if row in here else "no pick: choose one"
         if row["now"]:
             text += f"  — now {shown(row['now'])}"
+        if row.get("warning"):
+            text += f"  — {row['warning']}"
         lines.append(text)
     lines.append("")
     for number, entry in enumerate(menu, 1):
-        lines.append(f"{number} {entry['harness']}")
+        lines.append(f"{number} {entry['harness']} (models: {entry['model_source']})")
         for label, listed in (("models:", entry["models"]), ("thinking:", entry["efforts"])):
             lines += packed(label, [f"{i} {value}" for i, value in enumerate(listed, 1)] or ["type a name"])
-    lines += ["", 'Reply 0, or one line for each agent you want to change, such as "skyler 1:2:3". '
+    lines += ["", ('Reply 0 to accept these picks, or ' if complete else 'Reply with ') +
+                  'one line for each agent you want to change, such as "skyler 1:2:3". '
                   "Leave out a part to keep the harness's own model or thinking, or type a name instead of a number."]
     return "\n".join(lines)
 
@@ -777,12 +826,28 @@ def cmd_options(args):
     unknown = [name for name in names if name not in cfg["agents"]]
     if unknown:
         raise Fail(f"no agent {', '.join(unknown)}; agents: {', '.join(cfg['agents'])}")
-    picks = {name: setting(agent) for name, agent in template()["agents"].items()}
     menu = harness_menu()
-    rows = [{"name": name, "role": cfg["agents"][name]["role"], "use": cfg["agents"][name].get("use"),
-             "now": setting(cfg["agents"][name]) or None, "recommended": picks.get(name) or None}
-            for name in names]
-    print(json.dumps({"harnesses": menu, "agents": rows, "menu": menu_text(rows, menu)}, indent=2))
+    t3 = backend_name(cfg) == "t3"
+    picks = {}
+    for name, answer in args.recommend:
+        if name not in names:
+            raise Fail(f"recommendation {name} is not among the requested agents")
+        if name in picks:
+            raise Fail(f"duplicate recommendation for {name}")
+        picks[name] = picked(name, answer, menu)
+        reason = unavailable(picks[name], menu, t3)
+        if reason:
+            raise Fail(f"{name}: {reason}; recommend from the choices that options reports")
+    rows = []
+    for name in names:
+        agent = cfg["agents"][name]
+        now = setting(agent) or None
+        reason = unavailable(now, menu, t3) if now else None
+        rows.append({"name": name, "role": agent["role"], "use": agent.get("use"), "tools": agent.get("tools", {}),
+                     "now": now, "recommended": picks.get(name, None if reason else now),
+                     "warning": f"saved setting: {reason}; keep it or change it with the user" if reason else None})
+    print(json.dumps({"backend": "t3" if t3 else "hc", "harnesses": menu, "agents": rows,
+                      "menu": menu_text(rows, menu)}, indent=2))
 
 
 def chosen(listed: list[str], text: str, what: str) -> str:
@@ -796,15 +861,12 @@ def chosen(listed: list[str], text: str, what: str) -> str:
 
 
 def picked(name: str, answer: str, menu: list[dict]) -> dict:
-    """The setting that the user's answer names: 0 for the recommended pick, or harness:model:thinking."""
+    """Resolve an explicit setting. The orchestrator expands the user's 0 to the displayed pick."""
     if answer == "0":
-        pick = setting(template()["agents"].get(name, {}))
-        if not pick:
-            raise Fail(f"{name} has no recommended pick; choose harness:model:thinking")
-        return pick
+        raise Fail(f"{name}: expand the approved recommendation to harness:model:thinking; 0 has no fixed default")
     parts = answer.split(":")
     if len(parts) > 3 or not parts[0]:
-        raise Fail(f"{name}: answer {answer!r} as harness:model:thinking, such as 1:2:3, or 0")
+        raise Fail(f"{name}: answer {answer!r} as harness:model:thinking, such as 1:2:3")
     harness = chosen([h["harness"] for h in menu], parts[0], "harness")
     models, efforts = choices(harness)
     spec = {"harness": harness}
@@ -818,7 +880,7 @@ def cmd_set(args):
     """Save the user's picks. Without init, this creates agentcy/agentcy.json from the cast,
     so the picks last; agents the user has not picked for stay without a setting."""
     if len(args.pairs) % 2:
-        raise Fail("give pairs of agent and answer, such as: set arya 0 skyler 1:2:3")
+        raise Fail("give pairs of agent and answer, such as: set arya pi:model:high skyler 1:2:3")
     root = find_root(Path.cwd())
     path = root / HOME / CONFIG
     created = not path.is_file()
@@ -836,11 +898,13 @@ def cmd_set(args):
     errors = validate(cfg)
     if errors:
         raise Fail("\n".join(errors))
+    t3 = backend_name(cfg) == "t3"
+    for name in saved:
+        reason = unavailable(setting(cfg["agents"][name]), menu, t3)
+        if reason:
+            raise Fail(f"{name}: {reason}")
     if not args.dry_run:
-        make_home(root)
-        temp = path.with_suffix(".tmp")
-        temp.write_text(json.dumps(cfg, indent=2) + "\n")
-        temp.replace(path)
+        save_config(root, cfg)
     print(json.dumps({"config": str(path), "created": created, "agents": saved}))
 
 
@@ -905,11 +969,8 @@ def cmd_check(args):
         for where, info in [(name, row), *((f"{name}.tools.{t}", i) for t, i in row.get("tools", {}).items())]:
             if info.get("model_listed") is False:
                 warnings.append(f"{where}: {info['harness']} does not list model {info['model']}")
-            if name_of == "t3" and info["harness"] not in ("(this session)", None):
-                if info["harness"] not in PROVIDERS:
-                    warnings.append(f"{where}: T3 Code runs only {', '.join(PROVIDERS)}, not {info['harness']}")
-                elif info["model"] in DEFAULT:
-                    warnings.append(f"{where}: T3 Code needs a model to choose the provider")
+            if name_of == "t3" and info["harness"] not in ("(this session)", None) and t3_problem(info):
+                warnings.append(f"{where}: {t3_problem(info)}")
         rows.append(row)
     print(json.dumps({
         "root": str(root),
@@ -1301,9 +1362,11 @@ def parser():
     sub.add_parser("check", help="validate the config and show the team").set_defaults(func=cmd_check)
     p = sub.add_parser("options", help="print the numbered harness, model, and thinking choices for agents")
     p.add_argument("agents", nargs="*", metavar="agent", help="default: every agent")
+    p.add_argument("--recommend", nargs=2, action="append", default=[], metavar=("AGENT", "ANSWER"),
+                   help="show a proposed setting from the detected choices; repeat for each agent; writes nothing")
     p.set_defaults(func=cmd_options)
     p = sub.add_parser("set", help=f"save the user's picks in {HOME}/{CONFIG}, creating it when missing")
-    p.add_argument("pairs", nargs="+", metavar="agent answer", help="0, harness:model:thinking numbers, or names")
+    p.add_argument("pairs", nargs="+", metavar="agent answer", help="explicit harness:model:thinking numbers or names")
     p.set_defaults(func=cmd_set)
     p = sub.add_parser("run", help="create a run folder and print its path")
     p.add_argument("slug")
@@ -1354,7 +1417,13 @@ def parser():
 
 
 def main(argv=None):
-    args = parser().parse_args(argv)
+    top = parser()
+    args, extra = top.parse_known_args(argv)
+    if extra:
+        # argparse stops reading agent names at the first --recommend; the names after it arrive here.
+        if args.command != "options" or any(word.startswith("-") for word in extra):
+            top.error(f"unrecognized arguments: {' '.join(extra)}")
+        args.agents += extra
     try:
         if not args.dry_run and args.command in ("set", "spawn", "send", "handoff", "close"):
             with state_lock(find_root(Path.cwd())):
